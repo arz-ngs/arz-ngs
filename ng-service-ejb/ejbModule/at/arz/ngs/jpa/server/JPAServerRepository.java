@@ -1,8 +1,9 @@
-package at.arz.ngs.jpa;
+package at.arz.ngs.jpa.server;
 
 import at.arz.ngs.ServerRepository;
 
-public class JpaServerRepository
+public class JPAServerRepository
 		implements ServerRepository {
+
 
 }
