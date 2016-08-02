@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd" version="7">
+  <display-name>ng-service-app</display-name>
+  <module>
+    <web>
+      <web-uri>ng-service-ui.war</web-uri>
+      <context-root>ngs/ui</context-root>
+    </web>
+  </module>
+  <module>
+    <web>
+      <web-uri>ng-service-restapi.war</web-uri>
+      <context-root>ngs/api</context-root>
+    </web>
+  </module>
+  <module>
+    <ejb>ng-service-ejb.jar</ejb>
+  </module>
+</application>
