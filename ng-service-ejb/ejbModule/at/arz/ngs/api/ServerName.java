@@ -2,6 +2,12 @@ package at.arz.ngs.api;
 
 
 public class ServerName {
+
+	@Override
+	public String toString() {
+		return "ServerName [serverName=" + serverName + "]";
+	}
+
 	private String serverName;
 
 	public ServerName(String serverName) {

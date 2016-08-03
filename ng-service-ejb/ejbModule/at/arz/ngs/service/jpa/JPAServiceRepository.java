@@ -1,4 +1,4 @@
-package at.arz.ngs.jpa.service;
+package at.arz.ngs.service.jpa;
 
 import java.util.List;
 

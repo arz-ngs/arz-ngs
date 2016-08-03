@@ -3,6 +3,9 @@ package at.arz.ngs;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
+
 import at.arz.ngs.api.PathRestart;
 import at.arz.ngs.api.PathStart;
 import at.arz.ngs.api.PathStatus;
@@ -19,22 +22,22 @@ public class Service {
 	private PathRestart pathRestart;
 	private PathStatus pathStatus;
 	private Status status;
-	private List<Server> server;
 
-	public Service(	long oid,
-					ServiceName serviceName,
+	@ManyToMany(mappedBy = "services", fetch = FetchType.LAZY)
+	private List<Host> server;
+
+	public Service(	ServiceName serviceName,
 					PathStart pathStart,
 					PathStop pathStop,
 					PathRestart pathRestart,
 					PathStatus pathStatus,
 					Status status) {
-		this.oid = oid;
 		this.serviceName = serviceName;
 		this.pathStart = pathStart;
 		this.pathStop = pathStop;
 		this.pathRestart = pathRestart;
 		this.pathStatus = pathStatus;
 		this.status = status;
-		server = new LinkedList<Server>();
+		server = new LinkedList<Host>();
 	}
 }
