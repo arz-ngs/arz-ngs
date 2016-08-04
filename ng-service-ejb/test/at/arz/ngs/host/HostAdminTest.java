@@ -1,4 +1,4 @@
-package at.arz.ngs.server;
+package at.arz.ngs.host;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -14,10 +14,9 @@ import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.HostNotFound;
-import at.arz.ngs.host.HostAdmin;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ServerAdminTest {
+public class HostAdminTest {
 
 	@Mock
 	private HostRepository repository;
@@ -30,10 +29,10 @@ public class ServerAdminTest {
 		HostName serverName = new HostName("sample");
 		Host server = new Host(serverName);
 
-		Mockito.when(repository.findServer(serverName)).thenThrow(new HostNotFound());
+		Mockito.when(repository.getHost(serverName)).thenThrow(new HostNotFound());
 
-		admin.deleteServer(serverName);
-		verify(repository).findServer(serverName);
+		admin.deleteHost(serverName);
+		verify(repository).getHost(serverName);
 		verifyNoMoreInteractions(repository);
 
 	}
