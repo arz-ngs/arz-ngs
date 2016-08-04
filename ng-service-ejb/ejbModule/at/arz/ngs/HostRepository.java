@@ -1,10 +1,10 @@
 package at.arz.ngs;
 
-import at.arz.ngs.api.ServerName;
+import at.arz.ngs.api.HostName;
 
 public interface HostRepository {
 
-	Host findServer(ServerName serverName);
+	Host findServer(HostName serverName);
 
 	void remove(Host server);
 

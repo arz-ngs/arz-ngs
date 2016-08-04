@@ -5,7 +5,7 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 
-import at.arz.ngs.Service;
+import at.arz.ngs.ServiceInstance;
 
 @Stateless
 public class SearchEngine {
@@ -17,7 +17,7 @@ public class SearchEngine {
 	 * @param serverRegex
 	 * @return
 	 */
-	public List<Service> findServices(String serviceRegex, String serverRegex) {
+	public List<ServiceInstance> findServices(String serviceRegex, String serverRegex) {
 		return Collections.emptyList();
 	}
 }

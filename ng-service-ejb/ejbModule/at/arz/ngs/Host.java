@@ -11,29 +11,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
-import at.arz.ngs.api.ServerName;
+import at.arz.ngs.api.HostName;
 
 @Entity
 public class Host {
 
 	@Id
-	@GeneratedValue(generator = "egs.host", strategy = GenerationType.TABLE)
+	@GeneratedValue(generator = "ngs.host", strategy = GenerationType.TABLE)
 	private long oid;
 
-	@Column(name = "SERVERNAME", unique = true)
-	private ServerName serverName;
+	@Column(name = "SERVER_NAME", unique = true)
+	private HostName serverName;
 
 
 	@ManyToMany(mappedBy = "server", fetch = FetchType.LAZY)
-	private List<Service> services;
+	private List<ServiceInstance> services;
 
 	protected Host() {
 		// jpa constructor
 	}
 
-	public Host(ServerName serverName) {
+	public Host(HostName serverName) {
 		this.serverName = serverName;
-		services = new LinkedList<Service>();
+		services = new LinkedList<ServiceInstance>();
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class Host {
 		return oid;
 	}
 
-	public ServerName getServerName() {
+	public HostName getServerName() {
 		return serverName;
 	}
 

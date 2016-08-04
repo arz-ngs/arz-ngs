@@ -1,11 +1,11 @@
 package at.arz.ngs.api;
 
 
-public class ServiceName {
+public class EnvironmentName {
 
 	private String name;
 
-	public ServiceName(String name) {
+	public EnvironmentName(String name) {
 		this.name = name;
 	}
 
@@ -29,7 +29,7 @@ public class ServiceName {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ServiceName other = (ServiceName) obj;
+		EnvironmentName other = (EnvironmentName) obj;
 		if (name == null) {
 			if (other.name != null)
 				return false;

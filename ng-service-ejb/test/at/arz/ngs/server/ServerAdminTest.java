@@ -12,8 +12,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
-import at.arz.ngs.api.ServerName;
-import at.arz.ngs.api.ServerNotFound;
+import at.arz.ngs.api.HostName;
+import at.arz.ngs.api.HostNotFound;
+import at.arz.ngs.host.HostAdmin;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerAdminTest {
@@ -22,14 +23,14 @@ public class ServerAdminTest {
 	private HostRepository repository;
 
 	@InjectMocks
-	private ServerAdmin admin;
+	private HostAdmin admin;
 
 	@Test
 	public void test() {
-		ServerName serverName = new ServerName("sample");
+		HostName serverName = new HostName("sample");
 		Host server = new Host(serverName);
 
-		Mockito.when(repository.findServer(serverName)).thenThrow(new ServerNotFound());
+		Mockito.when(repository.findServer(serverName)).thenThrow(new HostNotFound());
 
 		admin.deleteServer(serverName);
 		verify(repository).findServer(serverName);

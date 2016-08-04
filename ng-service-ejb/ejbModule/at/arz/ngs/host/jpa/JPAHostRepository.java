@@ -1,14 +1,14 @@
-package at.arz.ngs.server.jpa;
+package at.arz.ngs.host.jpa;
 
 import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
-import at.arz.ngs.api.ServerName;
+import at.arz.ngs.api.HostName;
 
-public class JPAServerRepository
+public class JPAHostRepository
 		implements HostRepository {
 
 	@Override
-	public Host findServer(ServerName serverName) {
+	public Host findServer(HostName serverName) {
 		// TODO Auto-generated method stub
 		return null;
 	}

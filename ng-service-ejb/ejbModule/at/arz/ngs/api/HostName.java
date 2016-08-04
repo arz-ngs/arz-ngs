@@ -1,7 +1,7 @@
 package at.arz.ngs.api;
 
 
-public class ServerName {
+public class HostName {
 
 	@Override
 	public String toString() {
@@ -10,7 +10,7 @@ public class ServerName {
 
 	private String serverName;
 
-	public ServerName(String serverName) {
+	public HostName(String serverName) {
 		this.serverName = serverName;
 	}
 
@@ -34,7 +34,7 @@ public class ServerName {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ServerName other = (ServerName) obj;
+		HostName other = (HostName) obj;
 		if (serverName == null) {
 			if (other.serverName != null)
 				return false;

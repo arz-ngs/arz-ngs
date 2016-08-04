@@ -1,7 +1,7 @@
 package at.arz.ngs.api;
 
 
-public class ServerNotFound
+public class HostNotFound
 		extends RuntimeException {
 
 	/**
