@@ -8,13 +8,13 @@ public class JPAHostRepository
 		implements HostRepository {
 
 	@Override
-	public Host findServer(HostName serverName) {
+	public Host getHost(HostName hostName) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void remove(Host server) {
+	public void remove(Host host) {
 		// TODO Auto-generated method stub
 
 	}

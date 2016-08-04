@@ -13,6 +13,7 @@ public class Environment {
 
 	@Id
 	@GeneratedValue(generator = "ngs.envId", strategy = GenerationType.TABLE)
+	@Column(name = "ENVIRONMENT_OID")
 	private long oid;
 
 	@Column(name = "ENVIRONMENT_NAME", unique = true)
@@ -22,8 +23,7 @@ public class Environment {
 		// jpa constructor
 	}
 
-	public Environment(long oid, EnvironmentName environmentName) {
-		this.oid = oid;
+	public Environment(EnvironmentName environmentName) {
 		this.environmentName = environmentName;
 	}
 

@@ -18,12 +18,12 @@ public class HostAdmin {
 	@Inject
 	private HostRepository repository;
 
-	public void deleteServer(HostName serverName) {
+	public void deleteHost(HostName hostName) {
 		try {
-			Host server = repository.findServer(serverName);
-			repository.remove(server);
+			Host host = repository.getHost(hostName);
+			repository.remove(host);
 		} catch (HostNotFound e) {
-			log.info("could not delete server " + serverName + " (not found).");
+			log.info("could not delete host " + hostName + " (not found).");
 		}
 
 	}

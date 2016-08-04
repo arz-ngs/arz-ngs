@@ -3,26 +3,21 @@ package at.arz.ngs.api;
 
 public class HostName {
 
-	@Override
-	public String toString() {
-		return "ServerName [serverName=" + serverName + "]";
+	private String hostName;
+
+	public HostName(String hostName) {
+		this.hostName = hostName;
 	}
 
-	private String serverName;
-
-	public HostName(String serverName) {
-		this.serverName = serverName;
-	}
-
-	public String getServerName() {
-		return serverName;
+	public String getName() {
+		return hostName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((serverName == null) ? 0 : serverName.hashCode());
+		result = prime * result + ((hostName == null) ? 0 : hostName.hashCode());
 		return result;
 	}
 
@@ -35,10 +30,10 @@ public class HostName {
 		if (getClass() != obj.getClass())
 			return false;
 		HostName other = (HostName) obj;
-		if (serverName == null) {
-			if (other.serverName != null)
+		if (hostName == null) {
+			if (other.hostName != null)
 				return false;
-		} else if (!serverName.equals(other.serverName))
+		} else if (!hostName.equals(other.hostName))
 			return false;
 		return true;
 	}

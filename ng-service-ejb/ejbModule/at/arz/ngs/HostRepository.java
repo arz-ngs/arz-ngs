@@ -4,9 +4,9 @@ import at.arz.ngs.api.HostName;
 
 public interface HostRepository {
 
-	Host findServer(HostName serverName);
+	Host getHost(HostName hostName);
 
-	void remove(Host server);
+	void remove(Host host);
 
 
 }

@@ -17,6 +17,7 @@ public class Script {
 
 	@Id
 	@GeneratedValue(generator = "ngs.script", strategy = GenerationType.TABLE)
+	@Column(name = "SCRIPT_OID")
 	private long oid;
 
 	@Column(name = "SCRIPT_NAME")
@@ -38,13 +39,11 @@ public class Script {
 		// jpa constructor
 	}
 
-	public Script(	long oid,
-					ScriptName scriptName,
+	public Script(	ScriptName scriptName,
 					PathStart pathStart,
 					PathStop pathStop,
 					PathRestart pathRestart,
 					PathStatus pathStatus) {
-		this.oid = oid;
 		this.scriptName = scriptName;
 		this.pathStart = pathStart;
 		this.pathStop = pathStop;

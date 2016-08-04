@@ -12,35 +12,34 @@ import at.arz.ngs.api.ServiceName;
 public class Service {
 
 	@Id
-	@GeneratedValue(generator = "ngs.application", strategy = GenerationType.TABLE)
-	@Column(name = "APPLICATION_OID")
+	@GeneratedValue(generator = "ngs.service", strategy = GenerationType.TABLE)
+	@Column(name = "SERVICE_OID")
 	private long oid;
 
-	@Column(name = "APPLICATION_NAME", unique = true)
-	private ServiceName applicationName;
+	@Column(name = "SERVICE_NAME", unique = true)
+	private ServiceName serviceName;
 
 	protected Service() {
 		// jpa constructor
 	}
 
-	public Service(long oid, ServiceName applicationName) {
-		this.oid = oid;
-		this.applicationName = applicationName;
+	public Service(ServiceName applicationName) {
+		this.serviceName = applicationName;
 	}
 
 	public long getOid() {
 		return oid;
 	}
 
-	public ServiceName getApplicationName() {
-		return applicationName;
+	public ServiceName getServiceName() {
+		return serviceName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((applicationName == null) ? 0 : applicationName.hashCode());
+		result = prime * result + ((serviceName == null) ? 0 : serviceName.hashCode());
 		return result;
 	}
 
@@ -53,10 +52,10 @@ public class Service {
 		if (getClass() != obj.getClass())
 			return false;
 		Service other = (Service) obj;
-		if (applicationName == null) {
-			if (other.applicationName != null)
+		if (serviceName == null) {
+			if (other.serviceName != null)
 				return false;
-		} else if (!applicationName.equals(other.applicationName))
+		} else if (!serviceName.equals(other.serviceName))
 			return false;
 		return true;
 	}

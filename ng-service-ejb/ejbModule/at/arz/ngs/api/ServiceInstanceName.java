@@ -3,21 +3,21 @@ package at.arz.ngs.api;
 
 public class ServiceInstanceName {
 
-	private String serviceName;
+	private String name;
 
-	public ServiceInstanceName(String serviceName) {
-		this.serviceName = serviceName;
+	public ServiceInstanceName(String name) {
+		this.name = name;
 	}
 
-	public String getServiceName() {
-		return serviceName;
+	public String getName() {
+		return name;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((serviceName == null) ? 0 : serviceName.hashCode());
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
 	}
 
@@ -30,10 +30,10 @@ public class ServiceInstanceName {
 		if (getClass() != obj.getClass())
 			return false;
 		ServiceInstanceName other = (ServiceInstanceName) obj;
-		if (serviceName == null) {
-			if (other.serviceName != null)
+		if (name == null) {
+			if (other.name != null)
 				return false;
-		} else if (!serviceName.equals(other.serviceName))
+		} else if (!name.equals(other.name))
 			return false;
 		return true;
 	}

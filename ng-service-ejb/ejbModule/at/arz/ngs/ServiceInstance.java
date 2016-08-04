@@ -2,6 +2,8 @@ package at.arz.ngs;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -23,11 +25,27 @@ public class ServiceInstance {
 	private ServiceInstanceName serviceInstanceName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "APPLICATION_OID")
-	private Service applicaton;
+	@JoinColumn(name = "SERVICE_OID")
+	@Column(name = "SERVICE")
+	private Service service;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "HOST_OID")
+	@Column(name = "HOST")
 	private Host host;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ENVIRONMENT_OID")
+	@Column(name = "ENVIRONMENT")
 	private Environment environment;
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "STATUS")
 	private Status status;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "SCRIPT_OID")
+	@Column(name = "SCRIPT")
 	private Script script;
 
 	public ServiceInstance() {
@@ -35,7 +53,7 @@ public class ServiceInstance {
 	}
 
 	public ServiceInstance(	ServiceInstanceName serviceName,
-							Service applicaton,
+							Service service,
 							Host host,
 							Environment environment,
 							Script script,
@@ -43,7 +61,7 @@ public class ServiceInstance {
 		this.environment = environment;
 		this.serviceInstanceName = serviceName;
 		this.host = host;
-		this.applicaton = applicaton;
+		this.service = service;
 		this.script = script;
 		this.status = status;
 	}
@@ -56,8 +74,8 @@ public class ServiceInstance {
 		return serviceInstanceName;
 	}
 
-	public Service getApplicaton() {
-		return applicaton;
+	public Service getService() {
+		return service;
 	}
 
 	public Host getHost() {
@@ -82,6 +100,7 @@ public class ServiceInstance {
 		int result = 1;
 		result = prime * result + ((environment == null) ? 0 : environment.hashCode());
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result + ((service == null) ? 0 : service.hashCode());
 		result = prime * result + ((serviceInstanceName == null) ? 0 : serviceInstanceName.hashCode());
 		return result;
 	}
@@ -105,6 +124,11 @@ public class ServiceInstance {
 				return false;
 		} else if (!host.equals(other.host))
 			return false;
+		if (service == null) {
+			if (other.service != null)
+				return false;
+		} else if (!service.equals(other.service))
+			return false;
 		if (serviceInstanceName == null) {
 			if (other.serviceInstanceName != null)
 				return false;
@@ -112,5 +136,4 @@ public class ServiceInstance {
 			return false;
 		return true;
 	}
-
 }

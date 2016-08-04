@@ -18,10 +18,11 @@ public class Host {
 
 	@Id
 	@GeneratedValue(generator = "ngs.host", strategy = GenerationType.TABLE)
+	@Column(name = "HOST_OID")
 	private long oid;
 
 	@Column(name = "SERVER_NAME", unique = true)
-	private HostName serverName;
+	private HostName hostName;
 
 
 	@ManyToMany(mappedBy = "server", fetch = FetchType.LAZY)
@@ -32,7 +33,7 @@ public class Host {
 	}
 
 	public Host(HostName serverName) {
-		this.serverName = serverName;
+		this.hostName = serverName;
 		services = new LinkedList<ServiceInstance>();
 	}
 
@@ -45,10 +46,10 @@ public class Host {
 		if (getClass() != obj.getClass())
 			return false;
 		Host other = (Host) obj;
-		if (serverName == null) {
-			if (other.serverName != null)
+		if (hostName == null) {
+			if (other.hostName != null)
 				return false;
-		} else if (!serverName.equals(other.serverName))
+		} else if (!hostName.equals(other.hostName))
 			return false;
 		return true;
 	}
@@ -58,15 +59,15 @@ public class Host {
 		return oid;
 	}
 
-	public HostName getServerName() {
-		return serverName;
+	public HostName getHostName() {
+		return hostName;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((serverName == null) ? 0 : serverName.hashCode());
+		result = prime * result + ((hostName == null) ? 0 : hostName.hashCode());
 		return result;
 	}
 }
