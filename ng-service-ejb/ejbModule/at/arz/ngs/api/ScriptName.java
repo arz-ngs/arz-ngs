@@ -1,5 +1,7 @@
 package at.arz.ngs.api;
 
+import java.io.Serializable;
+
 /**
  * Ein ScriptName ist eine Komposition von dem zugehörgien ApplicationName und EnvironmentName, seperiert durch einen
  * "_"
@@ -7,8 +9,10 @@ package at.arz.ngs.api;
  * @author rpri333
  *
  */
-public class ScriptName {
+public class ScriptName
+		implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 
 	/**

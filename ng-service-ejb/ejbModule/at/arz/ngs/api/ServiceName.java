@@ -1,8 +1,11 @@
 package at.arz.ngs.api;
 
+import java.io.Serializable;
 
-public class ServiceName {
+public class ServiceName
+		implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String name;
 
 	public ServiceName(String name) {

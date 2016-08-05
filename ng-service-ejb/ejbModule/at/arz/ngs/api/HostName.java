@@ -1,8 +1,11 @@
 package at.arz.ngs.api;
 
+import java.io.Serializable;
 
-public class HostName {
+public class HostName
+		implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String hostName;
 
 	public HostName(String hostName) {
