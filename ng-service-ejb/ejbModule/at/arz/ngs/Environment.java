@@ -13,7 +13,7 @@ import at.arz.ngs.api.EnvironmentName;
 @Entity
 @NamedQueries({	@NamedQuery(name = "getAllEnvironments", query = "SELECT e FROM Environment e"),
 				@NamedQuery(name = "getEnvironment",
-							query = "SELECT e FROM Environment e WHERE e.environment_name = :ename") })
+							query = "SELECT e FROM Environment e WHERE e.environmentName = :ename") })
 public class Environment {
 
 	@Id

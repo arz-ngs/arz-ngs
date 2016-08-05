@@ -16,7 +16,7 @@ import at.arz.ngs.api.ScriptName;
 
 @Entity
 @NamedQueries({	@NamedQuery(name = "getAllScripts", query = "SELECT sc FROM Script sc"),
-				@NamedQuery(name = "getScript", query = "SELECT sc FROM Script sc WHERE sc.script_name = :scname") })
+				@NamedQuery(name = "getScript", query = "SELECT sc FROM Script sc WHERE sc.scriptName = :scname") })
 public class Script {
 
 	@Id

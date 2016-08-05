@@ -18,27 +18,29 @@ import javax.persistence.UniqueConstraint;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.Status;
 
+/*
+ * @NamedQuery(name = "getServiceInstance", query = "SELECT si "
+ * + "FROM ServiceInstance si "
+ * + "Inner JOIN si.HOST host "
+ * + "INNER JOIN si.SERVICE service "
+ * + "INNER JOIN si.ENVIRONMENT env "
+ * + "WHERE si.serviceInstanceName = :siname AND "
+ * + "host.host_name = :hname AND "
+ * + "service.service_name = :sname AND "
+ * + "env.environment_name = :ename"),
+ */
 @Entity
 @Table(	name = "SERVICEINSTANCE",
 		uniqueConstraints = { @UniqueConstraint(columnNames = {	"SERVICE",
 																"HOST",
 																"ENVIRONMENT",
-																"SERVICEINSTANCE_NAME" }) })
+																"SERVICEINSTANCENAME" }) })
 @NamedQueries({	@NamedQuery(name = "getAllServiceInstances", query = "SELECT si FROM ServiceInstance si"),
-				@NamedQuery(name = "getServiceInstance", query = "SELECT si "
-						+ "FROM ServiceInstance si "
-						+ "Inner JOIN si.HOST host "
-						+ "INNER JOIN si.SERVICE service "
-						+ "INNER JOIN si.ENVIRONMENT env "
-						+ "WHERE si.serviceInstanceName = :siname AND "
-																	+ "host.host_name = :hname AND "
-																	+ "service.service_name = :sname AND "
-																	+ "env.environment_name = :ename"),
 				@NamedQuery(name = "getServiceInstance2", query = "SELECT si "+ "FROM ServiceInstance si "
 																	+ "WHERE si.host = :host AND "
 																	+ "si.service = :service AND "
 																	+ "si.environment = :environment AND "
-																	+ "serviceinstance_name = :siname"),
+																	+ "si.serviceinstanceName = :siname"),
 				@NamedQuery(name = "getInstances/service/environment/host",
 							query = "SELECT si "+ "FROM ServiceInstance si "
 									+ "WHERE si.service = :service AND "
@@ -61,18 +63,15 @@ public class ServiceInstance {
 	private ServiceInstanceName serviceInstanceName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SERVICE_OID")
-	@Column(name = "SERVICE")
+	@JoinColumn(name = "SERVICE")
 	private Service service;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "HOST_OID")
-	@Column(name = "HOST")
+	@JoinColumn(name = "HOST")
 	private Host host;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ENVIRONMENT_OID")
-	@Column(name = "ENVIRONMENT")
+	@JoinColumn(name = "ENVIRONMENT")
 	private Environment environment;
 
 	@Enumerated(EnumType.STRING)
@@ -80,8 +79,7 @@ public class ServiceInstance {
 	private Status status;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SCRIPT_OID")
-	@Column(name = "SCRIPT")
+	@JoinColumn(name = "SCRIPT")
 	private Script script;
 
 	protected ServiceInstance() {

@@ -12,7 +12,7 @@ import at.arz.ngs.api.ServiceName;
 
 @Entity
 @NamedQueries({	@NamedQuery(name = "getAllServices", query = "SELECT s FROM Service s"),
-				@NamedQuery(name = "getService", query = "SELECT s FROM Service s WHERE s.service_name = :sname") })
+				@NamedQuery(name = "getService", query = "SELECT s FROM Service s WHERE s.serviceName = :sname") })
 public class Service {
 
 	@Id
