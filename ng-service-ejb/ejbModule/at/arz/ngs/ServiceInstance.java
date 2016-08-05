@@ -38,7 +38,19 @@ import at.arz.ngs.api.Status;
 																	+ "WHERE si.host = :host AND "
 																	+ "si.service = :service AND "
 																	+ "si.environment = :environment AND "
-																	+ "serviceinstance_name = :siname") })
+																	+ "serviceinstance_name = :siname"),
+				@NamedQuery(name = "getInstances/service/environment/host",
+							query = "SELECT si "+ "FROM ServiceInstance si "
+									+ "WHERE si.service = :service AND "
+									+ "si.environment = :environment AND "
+									+ "si.host = :host"),
+				@NamedQuery(name = "getInstances/service/environment",
+							query = "SELECT si "+ "FROM ServiceInstance si "
+									+ "WHERE si.service = :service AND "
+									+ "si.environment = :environment"),
+				@NamedQuery(name = "getInstances/service",
+							query = "SELECT si "+ "FROM ServiceInstance si "
+									+ "WHERE si.service = :service") })
 public class ServiceInstance {
 
 	@Id

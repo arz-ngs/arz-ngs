@@ -49,7 +49,7 @@ public class JPAServiceInstanceRepository
 
 		entityManager.getTransaction().begin();
 		try {
-			TypedQuery<ServiceInstance> getInstance = entityManager.createNamedQuery(	"getServiceInstance",
+			TypedQuery<ServiceInstance> getInstance = entityManager.createNamedQuery(	"getServiceInstance2",
 																							ServiceInstance.class);
 			getInstance.setParameter("siname", serviceInstanceName);
 			getInstance.setParameter("host", host);
@@ -68,20 +68,59 @@ public class JPAServiceInstanceRepository
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service, Environment environment, Host host) {
-		// TODO Auto-generated method stub
-		return null;
+		entityManager.getTransaction().begin();
+		try {
+			TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	"getInstances/service/environment/host",
+																						ServiceInstance.class);
+			getInstances.setParameter("host", host);
+			getInstances.setParameter("service", service);
+			getInstances.setParameter("environment", environment);
+			List<ServiceInstance> resultList = getInstances.getResultList();
+
+			entityManager.getTransaction().commit();
+
+			return resultList;
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service, Environment environment) {
-		// TODO Auto-generated method stub
-		return null;
+		entityManager.getTransaction().begin();
+		try {
+			TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	"getInstances/service/environment",
+																						ServiceInstance.class);
+			getInstances.setParameter("service", service);
+			getInstances.setParameter("environment", environment);
+			List<ServiceInstance> resultList = getInstances.getResultList();
+
+			entityManager.getTransaction().commit();
+
+			return resultList;
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service) {
-		// TODO Auto-generated method stub
-		return null;
+		entityManager.getTransaction().begin();
+		try {
+			TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	"getInstances/service",
+																						ServiceInstance.class);
+			getInstances.setParameter("service", service);
+			List<ServiceInstance> resultList = getInstances.getResultList();
+
+			entityManager.getTransaction().commit();
+
+			return resultList;
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
