@@ -8,7 +8,7 @@ import javax.inject.Inject;
 import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
-import at.arz.ngs.api.HostNotFound;
+import at.arz.ngs.api.exception.HostNotFoundException;
 
 @Stateless
 public class HostAdmin {
@@ -22,7 +22,7 @@ public class HostAdmin {
 		try {
 			Host host = repository.getHost(hostName);
 			repository.remove(host);
-		} catch (HostNotFound e) {
+		} catch (HostNotFoundException e) {
 			log.info("could not delete host " + hostName + " (not found).");
 		}
 

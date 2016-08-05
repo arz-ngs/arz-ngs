@@ -13,7 +13,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
-import at.arz.ngs.api.HostNotFound;
+import at.arz.ngs.api.exception.HostNotFoundException;
 
 @RunWith(MockitoJUnitRunner.class)
 public class HostAdminTest {
@@ -29,7 +29,7 @@ public class HostAdminTest {
 		HostName serverName = new HostName("sample");
 		Host server = new Host(serverName);
 
-		Mockito.when(repository.getHost(serverName)).thenThrow(new HostNotFound());
+		Mockito.when(repository.getHost(serverName)).thenThrow(new HostNotFoundException());
 
 		admin.deleteHost(serverName);
 		verify(repository).getHost(serverName);
