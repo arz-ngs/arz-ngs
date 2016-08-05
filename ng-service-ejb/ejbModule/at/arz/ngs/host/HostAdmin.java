@@ -21,7 +21,7 @@ public class HostAdmin {
 	public void deleteHost(HostName hostName) {
 		try {
 			Host host = repository.getHost(hostName);
-			repository.remove(host);
+			repository.removeHost(host);
 		} catch (HostNotFoundException e) {
 			log.info("could not delete host " + hostName + " (not found).");
 		}

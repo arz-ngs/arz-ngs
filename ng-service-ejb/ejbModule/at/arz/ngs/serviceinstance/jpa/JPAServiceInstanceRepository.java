@@ -30,7 +30,7 @@ public class JPAServiceInstanceRepository
 	}
 
 	@Override
-	public List<ServiceInstance> getServiceInstances(Service service, Host host, Environment environment) {
+	public List<ServiceInstance> getServiceInstances(Service service, Environment environment, Host host) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -48,7 +48,12 @@ public class JPAServiceInstanceRepository
 	}
 
 	@Override
-	public void addServiceInstance(ServiceInstance serviceInstance) {
+	public void addServiceInstance(	Host newHost,
+									Service newService,
+									Environment newEnvironment,
+									Script newScript,
+									ServiceInstanceName newServiceInstanceName,
+									Status newStatus) {
 		// TODO Auto-generated method stub
 
 	}
@@ -76,4 +81,5 @@ public class JPAServiceInstanceRepository
 		// TODO Auto-generated method stub
 
 	}
+
 }

@@ -20,7 +20,7 @@ public class Script {
 	@Column(name = "SCRIPT_OID")
 	private long oid;
 
-	@Column(name = "SCRIPT_NAME")
+	@Column(name = "SCRIPT_NAME", unique = true)
 	private ScriptName scriptName;
 
 	@Column(name = "PATH_START")

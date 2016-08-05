@@ -14,13 +14,18 @@ public interface ServiceInstanceRepository {
 										Host host,
 										Environment environment);
 
-	List<ServiceInstance> getServiceInstances(Service service, Host host, Environment environment);
+	List<ServiceInstance> getServiceInstances(Service service, Environment environment, Host host);
 
 	List<ServiceInstance> getServiceInstances(Service service, Environment environment);
 
 	List<ServiceInstance> getServiceInstances(Service service);
 
-	void addServiceInstance(ServiceInstance serviceInstance);
+	void addServiceInstance(Host newHost,
+							Service newService,
+							Environment newEnvironment,
+							Script newScript,
+							ServiceInstanceName newServiceInstanceName,
+							Status newStatus);
 
 	void removeServiceInstance(ServiceInstance serviceInstance);
 

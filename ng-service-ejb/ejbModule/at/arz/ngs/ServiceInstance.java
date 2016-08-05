@@ -10,11 +10,18 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.Status;
 
 @Entity
+@Table(	name = "SERVICEINSTANCE",
+		uniqueConstraints = { @UniqueConstraint(columnNames = {	"SERVICE",
+																"HOST",
+																"ENVIRONMENT",
+																"SERVICEINSTANCE_NAME" }) })
 public class ServiceInstance {
 
 	@Id
