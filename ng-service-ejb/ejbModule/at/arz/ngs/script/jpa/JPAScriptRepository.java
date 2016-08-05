@@ -3,6 +3,7 @@ package at.arz.ngs.script.jpa;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Script;
 import at.arz.ngs.ScriptRepository;
@@ -11,6 +12,7 @@ import at.arz.ngs.api.PathStart;
 import at.arz.ngs.api.PathStatus;
 import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
+import at.arz.ngs.api.exception.JPAException;
 
 public class JPAScriptRepository
 		implements ScriptRepository {
@@ -24,30 +26,67 @@ public class JPAScriptRepository
 
 	@Override
 	public Script getScript(ScriptName scriptName) {
-		// TODO Auto-generated method stub
-		return null;
+		entityManager.getTransaction().begin();
+		try {
+			TypedQuery<Script> getScript = entityManager.createNamedQuery("getScript", Script.class);
+			getScript.setParameter("scname", scriptName);
+			Script result = getScript.getSingleResult();
+
+			entityManager.getTransaction().commit();
+
+			return result;
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
 	public List<Script> getAllScripts() {
-		// TODO Auto-generated method stub
-		return null;
+		entityManager.getTransaction().begin();
+		try {
+			TypedQuery<Script> getAllScripts = entityManager.createNamedQuery("getAllScripts", Script.class);
+			List<Script> resultList = getAllScripts.getResultList();
+
+			entityManager.getTransaction().commit();
+
+			return resultList;
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
-	public void addScript(	ScriptName newScriptName,
-							PathStart newPathStart,
-							PathStop newPathStop,
-							PathRestart newPathRestart,
-							PathStatus newPathStatus) {
-		// TODO Auto-generated method stub
+	public void addScript(	ScriptName scriptName,
+							PathStart pathStart,
+							PathStop pathStop,
+							PathRestart pathRestart,
+							PathStatus pathStatus) {
 
+		entityManager.getTransaction().begin();
+		try {
+			Script script = new Script(scriptName, pathStart, pathStop, pathRestart, pathStatus);
+			entityManager.persist(script);
+
+			entityManager.getTransaction().commit();
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
 	public void removeScript(Script script) {
-		// TODO Auto-generated method stub
+		entityManager.getTransaction().begin();
+		try {
+			entityManager.remove(script);
 
+			entityManager.getTransaction().commit();
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 
 	@Override
@@ -57,7 +96,19 @@ public class JPAScriptRepository
 								PathStop newPathStop,
 								PathRestart newPathRestart,
 								PathStatus newPathStatus) {
-		// TODO Auto-generated method stub
 
+		entityManager.getTransaction().begin();
+		try {
+			oldScript.setScriptName(newScriptName);
+			oldScript.setPathStart(newPathStart);
+			oldScript.setPathStop(newPathStop);
+			oldScript.setPathRestart(newPathRestart);
+			oldScript.setPathStatus(newPathStatus);
+
+			entityManager.getTransaction().commit();
+		} catch (RuntimeException e) {
+			entityManager.getTransaction().rollback();
+			throw new JPAException(e.getMessage());
+		}
 	}
 }

@@ -10,6 +10,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -22,6 +24,21 @@ import at.arz.ngs.api.Status;
 																"HOST",
 																"ENVIRONMENT",
 																"SERVICEINSTANCE_NAME" }) })
+@NamedQueries({	@NamedQuery(name = "getAllServiceInstances", query = "SELECT si FROM ServiceInstance si"),
+				@NamedQuery(name = "getServiceInstance", query = "SELECT si "
+						+ "FROM ServiceInstance si "
+						+ "Inner JOIN si.HOST host "
+						+ "INNER JOIN si.SERVICE service "
+						+ "INNER JOIN si.ENVIRONMENT env "
+						+ "WHERE si.serviceInstanceName = :siname AND "
+																	+ "host.host_name = :hname AND "
+																	+ "service.service_name = :sname AND "
+																	+ "env.environment_name = :ename"),
+				@NamedQuery(name = "getServiceInstance2", query = "SELECT si "+ "FROM ServiceInstance si "
+																	+ "WHERE si.host = :host AND "
+																	+ "si.service = :service AND "
+																	+ "si.environment = :environment AND "
+																	+ "serviceinstance_name = :siname") })
 public class ServiceInstance {
 
 	@Id
@@ -99,6 +116,30 @@ public class ServiceInstance {
 
 	public Script getScript() {
 		return script;
+	}
+
+	public void setServiceInstanceName(ServiceInstanceName serviceInstanceName) {
+		this.serviceInstanceName = serviceInstanceName;
+	}
+
+	public void setService(Service service) {
+		this.service = service;
+	}
+
+	public void setHost(Host host) {
+		this.host = host;
+	}
+
+	public void setEnvironment(Environment environment) {
+		this.environment = environment;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public void setScript(Script script) {
+		this.script = script;
 	}
 
 	@Override

@@ -14,4 +14,9 @@ public class JPAException
 	public JPAException(String failureString) {
 		super(failureString);
 	}
+
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

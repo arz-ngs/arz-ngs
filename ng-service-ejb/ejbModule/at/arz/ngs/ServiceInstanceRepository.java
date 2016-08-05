@@ -9,7 +9,7 @@ public interface ServiceInstanceRepository {
 
 	List<ServiceInstance> getAllInstances();
 
-	ServiceInstance getServiceInstance(	ServiceInstance serviceInstance,
+	ServiceInstance getServiceInstance(	ServiceInstanceName serviceInstanceName,
 										Service service,
 										Host host,
 										Environment environment);

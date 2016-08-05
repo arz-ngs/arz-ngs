@@ -14,11 +14,11 @@ public interface ScriptRepository {
 
 	List<Script> getAllScripts();
 
-	void addScript(	ScriptName newScriptName,
-					PathStart newPathStart,
-					PathStop newPathStop,
-					PathRestart newPathRestart,
-					PathStatus newPathStatus);
+	void addScript(	ScriptName scriptName,
+					PathStart pathStart,
+					PathStop pathStop,
+					PathRestart pathRestart,
+					PathStatus pathStatus);
 
 	void removeScript(Script script);
 

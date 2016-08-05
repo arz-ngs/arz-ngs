@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.PathRestart;
 import at.arz.ngs.api.PathStart;
@@ -13,6 +15,8 @@ import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
 
 @Entity
+@NamedQueries({	@NamedQuery(name = "getAllScripts", query = "SELECT sc FROM Script sc"),
+				@NamedQuery(name = "getScript", query = "SELECT sc FROM Script sc WHERE sc.script_name = :scname") })
 public class Script {
 
 	@Id
@@ -73,6 +77,26 @@ public class Script {
 
 	public PathRestart getPathRestart() {
 		return pathRestart;
+	}
+
+	public void setScriptName(ScriptName scriptName) {
+		this.scriptName = scriptName;
+	}
+
+	public void setPathStart(PathStart pathStart) {
+		this.pathStart = pathStart;
+	}
+
+	public void setPathStop(PathStop pathStop) {
+		this.pathStop = pathStop;
+	}
+
+	public void setPathRestart(PathRestart pathRestart) {
+		this.pathRestart = pathRestart;
+	}
+
+	public void setPathStatus(PathStatus pathStatus) {
+		this.pathStatus = pathStatus;
 	}
 
 	@Override
