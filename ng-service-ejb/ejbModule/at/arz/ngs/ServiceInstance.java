@@ -55,7 +55,7 @@ public class ServiceInstance {
 	@Column(name = "SCRIPT")
 	private Script script;
 
-	public ServiceInstance() {
+	protected ServiceInstance() {
 			// jpa constructor
 	}
 

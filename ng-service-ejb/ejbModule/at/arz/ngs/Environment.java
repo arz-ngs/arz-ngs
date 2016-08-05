@@ -5,10 +5,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.EnvironmentName;
 
 @Entity
+@NamedQueries({	@NamedQuery(name = "getAllEnvironments", query = "SELECT e FROM Environment e"),
+				@NamedQuery(name = "getEnvironment",
+							query = "SELECT e FROM Environment e WHERE e.environment_name = :ename") })
 public class Environment {
 
 	@Id
@@ -19,7 +24,7 @@ public class Environment {
 	@Column(name = "ENVIRONMENT_NAME", unique = true)
 	private EnvironmentName environmentName;
 
-	public Environment() {
+	protected Environment() {
 		// jpa constructor
 	}
 
@@ -33,6 +38,10 @@ public class Environment {
 
 	public EnvironmentName getEnvironmentName() {
 		return environmentName;
+	}
+
+	public void setEnvironmentName(EnvironmentName environmentName) {
+		this.environmentName = environmentName;
 	}
 
 	@Override

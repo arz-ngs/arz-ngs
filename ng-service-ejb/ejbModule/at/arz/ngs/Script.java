@@ -35,7 +35,7 @@ public class Script {
 	@Column(name = "PATH_STATUS")
 	private PathStatus pathStatus;
 
-	public Script() {
+	protected Script() {
 		// jpa constructor
 	}
 

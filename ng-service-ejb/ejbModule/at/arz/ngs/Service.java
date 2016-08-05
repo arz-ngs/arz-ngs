@@ -5,10 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.ServiceName;
 
 @Entity
+@NamedQueries({	@NamedQuery(name = "getAllServices", query = "SELECT s FROM Service s"),
+				@NamedQuery(name = "getService", query = "SELECT s FROM Service s WHERE s.service_name = :sname") })
 public class Service {
 
 	@Id
@@ -33,6 +37,10 @@ public class Service {
 
 	public ServiceName getServiceName() {
 		return serviceName;
+	}
+
+	public void setServiceName(ServiceName serviceName) {
+		this.serviceName = serviceName;
 	}
 
 	@Override

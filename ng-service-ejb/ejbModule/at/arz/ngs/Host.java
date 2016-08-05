@@ -10,10 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.HostName;
 
 @Entity
+@NamedQueries({	@NamedQuery(name = "getAllHosts", query = "SELECT h FROM Host h"),
+				@NamedQuery(name = "getHost", query = "SELECT h FROM Host h WHERE s.host_name = :hname") })
 public class Host {
 
 	@Id
@@ -21,7 +25,7 @@ public class Host {
 	@Column(name = "HOST_OID")
 	private long oid;
 
-	@Column(name = "SERVER_NAME", unique = true)
+	@Column(name = "HOST_NAME", unique = true)
 	private HostName hostName;
 
 
@@ -32,9 +36,13 @@ public class Host {
 		// jpa constructor
 	}
 
-	public Host(HostName serverName) {
-		this.hostName = serverName;
+	public Host(HostName hostName) {
+		this.hostName = hostName;
 		services = new LinkedList<ServiceInstance>();
+	}
+
+	public void setHostName(HostName hostName) {
+		this.hostName = hostName;
 	}
 
 	@Override
