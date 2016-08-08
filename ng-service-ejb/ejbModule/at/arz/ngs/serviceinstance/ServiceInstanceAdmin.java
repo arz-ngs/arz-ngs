@@ -1,20 +1,30 @@
 package at.arz.ngs.serviceinstance;
 
-import at.arz.ngs.api.ServiceInstanceName;
-import at.arz.ngs.api.Status;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import at.arz.ngs.EnvironmentRepository;
+import at.arz.ngs.HostRepository;
+import at.arz.ngs.ServiceInstanceRepository;
+import at.arz.ngs.ServiceRepository;
+
+@Stateless
 public class ServiceInstanceAdmin {
-	// void updateServiceInstance( ServiceInstanceName serviceInstanceOld,
-	// Host newHost,
-	// Service newService,
-	// Environment newEnvironment,
-	// Script newScript,
-	// ServiceInstanceName newServiceInstanceName,
-	// Status newStatus) {
-	//
-	// }
 
-	void updateStatus(ServiceInstanceName serviceInstanceName, Status newStatus) {
+	@Inject
+	private ServiceRepository services;
 
+	@Inject
+	private HostRepository hosts;
+
+	@Inject
+	private EnvironmentRepository environments;
+
+	@Inject
+	private ServiceInstanceRepository instances;
+
+	public void execute(CreateNewServiceInstance command) {
+		command.getEnvironmentName();
 	}
+	
 }
