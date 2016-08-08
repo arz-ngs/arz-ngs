@@ -12,7 +12,7 @@ import at.arz.ngs.api.HostName;
 
 @Entity
 @NamedQueries({	@NamedQuery(name = "getAllHosts", query = "SELECT h FROM Host h"),
-				@NamedQuery(name = "getHost", query = "SELECT h FROM Host h WHERE s.hostName = :hname") })
+				@NamedQuery(name = "getHost", query = "SELECT h FROM Host h WHERE h.hostName = :hname") })
 public class Host {
 
 	@Id

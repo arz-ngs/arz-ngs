@@ -14,29 +14,33 @@ import org.junit.Before;
 
 public abstract class AbstractJpaIT {
 
-	private static final String JPA_UNIT_NAME = "mysql-eclipselink";
+	private static final String JPA_UNIT_NAME = "ng-service-model";
 
 	private EntityManagerFactory emf;
 	private EntityManager em;
 	private EntityTransaction tx;
 
 	@Before
-	public void before() throws IOException {
+	public void before() {
 		emf = createEntityManagerFactory();
 		em = emf.createEntityManager();
 		tx = em.getTransaction();
 		tx.begin();
 	}
 
-	private EntityManagerFactory createEntityManagerFactory() throws IOException {
-		Properties connectionProperties = new Properties();
-		connectionProperties.load(ClassLoader.getSystemResourceAsStream("at/arz/ngs/connection.properties"));
-		EmbeddedDataSource dataSource = new EmbeddedDataSource();
-		dataSource.setDatabaseName("memory:navigation");
-		dataSource.setCreateDatabase("create");
-		EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(	JPA_UNIT_NAME,
-																							connectionProperties);
-		return entityManagerFactory;
+	private EntityManagerFactory createEntityManagerFactory() {
+		try {
+			Properties connectionProperties = new Properties();
+			connectionProperties.load(ClassLoader.getSystemResourceAsStream("at/arz/ngs/connection.properties"));
+			EmbeddedDataSource dataSource = new EmbeddedDataSource();
+			dataSource.setDatabaseName("memory:ngs-service-db");
+			dataSource.setCreateDatabase("create");
+			EntityManagerFactory entityManagerFactory = Persistence.createEntityManagerFactory(	JPA_UNIT_NAME,
+																								connectionProperties);
+			return entityManagerFactory;
+		} catch (IOException e) {
+			throw new RuntimeException("could not load create entity manager factory", e);
+		}
 	}
 
 	@After

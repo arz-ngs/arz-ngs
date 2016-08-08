@@ -1,5 +1,9 @@
 package at.arz.ngs.service;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -22,9 +26,12 @@ public class ServiceAdminTest {
 
 	@Test
 	public void test() {
-		ServiceName serviceName = new ServiceName("test");
-		Service service = new Service(serviceName);
-
+		ServiceName oldName = new ServiceName("oldName");
+		ServiceName newName = new ServiceName("newName");
+		Service service = new Service(oldName);
+		when(repository.getService(oldName)).thenReturn(service);
+		admin.renameService(oldName, newName);
+		assertThat(service.getServiceName(), is(newName));
 	}
 
 }

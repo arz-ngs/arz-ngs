@@ -13,5 +13,4 @@ public interface ServiceRepository {
 
 	void removeService(Service service);
 
-	void updateService(Service oldService, ServiceName newServiceName);
 }

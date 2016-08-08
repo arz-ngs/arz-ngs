@@ -1,6 +1,7 @@
 package at.arz.ngs;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,6 +18,7 @@ import javax.persistence.UniqueConstraint;
 
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.converter.jpa.ServiceInstanceNameConverter;
 
 /*
  * @NamedQuery(name = "getServiceInstance", query = "SELECT si "
@@ -34,36 +36,43 @@ import at.arz.ngs.api.Status;
 		uniqueConstraints = { @UniqueConstraint(columnNames = {	"SERVICE",
 																"HOST",
 																"ENVIRONMENT",
-																"SERVICEINSTANCENAME" }) })
-@NamedQueries({	@NamedQuery(name = "getAllServiceInstances", query = "SELECT si FROM ServiceInstance si"),
-				@NamedQuery(name = "getServiceInstance2", query = "SELECT si "+ "FROM ServiceInstance si "
-																	+ "WHERE si.host = :host AND "
-																	+ "si.service = :service AND "
-																	+ "si.environment = :environment AND "
-																	+ "si.serviceinstanceName = :siname"),
-				@NamedQuery(name = "getInstances/service/environment/host",
+																"SERVICEINSTANCE_NAME" }) })
+@NamedQueries({	@NamedQuery(name = ServiceInstance.QUERY_ALL, query = "SELECT si FROM ServiceInstance si"),
+				@NamedQuery(name = ServiceInstance.QUERY_BY_HOST_SERVICE_ENVIRONMENT_INSTANCENAME,
+							query = "SELECT si "+ "FROM ServiceInstance si "
+									+ "WHERE si.host = :host AND "
+									+ "si.service = :service AND "
+									+ "si.environment = :environment AND "
+									+ "si.serviceInstanceName = :siname"),
+				@NamedQuery(name = "ServiceInstance.findByServiceAndEnvironmentAndHost",
 							query = "SELECT si "+ "FROM ServiceInstance si "
 									+ "WHERE si.service = :service AND "
 									+ "si.environment = :environment AND "
 									+ "si.host = :host"),
-				@NamedQuery(name = "getInstances/service/environment",
+				@NamedQuery(name = "ServiceInstance.findByServiceAndEnvironment",
 							query = "SELECT si "+ "FROM ServiceInstance si "
 									+ "WHERE si.service = :service AND "
 									+ "si.environment = :environment"),
-				@NamedQuery(name = "getInstances/service",
-							query = "SELECT si "+ "FROM ServiceInstance si "
-									+ "WHERE si.service = :service") })
+				@NamedQuery(name = "ServiceInstance.findByService",
+							query = "SELECT si " + "FROM ServiceInstance si " + "WHERE si.service = :service") })
 public class ServiceInstance {
+
+	public static final String QUERY_ALL = "ServiceInstance.getAll";
+	public static final String QUERY_BY_HOST_SERVICE_ENVIRONMENT_INSTANCENAME = "ServiceInstance.findByUniqueKey";
+	public static final String QUERY_BY_HOST_SERVICE_ENVIRONMENT = "";
+	public static final String QUERY_BY_SERVICE_ENVIRONMENT = "ServiceInstance.getAll";
+	public static final String QUERY_BY_SERVICE = "ServiceInstance.getAll";
 
 	@Id
 	@GeneratedValue(generator = "ngs.serviceinstance", strategy = GenerationType.TABLE)
 	private long oid;
 
 	@Column(name = "SERVICEINSTANCE_NAME")
+	@Convert(converter = ServiceInstanceNameConverter.class)
 	private ServiceInstanceName serviceInstanceName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "SERVICE")
+	@JoinColumn(name = "SERVICE") // oder SERVICE_OID???
 	private Service service;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -83,7 +92,7 @@ public class ServiceInstance {
 	private Script script;
 
 	protected ServiceInstance() {
-			// jpa constructor
+		// jpa constructor
 	}
 
 	public ServiceInstance(	ServiceInstanceName serviceName,

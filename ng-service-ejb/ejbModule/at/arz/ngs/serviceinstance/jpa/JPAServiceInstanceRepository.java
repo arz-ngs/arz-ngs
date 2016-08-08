@@ -2,7 +2,11 @@ package at.arz.ngs.serviceinstance.jpa;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Environment;
@@ -15,12 +19,19 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.JPAException;
 
+@Stateless
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class JPAServiceInstanceRepository
 		implements ServiceInstanceRepository {
 
+	@PersistenceContext(unitName = "ng-service-model")
 	private EntityManager entityManager;
 
-	public JPAServiceInstanceRepository(EntityManager entityManager) {
+	public JPAServiceInstanceRepository() {
+		// ejb constructor
+	}
+
+	JPAServiceInstanceRepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
@@ -28,7 +39,8 @@ public class JPAServiceInstanceRepository
 	public List<ServiceInstance> getAllInstances() {
 		entityManager.getTransaction().begin();
 		try {
-			TypedQuery<ServiceInstance> getAllInstances = entityManager.createNamedQuery(	"getAllServiceInstances",
+			TypedQuery<ServiceInstance> getAllInstances =
+														entityManager.createNamedQuery(	ServiceInstance.QUERY_ALL,
 																							ServiceInstance.class);
 			List<ServiceInstance> resultList = getAllInstances.getResultList();
 

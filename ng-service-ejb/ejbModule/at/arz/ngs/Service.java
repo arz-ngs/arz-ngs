@@ -39,7 +39,7 @@ public class Service {
 		return serviceName;
 	}
 
-	public void setServiceName(ServiceName serviceName) {
+	public void renameService(ServiceName serviceName) {
 		this.serviceName = serviceName;
 	}
 

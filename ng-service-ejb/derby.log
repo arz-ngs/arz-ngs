@@ -1,7 +1,7 @@
 ----------------------------------------------------------------
-Fri Aug 05 16:20:05 CEST 2016:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0156-5b13-4898-00000144caf8 
-on database directory memory:C:\workspace\arz-ngs\ng-service-ejb\navigation with class loader sun.misc.Launcher$AppClassLoader@4554617c 
+Mon Aug 08 10:34:34 CEST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0156-694a-0551-000003054bf8 
+on database directory memory:C:\workspace\arz-ngs\ng-service-ejb\ng-service-db with class loader sun.misc.Launcher$AppClassLoader@4554617c 
 Loaded from file:/C:/workspace/arz-ngs/ng-service-ejb/lib/derby-10.12.1.1.jar
 java.vendor=Oracle Corporation
 java.runtime.version=1.8.0_92-b14
