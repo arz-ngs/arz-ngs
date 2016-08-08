@@ -2,7 +2,12 @@ package at.arz.ngs.script.jpa;
 
 import java.util.List;
 
+import javax.ejb.Local;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Script;
@@ -14,47 +19,44 @@ import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.exception.JPAException;
 
+@Stateless
+@Local(ScriptRepository.class)
+@TransactionAttribute(TransactionAttributeType.MANDATORY)
 public class JPAScriptRepository
 		implements ScriptRepository {
 
+	@PersistenceContext(unitName = "ng-service-model")
 	private EntityManager entityManager;
 
+	public JPAScriptRepository() {
+		// ejb constructor
+	}
+
+	/**
+	 * Only for JUnit-Tests to use!!
+	 * 
+	 * @param entityManager
+	 */
 	public JPAScriptRepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
-
 	}
 
 	@Override
 	public Script getScript(ScriptName scriptName) {
-		entityManager.getTransaction().begin();
 		try {
-			TypedQuery<Script> getScript = entityManager.createNamedQuery("getScript", Script.class);
+			TypedQuery<Script> getScript = entityManager.createNamedQuery(Script.QUERY_BY_SCRIPTNAME, Script.class);
 			getScript.setParameter("scname", scriptName);
-			Script result = getScript.getSingleResult();
+			return getScript.getSingleResult();
 
-			entityManager.getTransaction().commit();
-
-			return result;
 		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw new JPAException(e.getMessage());
+			throw new ScriptNotFound(scriptName);
 		}
 	}
 
 	@Override
 	public List<Script> getAllScripts() {
-		entityManager.getTransaction().begin();
-		try {
 			TypedQuery<Script> getAllScripts = entityManager.createNamedQuery("getAllScripts", Script.class);
-			List<Script> resultList = getAllScripts.getResultList();
-
-			entityManager.getTransaction().commit();
-
-			return resultList;
-		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw new JPAException(e.getMessage());
-		}
+		return getAllScripts.getResultList();
 	}
 
 	@Override
@@ -64,51 +66,12 @@ public class JPAScriptRepository
 							PathRestart pathRestart,
 							PathStatus pathStatus) {
 
-		entityManager.getTransaction().begin();
-		try {
 			Script script = new Script(scriptName, pathStart, pathStop, pathRestart, pathStatus);
 			entityManager.persist(script);
-
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw new JPAException(e.getMessage());
-		}
 	}
 
 	@Override
 	public void removeScript(Script script) {
-		entityManager.getTransaction().begin();
-		try {
 			entityManager.remove(script);
-
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw new JPAException(e.getMessage());
-		}
-	}
-
-	@Override
-	public void updateScript(	Script oldScript,
-								ScriptName newScriptName,
-								PathStart newPathStart,
-								PathStop newPathStop,
-								PathRestart newPathRestart,
-								PathStatus newPathStatus) {
-
-		entityManager.getTransaction().begin();
-		try {
-			oldScript.setScriptName(newScriptName);
-			oldScript.setPathStart(newPathStart);
-			oldScript.setPathStop(newPathStop);
-			oldScript.setPathRestart(newPathRestart);
-			oldScript.setPathStatus(newPathStatus);
-
-			entityManager.getTransaction().commit();
-		} catch (RuntimeException e) {
-			entityManager.getTransaction().rollback();
-			throw new JPAException(e.getMessage());
-		}
 	}
 }

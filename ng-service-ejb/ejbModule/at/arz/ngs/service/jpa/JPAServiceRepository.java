@@ -14,7 +14,7 @@ import javax.persistence.TypedQuery;
 import at.arz.ngs.Service;
 import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.ServiceName;
-import at.arz.ngs.api.exception.ServiceNotFoundException;
+import at.arz.ngs.api.exception.ServiceNotFound;
 
 @Stateless
 @Local(ServiceRepository.class)
@@ -29,24 +29,32 @@ public class JPAServiceRepository
 		// ejb constructor
 	}
 
-	JPAServiceRepository(EntityManager entityManager) {
+	/**
+	 * Only for JUnit-Tests to use!!
+	 * 
+	 * @param entityManager
+	 */
+	public JPAServiceRepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
 
 	@Override
 	public Service getService(ServiceName serviceName) {
 		try {
-			TypedQuery<Service> getService = entityManager.createNamedQuery("getService", Service.class);
+			TypedQuery<Service> getService = entityManager.createNamedQuery(Service.QUERY_BY_SERVICENAME,
+																			Service.class);
 			getService.setParameter("sname", serviceName);
+
 			return getService.getSingleResult();
+
 		} catch (EntityNotFoundException e) {
-			throw new ServiceNotFoundException(serviceName);
+			throw new ServiceNotFound(serviceName);
 		}
 	}
 
 	@Override
 	public List<Service> getAllServices() {
-		TypedQuery<Service> allServices = entityManager.createNamedQuery("getAllServices", Service.class);
+		TypedQuery<Service> allServices = entityManager.createNamedQuery(Service.QUERY_ALL, Service.class);
 		return allServices.getResultList();
 	}
 

@@ -1,6 +1,7 @@
 package at.arz.ngs;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,18 +10,23 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.ServiceName;
+import at.arz.ngs.converter.jpa.ServiceNameConverter;
 
 @Entity
-@NamedQueries({	@NamedQuery(name = "getAllServices", query = "SELECT s FROM Service s"),
-				@NamedQuery(name = "getService", query = "SELECT s FROM Service s WHERE s.serviceName = :sname") })
+@NamedQueries({	@NamedQuery(name = Service.QUERY_ALL, query = "SELECT s FROM Service s"),
+				@NamedQuery(name = Service.QUERY_BY_SERVICENAME,
+							query = "SELECT s FROM Service s WHERE s.serviceName = :sname") })
 public class Service {
+
+	public static final String QUERY_ALL = "Service.getAll";
+	public static final String QUERY_BY_SERVICENAME = "Service.findByUniqueKey";
 
 	@Id
 	@GeneratedValue(generator = "ngs.service", strategy = GenerationType.TABLE)
-	@Column(name = "SERVICE_OID")
 	private long oid;
 
 	@Column(name = "SERVICE_NAME", unique = true)
+	@Convert(converter = ServiceNameConverter.class)
 	private ServiceName serviceName;
 
 	protected Service() {

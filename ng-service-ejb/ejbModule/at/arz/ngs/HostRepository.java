@@ -14,5 +14,4 @@ public interface HostRepository {
 
 	void addHost(HostName hostName);
 
-	void updateHost(Host oldHost, HostName newHostName);
 }

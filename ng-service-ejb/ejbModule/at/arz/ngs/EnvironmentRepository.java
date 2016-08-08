@@ -13,6 +13,4 @@ public interface EnvironmentRepository {
 	void addEnvironment(EnvironmentName environmentName);
 
 	void removeEnvironment(Environment environment);
-
-	void updateEnvironment(Environment oldEnvironment, EnvironmentName newEnvironmentName);
 }

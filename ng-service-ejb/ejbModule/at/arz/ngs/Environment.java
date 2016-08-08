@@ -1,6 +1,7 @@
 package at.arz.ngs;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -9,19 +10,23 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 
 import at.arz.ngs.api.EnvironmentName;
+import at.arz.ngs.converter.jpa.EnvironmentNameConverter;
 
 @Entity
-@NamedQueries({	@NamedQuery(name = "getAllEnvironments", query = "SELECT e FROM Environment e"),
-				@NamedQuery(name = "getEnvironment",
+@NamedQueries({	@NamedQuery(name = Environment.QUERY_ALL, query = "SELECT e FROM Environment e"),
+				@NamedQuery(name = Environment.QUERY_BY_ENVIRONMENTNAME,
 							query = "SELECT e FROM Environment e WHERE e.environmentName = :ename") })
 public class Environment {
 
+	public static final String QUERY_ALL = "Environment.getAll";
+	public static final String QUERY_BY_ENVIRONMENTNAME = "Environment.findByUniqueKey";
+
 	@Id
-	@GeneratedValue(generator = "ngs.envId", strategy = GenerationType.TABLE)
-	@Column(name = "ENVIRONMENT_OID")
+	@GeneratedValue(generator = "ngs.environment", strategy = GenerationType.TABLE)
 	private long oid;
 
 	@Column(name = "ENVIRONMENT_NAME", unique = true)
+	@Convert(converter = EnvironmentNameConverter.class)
 	private EnvironmentName environmentName;
 
 	protected Environment() {

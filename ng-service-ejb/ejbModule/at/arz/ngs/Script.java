@@ -1,6 +1,7 @@
 package at.arz.ngs;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,30 +14,41 @@ import at.arz.ngs.api.PathStart;
 import at.arz.ngs.api.PathStatus;
 import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
+import at.arz.ngs.converter.jpa.PathRestartConverter;
+import at.arz.ngs.converter.jpa.PathStartConverter;
+import at.arz.ngs.converter.jpa.PathStatusConverter;
+import at.arz.ngs.converter.jpa.PathStopConverter;
 
 @Entity
-@NamedQueries({	@NamedQuery(name = "getAllScripts", query = "SELECT sc FROM Script sc"),
-				@NamedQuery(name = "getScript", query = "SELECT sc FROM Script sc WHERE sc.scriptName = :scname") })
+@NamedQueries({	@NamedQuery(name = Script.QUERY_ALL, query = "SELECT sc FROM Script sc"),
+				@NamedQuery(name = Script.QUERY_BY_SCRIPTNAME,
+							query = "SELECT sc FROM Script sc WHERE sc.scriptName = :scname") })
 public class Script {
+
+	public static final String QUERY_ALL = "Script.getAll";
+	public static final String QUERY_BY_SCRIPTNAME = "Script.findByUniqueKey";
 
 	@Id
 	@GeneratedValue(generator = "ngs.script", strategy = GenerationType.TABLE)
-	@Column(name = "SCRIPT_OID")
 	private long oid;
 
 	@Column(name = "SCRIPT_NAME", unique = true)
 	private ScriptName scriptName;
 
 	@Column(name = "PATH_START")
+	@Convert(converter = PathStartConverter.class)
 	private PathStart pathStart;
 
 	@Column(name = "PATH_STOP")
+	@Convert(converter = PathStopConverter.class)
 	private PathStop pathStop;
 
 	@Column(name = "PATH_RESTART")
+	@Convert(converter = PathRestartConverter.class)
 	private PathRestart pathRestart;
 
 	@Column(name = "PATH_STATUS")
+	@Convert(converter = PathStatusConverter.class)
 	private PathStatus pathStatus;
 
 	protected Script() {

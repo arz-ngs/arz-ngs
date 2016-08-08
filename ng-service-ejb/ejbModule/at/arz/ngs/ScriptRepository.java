@@ -21,11 +21,4 @@ public interface ScriptRepository {
 					PathStatus pathStatus);
 
 	void removeScript(Script script);
-
-	void updateScript(	Script oldScript,
-						ScriptName newScriptName,
-						PathStart newPathStart,
-						PathStop newPathStop,
-						PathRestart newPathRestart,
-						PathStatus newPathStatus);
 }
