@@ -1,7 +1,6 @@
 package at.arz.ngs.serviceinstance.jpa;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
@@ -72,16 +71,16 @@ public class ServiceRepositoryIT
 		}
 	}
 
-	@Test
-	public void updateServices() {
-		repository.addService(serviceName1);
-		Service service1 = repository.getService(serviceName1);
-		repository.updateService(service1, serviceName3);
-		Service service1updated = repository.getService(serviceName3);
-		assertEquals(serviceName3, service1updated.getServiceName());
-		assertNotEquals(serviceName1, service1updated.getServiceName());
-		assertEquals(service1.getOid(), service1updated.getOid());
-	}
+	// @Test
+	// public void updateServices() {
+	// repository.addService(serviceName1);
+	// Service service1 = repository.getService(serviceName1);
+	// repository.updateService(service1, serviceName3);
+	// Service service1updated = repository.getService(serviceName3);
+	// assertEquals(serviceName3, service1updated.getServiceName());
+	// assertNotEquals(serviceName1, service1updated.getServiceName());
+	// assertEquals(service1.getOid(), service1updated.getOid());
+	// }
 
 
 	// @Test(expected = ServiceNotFoundException.class)

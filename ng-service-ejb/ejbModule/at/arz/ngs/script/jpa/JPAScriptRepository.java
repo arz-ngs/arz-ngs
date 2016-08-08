@@ -17,7 +17,7 @@ import at.arz.ngs.api.PathStart;
 import at.arz.ngs.api.PathStatus;
 import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
-import at.arz.ngs.api.exception.JPAException;
+import at.arz.ngs.api.exception.ScriptNotFound;
 
 @Stateless
 @Local(ScriptRepository.class)

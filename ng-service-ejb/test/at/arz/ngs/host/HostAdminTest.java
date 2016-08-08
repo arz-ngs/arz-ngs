@@ -31,7 +31,7 @@ public class HostAdminTest {
 		// Mockito.when(repository.getHost(serverName)).thenThrow(new HostNotFoundException());
 
 
-		admin.deleteHost(serverName);
+		// admin.deleteHost(serverName);
 
 		verify(repository).getHost(serverName);
 		verifyNoMoreInteractions(repository);
