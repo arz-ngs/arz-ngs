@@ -1,9 +1,12 @@
-package at.arz.ngs.serviceinstance;
+package at.arz.ngs.serviceinstance.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import org.junit.BeforeClass;
+import javax.persistence.Query;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
@@ -32,10 +35,9 @@ import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
-import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
 
-public class ServiceInstanceRepositoryUnitTest
+public class JPAServiceInstanceRepositoryIT
 		extends AbstractJpaIT {
 
 	@Test
@@ -100,9 +102,9 @@ public class ServiceInstanceRepositoryUnitTest
 																			service1,
 																			host1,
 																			environment1);
-		assertEquals(2, repository.getAllInstances());
+		assertEquals(2, repository.getAllInstances().size());
 		repository.removeServiceInstance(serviceInstance1);
-		assertEquals(1, repository.getAllInstances());
+		assertEquals(1, repository.getAllInstances().size());
 		try {
 			repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1);
 		} catch (ServiceInstanceNotFound e) {
@@ -229,7 +231,7 @@ public class ServiceInstanceRepositoryUnitTest
 
 	// private Status status3;
 
-	@BeforeClass
+	@Before
 	public void setUpBeforeClass() {
 		repository = new JPAServiceInstanceRepository(getEntityManager());
 		serviceRepository = new JPAServiceRepository(getEntityManager());
@@ -275,6 +277,24 @@ public class ServiceInstanceRepositoryUnitTest
 
 		// status3 = Status.is_starting;
 
+
+	}
+
+	/**
+	 * cleanup table entries
+	 */
+	@After
+	public void cleanup() {
+		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
+		d1.executeUpdate();
+		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
+		d2.executeUpdate();
+		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
+		d3.executeUpdate();
+		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
+		d4.executeUpdate();
+		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
+		d5.executeUpdate();
 
 	}
 

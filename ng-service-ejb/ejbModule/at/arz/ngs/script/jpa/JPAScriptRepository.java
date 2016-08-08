@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
@@ -48,7 +49,7 @@ public class JPAScriptRepository
 			getScript.setParameter("scname", scriptName);
 			return getScript.getSingleResult();
 
-		} catch (RuntimeException e) {
+		} catch (NoResultException e) {
 			throw new ScriptNotFound(scriptName);
 		}
 	}

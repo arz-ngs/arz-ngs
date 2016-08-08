@@ -1,8 +1,11 @@
-package at.arz.ngs.host;
+package at.arz.ngs.host.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import javax.persistence.Query;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +16,7 @@ import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.exception.HostNotFound;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 
-public class HostRepositoryUnitTest
+public class JPAHostRepositoryIT
 		extends AbstractJpaIT {
 
 	private HostRepository repository;
@@ -48,6 +51,24 @@ public class HostRepositoryUnitTest
 		} catch (HostNotFound e) {
 			
 		}
+	}
+
+	/**
+	 * cleanup table entries
+	 */
+	@After
+	public void cleanup() {
+		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
+		d1.executeUpdate();
+		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
+		d2.executeUpdate();
+		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
+		d3.executeUpdate();
+		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
+		d4.executeUpdate();
+		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
+		d5.executeUpdate();
+
 	}
 
 	// @Test

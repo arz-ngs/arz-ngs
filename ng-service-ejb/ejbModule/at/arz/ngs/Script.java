@@ -18,6 +18,7 @@ import at.arz.ngs.converter.jpa.PathRestartConverter;
 import at.arz.ngs.converter.jpa.PathStartConverter;
 import at.arz.ngs.converter.jpa.PathStatusConverter;
 import at.arz.ngs.converter.jpa.PathStopConverter;
+import at.arz.ngs.converter.jpa.ScriptNameConverter;
 
 @Entity
 @NamedQueries({	@NamedQuery(name = Script.QUERY_ALL, query = "SELECT sc FROM Script sc"),
@@ -33,6 +34,7 @@ public class Script {
 	private long oid;
 
 	@Column(name = "SCRIPT_NAME", unique = true)
+	@Convert(converter = ScriptNameConverter.class)
 	private ScriptName scriptName;
 
 	@Column(name = "PATH_START")
