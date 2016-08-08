@@ -1,10 +1,13 @@
 package at.arz.ngs.serviceinstance;
 
-import javax.persistence.EntityManager;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import at.arz.ngs.AbstractJpaIT;
 import at.arz.ngs.Environment;
 import at.arz.ngs.Host;
 import at.arz.ngs.Script;
@@ -21,29 +24,89 @@ import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.api.exception.ServiceInstanceNotFoundException;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
 
-public class ServiceInstanceRepositoryUnitTest {
+public class ServiceInstanceRepositoryUnitTest
+		extends AbstractJpaIT {
 
 	@Test
-	public void add() {
+	public void addServiceInstances() {
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
 		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
+		repository.addServiceInstance(host3, service3, environment3, script3, serviceInstanceName3, status3);
+		assertNotNull(repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1));
+		assertNotNull(repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2));
+		assertNotNull(repository.getServiceInstance(serviceInstanceName3, service3, host3, environment3));
+		assertEquals(3, repository.getAllInstances().size());
+		assertEquals(	serviceInstanceName1,
+						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
+									.getServiceInstanceName());
 	}
 
 	@Test
-	public void remove() {
+	public void removeServiceInstances() {
+		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
+		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
+		ServiceInstance serviceInstance1 = new ServiceInstance(	serviceInstanceName1,
+																service1,
+																host1,
+																environment1,
+																script1,
+																status1);
 		repository.removeServiceInstance(serviceInstance1);
+		assertEquals(1, repository.getAllInstances());
+		try {
+			repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1);
+		} catch (ServiceInstanceNotFoundException e) {
+
+		}
 	}
 
 	@Test
-	public void find() {
-		repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2);
+	public void updateServiceInstances() {
+		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
+		ServiceInstance serviceInstance1 = new ServiceInstance(	serviceInstanceName1,
+																service1,
+																host1,
+																environment1,
+																script1,
+																status1);
+		repository.updateServiceInstance(	serviceInstance1,
+											host2,
+											service2,
+											environment2,
+											script2,
+											serviceInstanceName2,
+											status2);
+		ServiceInstance serviceInstance1updated = repository.getServiceInstance(serviceInstanceName2,
+																				service2,
+																				host2,
+																				environment2);
+		assertEquals(serviceInstanceName2, serviceInstance1updated.getServiceInstanceName());
+		assertNotEquals(serviceInstance1.getServiceInstanceName(), serviceInstance1updated.getServiceInstanceName());
+		assertEquals(serviceInstance1.getOid(), serviceInstance1updated.getOid());
+
+		repository.updateServiceInstance(	serviceInstance1updated,
+											host2,
+											service2,
+											environment3,
+											script3,
+											serviceInstanceName3,
+											status2);
+		ServiceInstance serviceInstance1updated2 = repository.getServiceInstance(	serviceInstanceName3,
+																					service2,
+																					host2,
+																					environment3);
+		assertEquals(serviceInstanceName3, serviceInstance1updated2.getServiceInstanceName());
+		assertNotEquals(serviceInstance1updated.getServiceInstanceName(),
+						serviceInstance1updated2.getServiceInstanceName());
+		assertEquals(serviceInstance1.getOid(), serviceInstance1updated2.getOid());
 	}
+
 
 	private ServiceInstanceRepository repository;
-	private EntityManager em;
 
 	private ServiceInstanceName serviceInstanceName1;
 
@@ -65,8 +128,6 @@ public class ServiceInstanceRepositoryUnitTest {
 
 	private Status status1;
 
-	private ServiceInstance serviceInstance1;
-
 	private ServiceInstanceName serviceInstanceName2;
 
 	private ServiceName serviceName2;
@@ -86,8 +147,6 @@ public class ServiceInstanceRepositoryUnitTest {
 	private Script script2;
 
 	private Status status2;
-
-	private ServiceInstance serviceInstance2;
 
 	private ServiceInstanceName serviceInstanceName3;
 
@@ -109,11 +168,9 @@ public class ServiceInstanceRepositoryUnitTest {
 
 	private Status status3;
 
-	private ServiceInstance serviceInstance3;
-
 	@BeforeClass
 	public void setUpBeforeClass() {
-		repository = new JPAServiceInstanceRepository(em);
+		repository = new JPAServiceInstanceRepository(getEntityManager());
 
 		serviceInstanceName1 = new ServiceInstanceName("serviceInstanceName1");
 
@@ -135,7 +192,6 @@ public class ServiceInstanceRepositoryUnitTest {
 
 		status1 = Status.active;
 
-		serviceInstance1 = new ServiceInstance(serviceInstanceName1, service1, host1, environment1, script1, status1);
 
 
 
@@ -159,7 +215,6 @@ public class ServiceInstanceRepositoryUnitTest {
 
 		status2 = Status.not_active;
 
-		serviceInstance2 = new ServiceInstance(serviceInstanceName2, service2, host2, environment2, script2, status2);
 
 
 		serviceInstanceName3 = new ServiceInstanceName("serviceInstanceName2");
@@ -182,7 +237,6 @@ public class ServiceInstanceRepositoryUnitTest {
 
 		status3 = Status.active;
 
-		serviceInstance3 = new ServiceInstance(serviceInstanceName3, service3, host3, environment3, script3, status3);
 
 	}
 
