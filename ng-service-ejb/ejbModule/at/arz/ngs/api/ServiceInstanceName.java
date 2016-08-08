@@ -41,4 +41,9 @@ public class ServiceInstanceName
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

@@ -42,4 +42,9 @@ public abstract class Path
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return path;
+	}
+
 }

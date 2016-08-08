@@ -70,4 +70,10 @@ public class ScriptName
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return name;
+	}
+
 }

@@ -40,4 +40,9 @@ public class HostName
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return hostName;
+	}
 }

@@ -11,7 +11,7 @@ import at.arz.ngs.AbstractJpaIT;
 import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
-import at.arz.ngs.api.exception.HostNotFoundException;
+import at.arz.ngs.api.exception.HostNotFound;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 
 public class HostRepositoryUnitTest
@@ -46,7 +46,7 @@ public class HostRepositoryUnitTest
 		assertEquals(1, repository.getAllHosts().size());
 		try {
 			repository.getHost(hostName2);
-		} catch (HostNotFoundException e) {
+		} catch (HostNotFound e) {
 			
 		}
 	}

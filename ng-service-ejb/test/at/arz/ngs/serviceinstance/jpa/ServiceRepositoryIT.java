@@ -1,4 +1,4 @@
-package at.arz.ngs.service;
+package at.arz.ngs.serviceinstance.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
@@ -12,10 +12,10 @@ import at.arz.ngs.AbstractJpaIT;
 import at.arz.ngs.Service;
 import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.ServiceName;
-import at.arz.ngs.api.exception.ServiceNotFoundException;
+import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 
-public class ServiceRepositoryUnitTest
+public class ServiceRepositoryIT
 		extends AbstractJpaIT {
 
 	private ServiceRepository repository;
@@ -67,7 +67,7 @@ public class ServiceRepositoryUnitTest
 		assertEquals(1, repository.getAllServices().size());
 		try {
 			repository.getService(serviceName1);
-		} catch (ServiceNotFoundException e) {
+		} catch (ServiceNotFound e) {
 
 		}
 	}
