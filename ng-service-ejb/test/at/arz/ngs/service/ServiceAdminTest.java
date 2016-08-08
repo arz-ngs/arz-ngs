@@ -31,7 +31,7 @@ public class ServiceAdminTest {
 		Service service = new Service(oldName);
 		when(repository.getService(oldName)).thenReturn(service);
 		admin.renameService(oldName, newName);
-		assertThat(service.getServiceName(), is(newName));
+		assertThat(service.renameService(), is(newName));
 	}
 
 }

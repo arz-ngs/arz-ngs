@@ -50,7 +50,7 @@ public class JPAServiceRepositoryIT
 		assertNotNull(repository.getService(serviceName2));
 		assertNotNull(repository.getService(serviceName3));
 		assertEquals(3, repository.getAllServices().size());
-		assertEquals(serviceName2, repository.getService(serviceName2).getServiceName());
+		assertEquals(serviceName2, repository.getService(serviceName2).renameService());
 	}
 
 	@Test

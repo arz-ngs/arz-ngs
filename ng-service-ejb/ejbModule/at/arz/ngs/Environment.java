@@ -45,7 +45,7 @@ public class Environment {
 		return environmentName;
 	}
 
-	public void setEnvironmentName(EnvironmentName environmentName) {
+	public void renameEnvironment(EnvironmentName environmentName) {
 		this.environmentName = environmentName;
 	}
 

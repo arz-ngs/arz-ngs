@@ -93,7 +93,7 @@ public class Script {
 		return pathRestart;
 	}
 
-	public void setScriptName(ScriptName scriptName) {
+	public void renameScript(ScriptName scriptName) {
 		this.scriptName = scriptName;
 	}
 

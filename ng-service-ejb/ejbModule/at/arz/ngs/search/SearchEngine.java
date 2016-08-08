@@ -85,7 +85,7 @@ public class SearchEngine {
 	public static List<ServiceInstance> containingService(List<ServiceInstance> toFilter, String serviceNameRegex) {
 		List<ServiceInstance> res = new LinkedList<ServiceInstance>();
 		for (ServiceInstance si : toFilter) {
-			if (si.getService().getServiceName().getName().matches(serviceNameRegex)) {
+			if (si.getService().renameService().getName().matches(serviceNameRegex)) {
 				res.add(si);
 			}
 		}

@@ -36,7 +36,7 @@ public class Host {
 		this.hostName = hostName;
 	}
 
-	public void setHostName(HostName hostName) {
+	public void renameHost(HostName hostName) {
 		this.hostName = hostName;
 	}
 

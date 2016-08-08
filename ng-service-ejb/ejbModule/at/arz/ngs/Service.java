@@ -41,7 +41,7 @@ public class Service {
 		return oid;
 	}
 
-	public ServiceName getServiceName() {
+	public ServiceName renameService() {
 		return serviceName;
 	}
 

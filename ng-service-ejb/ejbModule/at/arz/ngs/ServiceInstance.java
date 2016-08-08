@@ -126,7 +126,7 @@ public class ServiceInstance {
 		return script;
 	}
 
-	public void setServiceInstanceName(ServiceInstanceName serviceInstanceName) {
+	public void renameServiceInstance(ServiceInstanceName serviceInstanceName) {
 		this.serviceInstanceName = serviceInstanceName;
 	}
 
