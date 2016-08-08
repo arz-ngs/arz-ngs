@@ -2,7 +2,10 @@ package at.arz.ngs.api.exception;
 
 import javax.ejb.ApplicationException;
 
+import at.arz.ngs.api.EnvironmentName;
+import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.ServiceInstanceName;
+import at.arz.ngs.api.ServiceName;
 
 @ApplicationException(rollback = true)
 public class ServiceInstanceNotFound
@@ -10,14 +13,51 @@ public class ServiceInstanceNotFound
 
 	private static final long serialVersionUID = 1L;
 
-	private ServiceInstanceName instanceName;
+	private ServiceName serviceName;
+	private EnvironmentName environmentName;
+	private HostName hostName;
+	private ServiceInstanceName serviceInstanceName;
 
-	public ServiceInstanceNotFound(ServiceInstanceName instanceName) {
-		super(instanceName.toString());
-		this.instanceName = instanceName;
+	public ServiceInstanceNotFound(	ServiceInstanceName serviceInstanceName,
+									ServiceName serviceName,
+									HostName hostName,
+									EnvironmentName environmentName) {
+		super(serviceName.toString()+ "/"
+				+ environmentName.toString()
+				+ "/"
+				+ hostName.toString()
+				+ "/"
+				+ serviceInstanceName.toString());
+		this.serviceName = serviceName;
+		this.environmentName = environmentName;
+		this.hostName = hostName;
+		this.serviceInstanceName = serviceInstanceName;
 	}
 
-	public ServiceInstanceName getInstanceName() {
-		return instanceName;
+	public ServiceName getServiceName() {
+		return serviceName;
 	}
+
+	public EnvironmentName getEnvironmentName() {
+		return environmentName;
+	}
+
+	public HostName getHostName() {
+		return hostName;
+	}
+
+	public ServiceInstanceName getServiceInstanceName() {
+		return serviceInstanceName;
+	}
+
+	public String getServiceInstance() {
+		return serviceName.toString()+ "/"
+				+ environmentName.toString()
+				+ "/"
+				+ hostName.toString()
+				+ "/"
+				+ serviceInstanceName.toString();
+	}
+
+
 }
