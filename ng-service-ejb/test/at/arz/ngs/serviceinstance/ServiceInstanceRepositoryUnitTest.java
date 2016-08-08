@@ -9,11 +9,15 @@ import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
 import at.arz.ngs.Environment;
+import at.arz.ngs.EnvironmentRepository;
 import at.arz.ngs.Host;
+import at.arz.ngs.HostRepository;
 import at.arz.ngs.Script;
+import at.arz.ngs.ScriptRepository;
 import at.arz.ngs.Service;
 import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.ServiceInstanceRepository;
+import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.PathRestart;
@@ -25,6 +29,10 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.ServiceInstanceNotFoundException;
+import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
+import at.arz.ngs.host.jpa.JPAHostRepository;
+import at.arz.ngs.script.jpa.JPAScriptRepository;
+import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
 
@@ -33,13 +41,32 @@ public class ServiceInstanceRepositoryUnitTest
 
 	@Test
 	public void addServiceInstances() {
+		hostRepository.addHost(hostName1);
+		serviceRepository.addService(serviceName1);
+		environmentRepository.addEnvironment(environmentName1);
+		scriptRepository.addScript(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
+
+		host1 = hostRepository.getHost(hostName1);
+		service1 = serviceRepository.getService(serviceName1);
+		environment1 = environmentRepository.getEnvironment(environmentName1);
+		script1 = scriptRepository.getScript(scriptName1);
+
+		hostRepository.addHost(hostName2);
+		serviceRepository.addService(serviceName2);
+		environmentRepository.addEnvironment(environmentName2);
+		scriptRepository.addScript(scriptName2, pathStart2, pathStop2, pathRestart2, pathStatus2);
+
+		host2 = hostRepository.getHost(hostName2);
+		service2 = serviceRepository.getService(serviceName2);
+		environment2 = environmentRepository.getEnvironment(environmentName2);
+		script2 = scriptRepository.getScript(scriptName2);
+
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
 		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
-		repository.addServiceInstance(host3, service3, environment3, script3, serviceInstanceName3, status3);
+
 		assertNotNull(repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1));
 		assertNotNull(repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2));
-		assertNotNull(repository.getServiceInstance(serviceInstanceName3, service3, host3, environment3));
-		assertEquals(3, repository.getAllInstances().size());
+		assertEquals(2, repository.getAllInstances().size());
 		assertEquals(	serviceInstanceName1,
 						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
 									.getServiceInstanceName());
@@ -47,14 +74,34 @@ public class ServiceInstanceRepositoryUnitTest
 
 	@Test
 	public void removeServiceInstances() {
+		hostRepository.addHost(hostName1);
+		serviceRepository.addService(serviceName1);
+		environmentRepository.addEnvironment(environmentName1);
+		scriptRepository.addScript(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
+
+		host1 = hostRepository.getHost(hostName1);
+		service1 = serviceRepository.getService(serviceName1);
+		environment1 = environmentRepository.getEnvironment(environmentName1);
+		script1 = scriptRepository.getScript(scriptName1);
+
+		hostRepository.addHost(hostName2);
+		serviceRepository.addService(serviceName2);
+		environmentRepository.addEnvironment(environmentName2);
+		scriptRepository.addScript(scriptName2, pathStart2, pathStop2, pathRestart2, pathStatus2);
+
+		host2 = hostRepository.getHost(hostName2);
+		service2 = serviceRepository.getService(serviceName2);
+		environment2 = environmentRepository.getEnvironment(environmentName2);
+		script2 = scriptRepository.getScript(scriptName2);
+
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
 		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
-		ServiceInstance serviceInstance1 = new ServiceInstance(	serviceInstanceName1,
-																service1,
-																host1,
-																environment1,
-																script1,
-																status1);
+
+		ServiceInstance serviceInstance1 = repository.getServiceInstance(	serviceInstanceName1,
+																			service1,
+																			host1,
+																			environment1);
+		assertEquals(2, repository.getAllInstances());
 		repository.removeServiceInstance(serviceInstance1);
 		assertEquals(1, repository.getAllInstances());
 		try {
@@ -66,13 +113,32 @@ public class ServiceInstanceRepositoryUnitTest
 
 	@Test
 	public void updateServiceInstances() {
+		hostRepository.addHost(hostName1);
+		serviceRepository.addService(serviceName1);
+		environmentRepository.addEnvironment(environmentName1);
+		scriptRepository.addScript(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
+
+		host1 = hostRepository.getHost(hostName1);
+		service1 = serviceRepository.getService(serviceName1);
+		environment1 = environmentRepository.getEnvironment(environmentName1);
+		script1 = scriptRepository.getScript(scriptName1);
+
+		hostRepository.addHost(hostName2);
+		serviceRepository.addService(serviceName2);
+		environmentRepository.addEnvironment(environmentName2);
+		scriptRepository.addScript(scriptName2, pathStart2, pathStop2, pathRestart2, pathStatus2);
+
+		host2 = hostRepository.getHost(hostName2);
+		service2 = serviceRepository.getService(serviceName2);
+		environment2 = environmentRepository.getEnvironment(environmentName2);
+		script2 = scriptRepository.getScript(scriptName2);
+
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
-		ServiceInstance serviceInstance1 = new ServiceInstance(	serviceInstanceName1,
-																service1,
-																host1,
-																environment1,
-																script1,
-																status1);
+
+		ServiceInstance serviceInstance1 = repository.getServiceInstance(	serviceInstanceName1,
+																			service1,
+																			host1,
+																			environment1);
 		repository.updateServiceInstance(	serviceInstance1,
 											host2,
 											service2,
@@ -80,33 +146,47 @@ public class ServiceInstanceRepositoryUnitTest
 											script2,
 											serviceInstanceName2,
 											status2);
+
 		ServiceInstance serviceInstance1updated = repository.getServiceInstance(serviceInstanceName2,
 																				service2,
 																				host2,
 																				environment2);
+
 		assertEquals(serviceInstanceName2, serviceInstance1updated.getServiceInstanceName());
 		assertNotEquals(serviceInstance1.getServiceInstanceName(), serviceInstance1updated.getServiceInstanceName());
 		assertEquals(serviceInstance1.getOid(), serviceInstance1updated.getOid());
+	}
 
-		repository.updateServiceInstance(	serviceInstance1updated,
-											host2,
-											service2,
-											environment3,
-											script3,
-											serviceInstanceName3,
-											status2);
-		ServiceInstance serviceInstance1updated2 = repository.getServiceInstance(	serviceInstanceName3,
-																					service2,
-																					host2,
-																					environment3);
-		assertEquals(serviceInstanceName3, serviceInstance1updated2.getServiceInstanceName());
-		assertNotEquals(serviceInstance1updated.getServiceInstanceName(),
-						serviceInstance1updated2.getServiceInstanceName());
-		assertEquals(serviceInstance1.getOid(), serviceInstance1updated2.getOid());
+	@Test
+	public void updateStatus() {
+		hostRepository.addHost(hostName1);
+		serviceRepository.addService(serviceName1);
+		environmentRepository.addEnvironment(environmentName1);
+		scriptRepository.addScript(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
+
+		host1 = hostRepository.getHost(hostName1);
+		service1 = serviceRepository.getService(serviceName1);
+		environment1 = environmentRepository.getEnvironment(environmentName1);
+		script1 = scriptRepository.getScript(scriptName1);
+
+		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
+
+		ServiceInstance serviceInstance1 = repository.getServiceInstance(	serviceInstanceName1,
+																			service1,
+																			host1,
+																			environment1);
+		Status statusbefore = serviceInstance1.getStatus();
+		repository.updateStatus(serviceInstance1, status3);
+		assertNotEquals(statusbefore,
+						repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1).getStatus());
 	}
 
 
 	private ServiceInstanceRepository repository;
+	private ServiceRepository serviceRepository;
+	private HostRepository hostRepository;
+	private EnvironmentRepository environmentRepository;
+	private ScriptRepository scriptRepository;
 
 	private ServiceInstanceName serviceInstanceName1;
 
@@ -148,37 +228,21 @@ public class ServiceInstanceRepositoryUnitTest
 
 	private Status status2;
 
-	private ServiceInstanceName serviceInstanceName3;
-
-	private ServiceName serviceName3;
-	private Service service3;
-
-	private HostName hostName3;
-	private Host host3;
-
-	private EnvironmentName environmentName3;
-	private Environment environment3;
-
-	private ScriptName scriptName3;
-	private PathStart pathStart3;
-	private PathStop pathStop3;
-	private PathRestart pathRestart3;
-	private PathStatus pathStatus3;
-	private Script script3;
-
 	private Status status3;
 
 	@BeforeClass
 	public void setUpBeforeClass() {
 		repository = new JPAServiceInstanceRepository(getEntityManager());
+		serviceRepository = new JPAServiceRepository(getEntityManager());
+		hostRepository = new JPAHostRepository(getEntityManager());
+		environmentRepository = new JPAEnvironmentRepository(getEntityManager());
+		scriptRepository = new JPAScriptRepository(getEntityManager());
 
 		serviceInstanceName1 = new ServiceInstanceName("serviceInstanceName1");
 
 		serviceName1 = new ServiceName("serviceName1");
-		service1 = new Service(serviceName1);
 
 		hostName1 = new HostName("hostName1");
-		host1 = new Host(hostName1);
 
 		environmentName1 = new EnvironmentName("environmentName1");
 		environment1 = new Environment(environmentName1);
@@ -188,7 +252,6 @@ public class ServiceInstanceRepositoryUnitTest
 		pathStop1 = new PathStop("pathStop1");
 		pathRestart1 = new PathRestart("pathRestart1");
 		pathStatus1 = new PathStatus("pathStatus1");
-		script1 = new Script(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
 
 		status1 = Status.active;
 
@@ -198,44 +261,20 @@ public class ServiceInstanceRepositoryUnitTest
 		serviceInstanceName2 = new ServiceInstanceName("serviceInstanceName2");
 
 		serviceName2 = new ServiceName("serviceName2");
-		service2 = new Service(serviceName2);
 
 		hostName2 = new HostName("hostName2");
-		host2 = new Host(hostName2);
 
 		environmentName2 = new EnvironmentName("environmentName2");
-		environment2 = new Environment(environmentName2);
 
 		scriptName2 = new ScriptName("sricptName2");
 		pathStart2 = new PathStart("pathStart2");
 		pathStop2 = new PathStop("pathStop2");
 		pathRestart2 = new PathRestart("pathRestart2");
 		pathStatus2 = new PathStatus("pathStatus2");
-		script2 = new Script(scriptName2, pathStart2, pathStop2, pathRestart2, pathStatus2);
 
 		status2 = Status.not_active;
 
-
-
-		serviceInstanceName3 = new ServiceInstanceName("serviceInstanceName2");
-
-		serviceName3 = new ServiceName("serviceName2");
-		service3 = new Service(serviceName2);
-
-		hostName3 = new HostName("hostName2");
-		host3 = new Host(hostName2);
-
-		environmentName3 = new EnvironmentName("environmentName2");
-		environment3 = new Environment(environmentName2);
-
-		scriptName3 = new ScriptName("sricptName2");
-		pathStart3 = new PathStart("pathStart2");
-		pathStop3 = new PathStop("pathStop2");
-		pathRestart3 = new PathRestart("pathRestart2");
-		pathStatus3 = new PathStatus("pathStatus2");
-		script3 = new Script(scriptName2, pathStart2, pathStop2, pathRestart2, pathStatus2);
-
-		status3 = Status.active;
+		status3 = Status.is_starting;
 
 
 	}

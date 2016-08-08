@@ -41,7 +41,7 @@ public class HostRepositoryUnitTest
 	public void removeHosts() {
 		repository.addHost(hostName1);
 		repository.addHost(hostName2);
-		Host host2 = new Host(hostName2);
+		Host host2 = repository.getHost(hostName2);
 		repository.removeHost(host2);
 		assertEquals(1, repository.getAllHosts().size());
 		try {
