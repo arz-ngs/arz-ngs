@@ -10,6 +10,7 @@ import at.arz.ngs.HostRepository;
 import at.arz.ngs.Script;
 import at.arz.ngs.ScriptRepository;
 import at.arz.ngs.Service;
+import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.EnvironmentName;
@@ -30,6 +31,7 @@ import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 @Stateless
 public class ServiceInstanceAdmin {
@@ -155,6 +157,78 @@ public class ServiceInstanceAdmin {
 		}
 		serviceInstances.addServiceInstance(host, service, environment, script, serviceInstanceName, Status.not_active);
 	}
+
+	public void updateServiceInstance(	UpdateServiceInstance command,
+										String oldServiceNameString,
+										String oldEnvironmentNameString,
+										String oldHostNameString,
+										String oldServiceInstanceNameString) {
+		ServiceName oldServiceName = new ServiceName(oldServiceNameString);
+		EnvironmentName oldEnvironmentName = new EnvironmentName(oldEnvironmentNameString);
+		HostName oldHostName = new HostName(oldHostNameString);
+		ServiceInstanceName oldServiceInstanceName = new ServiceInstanceName(oldServiceInstanceNameString);
+		
+		String hostNameString = command.getHostName();
+		String serviceNameString = command.getServiceName();
+		String environmentNameString = command.getEnvironmentName();
+		String serviceInstanceNameString = command.getInstanceName();
+		ScriptData scriptData = command.getScript();
+
+		HostName hostName = new HostName(hostNameString);
+		ServiceName serviceName = new ServiceName(serviceNameString);
+		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
+		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
+
+		String scriptNameString = scriptData.getScriptName();
+		String pathStartString = scriptData.getPathStart();
+		String pathStopString = scriptData.getPathStop();
+		String pathRestartString = scriptData.getPathRestart();
+		String pathStatusString = scriptData.getPathStatus();
+
+		Host newHost = getOrCreateNewHost(hostName);
+		Service newService = getOrCreateNewService(serviceName);
+		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		Script newScript = getOrCreateNewScript(scriptNameString,
+												pathStartString,
+												pathStopString,
+												pathRestartString,
+												pathStatusString);
+		updateServiceInstance(	oldServiceName,
+								oldEnvironmentName,
+								oldHostName,
+								oldServiceInstanceName,
+								newHost,
+								newService,
+								newEnvironment,
+								newScript,
+								serviceInstanceName);
+	}
+
+	private void updateServiceInstance(	ServiceName oldServiceName,
+										EnvironmentName oldEnvironmentName,
+										HostName oldHostName,
+										ServiceInstanceName oldServiceInstanceName,
+										Host newHost,
+										Service newService,
+										Environment newEnvironment,
+										Script newScript,
+										ServiceInstanceName serviceInstanceName) {
+		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
+																						// exist
+		Host oldHost = hosts.getHost(oldHostName);
+		Service oldService = services.getService(oldServiceName);
+		ServiceInstance oldServiceInstance = serviceInstances.getServiceInstance(	oldServiceInstanceName,
+																					oldService,
+																					oldHost,
+																					oldEnvironment);
+		oldServiceInstance.setEnvironment(newEnvironment);
+		oldServiceInstance.setHost(newHost);
+		oldServiceInstance.setScript(newScript);
+		oldServiceInstance.setService(newService);
+		oldServiceInstance.setStatus(Status.not_active);
+	}
+
+
 
 
 }
