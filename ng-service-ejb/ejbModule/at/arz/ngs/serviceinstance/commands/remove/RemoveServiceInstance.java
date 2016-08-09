@@ -1,6 +1,22 @@
 package at.arz.ngs.serviceinstance.commands.remove;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement(name = "RemoveServiceInstance")
+@XmlAccessorType(XmlAccessType.FIELD)
 public class RemoveServiceInstance {
-	// for removal we can use the path and http delete. if more information has to be sent, use this class
+
+	@XmlElement(required = true)
+	private long version;
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void setVersion(long version) {
+		this.version = version;
+	}
 }

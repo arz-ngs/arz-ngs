@@ -1,17 +1,13 @@
-package at.arz.ngs.serviceinstance.commands.update;
+package at.arz.ngs.serviceinstance.commands.find;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
-import at.arz.ngs.serviceinstance.commands.ScriptData;
-
-@XmlRootElement(name = "UpdateServiceInstance")
+@XmlRootElement(name = "service-instance")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "environmentName", "hostName", "serviceName", "instanceName" })
-public class UpdateServiceInstance {
+public class ServiceInstanceOverview {
 
 	@XmlElement(required = true)
 	private String environmentName;
@@ -24,15 +20,6 @@ public class UpdateServiceInstance {
 
 	@XmlElement(required = true)
 	private String instanceName;
-
-	@XmlElement(required = false)
-	private ScriptData script;
-
-	/**
-	 * Has to be set to edit a ServiceInstance.
-	 */
-	@XmlElement(required = true)
-	private long version;
 
 	public String getEnvironmentName() {
 		return environmentName;
@@ -64,22 +51,6 @@ public class UpdateServiceInstance {
 
 	public void setInstanceName(String instanceName) {
 		this.instanceName = instanceName;
-	}
-
-	public ScriptData getScript() {
-		return script;
-	}
-
-	public void setScript(ScriptData script) {
-		this.script = script;
-	}
-
-	public long getVersion() {
-		return version;
-	}
-
-	public void setVersion(long version) {
-		this.version = version;
 	}
 
 }

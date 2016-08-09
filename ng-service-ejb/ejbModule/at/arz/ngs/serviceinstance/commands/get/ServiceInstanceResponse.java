@@ -1,4 +1,4 @@
-package at.arz.ngs.serviceinstance.commands.update;
+package at.arz.ngs.serviceinstance.commands.get;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -8,10 +8,10 @@ import javax.xml.bind.annotation.XmlType;
 
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 
-@XmlRootElement(name = "UpdateServiceInstance")
+@XmlRootElement(name = "ServiceInstance")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = { "environmentName", "hostName", "serviceName", "instanceName" })
-public class UpdateServiceInstance {
+public class ServiceInstanceResponse {
 
 	@XmlElement(required = true)
 	private String environmentName;
@@ -28,9 +28,6 @@ public class UpdateServiceInstance {
 	@XmlElement(required = false)
 	private ScriptData script;
 
-	/**
-	 * Has to be set to edit a ServiceInstance.
-	 */
 	@XmlElement(required = true)
 	private long version;
 
