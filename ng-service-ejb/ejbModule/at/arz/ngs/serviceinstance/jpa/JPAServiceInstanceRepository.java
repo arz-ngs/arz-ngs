@@ -69,7 +69,7 @@ public class JPAServiceInstanceRepository
 			return getInstance.getSingleResult();
 		} catch (NoResultException e) {
 			throw new ServiceInstanceNotFound(	serviceInstanceName,
-												service.renameService(),
+												service.getServiceName(),
 												host.getHostName(),
 												environment.getEnvironmentName());
 		}
