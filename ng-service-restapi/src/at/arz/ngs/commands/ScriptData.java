@@ -7,6 +7,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ScriptData {
 
 	@XmlElement(required = false)
+	private String scriptName;
+
+	@XmlElement(required = false)
 	private String pathStart;
 
 	@XmlElement(required = false)
@@ -17,6 +20,14 @@ public class ScriptData {
 
 	@XmlElement(required = false)
 	private String pathStatus;
+
+	public String getScriptName() {
+		return scriptName;
+	}
+
+	public void setScriptName(String scriptName) {
+		this.scriptName = scriptName;
+	}
 
 	public String getPathStart() {
 		return pathStart;
