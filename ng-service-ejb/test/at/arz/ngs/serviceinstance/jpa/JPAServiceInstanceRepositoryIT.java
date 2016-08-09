@@ -66,6 +66,10 @@ public class JPAServiceInstanceRepositoryIT
 		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
 
 		assertNotNull(repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1));
+		// testing default behavior of version numbering
+		assertEquals(	0,
+						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
+									.getVersion());
 		assertNotNull(repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2));
 		assertEquals(2, repository.getAllInstances().size());
 		assertEquals(	serviceInstanceName1,
@@ -182,6 +186,24 @@ public class JPAServiceInstanceRepositoryIT
 	// repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1).getStatus());
 	// }
 
+	@Test
+	public void testVersion() {
+		hostRepository.addHost(hostName1);
+		serviceRepository.addService(serviceName1);
+		environmentRepository.addEnvironment(environmentName1);
+		scriptRepository.addScript(scriptName1, pathStart1, pathStop1, pathRestart1, pathStatus1);
+
+		host1 = hostRepository.getHost(hostName1);
+		service1 = serviceRepository.getService(serviceName1);
+		environment1 = environmentRepository.getEnvironment(environmentName1);
+		script1 = scriptRepository.getScript(scriptName1);
+
+		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
+		ServiceInstance inst = repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1);
+		assertEquals(0, inst.getVersion());
+		inst.incrementVersion();
+		assertEquals(1, inst.getVersion());
+	}
 
 	private ServiceInstanceRepository repository;
 	private ServiceRepository serviceRepository;

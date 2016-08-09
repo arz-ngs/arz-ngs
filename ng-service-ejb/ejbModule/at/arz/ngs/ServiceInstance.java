@@ -80,6 +80,12 @@ public class ServiceInstance {
 	@JoinColumn(name = "SCRIPT")
 	private Script script;
 
+	/**
+	 * version starting by 0
+	 */
+	@Column(name = "VERSION")
+	private long version = 0;
+
 	protected ServiceInstance() {
 		// jpa constructor
 	}
@@ -148,6 +154,14 @@ public class ServiceInstance {
 
 	public void setScript(Script script) {
 		this.script = script;
+	}
+
+	public long getVersion() {
+		return version;
+	}
+
+	public void incrementVersion() {
+		this.version++;
 	}
 
 	@Override
