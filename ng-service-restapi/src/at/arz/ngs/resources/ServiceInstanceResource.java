@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
+import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
@@ -30,7 +31,7 @@ public class ServiceInstanceResource {
 	private ServiceInstanceAdmin instanceAdmin;
 
 	@POST
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
 		try {
 			instanceAdmin.createNewServiceInstance(command);
@@ -64,7 +65,7 @@ public class ServiceInstanceResource {
 	 */
 	@PUT
 	@Path("{service}/{environment}/{host}/{name}")
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response updateServiceInstance(	@PathParam("service") String serviceName,
 											@PathParam("environment") String environmentName,
 											@PathParam("host") String hostName,
@@ -72,7 +73,7 @@ public class ServiceInstanceResource {
 											UpdateServiceInstance command) {
 
 		try {
-			// instanceAdmin.execute(command);
+			instanceAdmin.updateServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 
 			String path = command.getServiceName()+ "/"
 							+ command.getEnvironmentName()
@@ -108,7 +109,7 @@ public class ServiceInstanceResource {
 										RemoveServiceInstance command) {
 
 		try {
-			// instanceAdmin.execute(command
+			///
 
 			URI location = URI.create("/instances/");
 			return Response.ok().status(Status.OK).location(location).build();
@@ -118,6 +119,14 @@ public class ServiceInstanceResource {
 		}
 	}
 
+	/**
+	 * 
+	 * @param serviceName
+	 * @param environmentName
+	 * @param hostName
+	 * @param instanceName
+	 * @return Exact one ServiceInstance which matches all params.
+	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	public ServiceInstanceResponse getServiceInstance(	@PathParam("service") String serviceName,
@@ -134,6 +143,15 @@ public class ServiceInstanceResource {
 		}
 	}
 
+	/**
+	 * The query-params are SQL-regex conform entries.
+	 * 
+	 * @param serviceName
+	 * @param environmentName
+	 * @param hostName
+	 * @param instanceName
+	 * @return All ServiceInstances which match the query-param-regex.
+	 */
 	@GET
 	@Produces({ MediaType.APPLICATION_JSON })
 	public ServiceInstanceOverviewList getServiceInstances(	@QueryParam("serviceName") String serviceName,
@@ -160,6 +178,44 @@ public class ServiceInstanceResource {
 
 		} catch (RuntimeException e) {
 			return null;
+		}
+	}
+
+	/**
+	 * Unique specifying the targeted serviceInstance. Then perform the chosen action on it.
+	 * 
+	 * @param serviceName
+	 * @param environmentName
+	 * @param hostName
+	 * @param instanceName
+	 * @param performAction Action to be performed. Available actions: start, stop, restart
+	 * @return
+	 */
+	@POST
+	@Path("{service}/{environment}/{host}/{name}")
+	@Consumes({ MediaType.APPLICATION_JSON })
+	public Response performStartStopRestart(@PathParam("service") String serviceName,
+											@PathParam("environment") String environmentName,
+											@PathParam("host") String hostName,
+											@PathParam("name") String instanceName,
+											PerformAction performAction) {
+
+		try {
+			if (performAction.equals("start")) {
+				// performStart
+			} else if (performAction.equals("stop")) {
+				// performStop
+			}
+			else if (performAction.equals("restart")) {
+				// performRestart
+			}
+			else {
+				return Response.notModified().status(Status.CONFLICT).build();
+			}
+
+			return Response.ok().status(Status.OK).build();
+		} catch (RuntimeException e) {
+			return Response.notModified().status(Status.CONFLICT).build();
 		}
 	}
 }

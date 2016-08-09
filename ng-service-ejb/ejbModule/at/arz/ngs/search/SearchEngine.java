@@ -1,6 +1,5 @@
 package at.arz.ngs.search;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,24 +10,6 @@ import at.arz.ngs.ServiceInstance;
 @Stateless
 public class SearchEngine {
 
-	/**
-	 * If one parameter is null or an empty String, the value is expected to be a "*"
-	 * 
-	 * @param serviceRegex
-	 * @param serverRegex
-	 * @return
-	 */
-	public List<ServiceInstance> findServices(String serviceRegex, String serverRegex) {
-		return Collections.emptyList();
-	}
-
-	/**
-	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
-	 * 
-	 * @param toFilter
-	 * @param environmentName
-	 * @return
-	 */
 	public static List<ServiceInstance> containingEnvironment(	List<ServiceInstance> toFilter,
 																String environmentNameRegex) {
 		List<ServiceInstance> res = new LinkedList<ServiceInstance>();
@@ -42,10 +23,6 @@ public class SearchEngine {
 
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
-	 * 
-	 * @param toFilter
-	 * @param environmentName
-	 * @return
 	 */
 	public static List<ServiceInstance> containingServiceInstance(	List<ServiceInstance> toFilter,
 																	String serviceInstanceNameRegex) {
@@ -60,10 +37,6 @@ public class SearchEngine {
 
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
-	 * 
-	 * @param toFilter
-	 * @param environmentName
-	 * @return
 	 */
 	public static List<ServiceInstance> containingHost(List<ServiceInstance> toFilter, String hostNameRegex) {
 		List<ServiceInstance> res = new LinkedList<ServiceInstance>();
@@ -77,10 +50,6 @@ public class SearchEngine {
 
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
-	 * 
-	 * @param toFilter
-	 * @param environmentName
-	 * @return
 	 */
 	public static List<ServiceInstance> containingService(List<ServiceInstance> toFilter, String serviceNameRegex) {
 		List<ServiceInstance> res = new LinkedList<ServiceInstance>();

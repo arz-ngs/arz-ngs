@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import at.arz.ngs.api.Status;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 
 @XmlRootElement(name = "ServiceInstance")
@@ -27,6 +28,9 @@ public class ServiceInstanceResponse {
 
 	@XmlElement(required = false)
 	private ScriptData script;
+
+	@XmlElement(required = true)
+	private Status status;
 
 	@XmlElement(required = true)
 	private long version;
@@ -79,4 +83,11 @@ public class ServiceInstanceResponse {
 		this.version = version;
 	}
 
+	public Status getStatus() {
+		return status;
+	}
+
+	public void setStatus(Status status) {
+		this.status = status;
+	}
 }
