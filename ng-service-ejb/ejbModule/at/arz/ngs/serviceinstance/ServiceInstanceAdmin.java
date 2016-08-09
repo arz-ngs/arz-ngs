@@ -82,7 +82,7 @@ public class ServiceInstanceAdmin {
 												pathStopString,
 												pathRestartString,
 												pathStatusString);
-			createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript);
+		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript);
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) {
@@ -140,13 +140,14 @@ public class ServiceInstanceAdmin {
 			scripts.addScript(scriptName, pathStart, pathStop, pathRestart, pathStatus);
 			return scripts.getScript(scriptName);
 		}
-		
+
 	}
 
 	private void createNewServiceInstance(	ServiceInstanceName serviceInstanceName,
 											Service service,
-											Host
-	host, Environment environment, Script script) {
+											Host host,
+											Environment environment,
+											Script script) {
 		if (serviceInstanceName == null || serviceInstanceName.toString().equals("")) {
 			throw new EmptyField("ServiceInstanceName");
 		}
@@ -170,7 +171,7 @@ public class ServiceInstanceAdmin {
 		EnvironmentName oldEnvironmentName = new EnvironmentName(oldEnvironmentNameString);
 		HostName oldHostName = new HostName(oldHostNameString);
 		ServiceInstanceName oldServiceInstanceName = new ServiceInstanceName(oldServiceInstanceNameString);
-		
+
 		String hostNameString = command.getHostName();
 		String serviceNameString = command.getServiceName();
 		String environmentNameString = command.getEnvironmentName();
@@ -217,9 +218,10 @@ public class ServiceInstanceAdmin {
 										Service newService,
 										Environment newEnvironment,
 										Script newScript,
-										ServiceInstanceName serviceInstanceName, long version) {
+										ServiceInstanceName serviceInstanceName,
+										long version) {
 		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
-																						// exist
+		// exist
 		Host oldHost = hosts.getHost(oldHostName);
 		Service oldService = services.getService(oldServiceName);
 		ServiceInstance oldServiceInstance = serviceInstances.getServiceInstance(	oldServiceInstanceName,
@@ -268,7 +270,17 @@ public class ServiceInstanceAdmin {
 																				host,
 																				environment);
 		if (serviceInstance != null) {
-		serviceInstances.removeServiceInstance(serviceInstance);
+			if (serviceInstance.getVersion() == version) {
+				serviceInstances.removeServiceInstance(serviceInstance);
+			} else {
+				String error = serviceName+ "/"
+								+ environmentName
+								+ "/"
+								+ hostName
+								+ "/"
+								+ serviceInstanceName;
+				throw new AlreadyModified(error);
+			}
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
@@ -298,7 +310,7 @@ public class ServiceInstanceAdmin {
 			response.setServiceName(serviceInstance.getService().getServiceName().toString());
 			response.setHostName(serviceInstance.getHost().getHostName().toString());
 			response.setInstanceName(serviceInstance.getServiceInstanceName().toString());
-			
+
 			Script script = serviceInstance.getScript();
 			String scriptName = script.getScriptName().toString();
 			String pathStart = script.getPathStart().toString();
@@ -312,7 +324,7 @@ public class ServiceInstanceAdmin {
 			scriptData.setPathRestart(pathRestart);
 			scriptData.setPathStatus(pathStatus);
 			response.setScript(scriptData);
-			// response.setVersion(serviceInstance.getVersion());
+			response.setVersion(serviceInstance.getVersion());
 			return response;
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
