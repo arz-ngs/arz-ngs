@@ -23,6 +23,7 @@ import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.api.exception.AlreadyModified;
 import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.EnvironmentNotFound;
 import at.arz.ngs.api.exception.HostNotFound;
@@ -73,16 +74,15 @@ public class ServiceInstanceAdmin {
 		String pathStatusString = scriptData.getPathStatus();
 
 
-			Host newHost = getOrCreateNewHost(hostName);
-			Service newService = getOrCreateNewService(serviceName);
-			Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
-			Script newScript = getOrCreateNewScript(scriptNameString,
-													pathStartString,
-													pathStopString,
-													pathRestartString,
-													pathStatusString);
+		Host newHost = getOrCreateNewHost(hostName);
+		Service newService = getOrCreateNewService(serviceName);
+		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		Script newScript = getOrCreateNewScript(scriptNameString,
+												pathStartString,
+												pathStopString,
+												pathRestartString,
+												pathStatusString);
 			createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript);
-
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) {
@@ -176,6 +176,7 @@ public class ServiceInstanceAdmin {
 		String environmentNameString = command.getEnvironmentName();
 		String serviceInstanceNameString = command.getInstanceName();
 		ScriptData scriptData = command.getScript();
+		long version = command.getVersion();
 
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
@@ -204,7 +205,8 @@ public class ServiceInstanceAdmin {
 								newService,
 								newEnvironment,
 								newScript,
-								serviceInstanceName);
+								serviceInstanceName,
+								version);
 	}
 
 	private void updateServiceInstance(	ServiceName oldServiceName,
@@ -215,7 +217,7 @@ public class ServiceInstanceAdmin {
 										Service newService,
 										Environment newEnvironment,
 										Script newScript,
-										ServiceInstanceName serviceInstanceName) {
+										ServiceInstanceName serviceInstanceName, long version) {
 		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
 																						// exist
 		Host oldHost = hosts.getHost(oldHostName);
@@ -225,11 +227,22 @@ public class ServiceInstanceAdmin {
 																					oldHost,
 																					oldEnvironment);
 		if (oldServiceInstance != null) {
-		oldServiceInstance.setEnvironment(newEnvironment);
-		oldServiceInstance.setHost(newHost);
-		oldServiceInstance.setScript(newScript);
-		oldServiceInstance.setService(newService);
-		oldServiceInstance.setStatus(Status.not_active);
+			if (version == oldServiceInstance.getVersion()) {
+				oldServiceInstance.setEnvironment(newEnvironment);
+				oldServiceInstance.setHost(newHost);
+				oldServiceInstance.setScript(newScript);
+				oldServiceInstance.setService(newService);
+				oldServiceInstance.setStatus(Status.not_active);
+			} else {
+				String error = oldServiceName+ "/"
+								+ oldEnvironmentName
+								+ "/"
+								+ oldHostName
+								+ "/"
+								+ oldServiceInstanceName;
+				throw new AlreadyModified(error);
+			}
+
 		} else {
 			throw new ServiceInstanceNotFound(oldServiceInstanceName, oldServiceName, oldHostName, oldEnvironmentName);
 		}

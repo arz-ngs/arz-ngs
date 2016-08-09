@@ -7,6 +7,12 @@ import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 
+/**
+ * This exception will be thrown, if an expected ServiceInstance wasn't found in the database.
+ * 
+ * @author rpci334
+ *
+ */
 @ApplicationException(rollback = true)
 public class ServiceInstanceNotFound
 		extends RuntimeException {

@@ -4,6 +4,12 @@ import javax.ejb.ApplicationException;
 
 import at.arz.ngs.api.HostName;
 
+/**
+ * This exception will be thrown, if an expected Host wasn't found in the database.
+ * 
+ * @author rpci334
+ *
+ */
 @ApplicationException(rollback = true)
 public class HostNotFound
 		extends RuntimeException {

@@ -4,6 +4,13 @@ import javax.ejb.ApplicationException;
 
 import at.arz.ngs.api.EnvironmentName;
 
+/**
+ * This exception will be thrown, if an expected Environment wasn't found in the database.
+ * 
+ * @author rpci334
+ *
+ */
+
 @ApplicationException(rollback = true)
 public class EnvironmentNotFound
 		extends RuntimeException {

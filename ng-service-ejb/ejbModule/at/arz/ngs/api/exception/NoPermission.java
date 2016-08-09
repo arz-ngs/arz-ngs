@@ -2,6 +2,12 @@ package at.arz.ngs.api.exception;
 
 import javax.ejb.ApplicationException;
 
+/**
+ * This exception will be thrown, if the user has no permission to do this action.
+ * 
+ * @author rpci334
+ *
+ */
 @ApplicationException(rollback = true)
 public class NoPermission
 		extends RuntimeException {
