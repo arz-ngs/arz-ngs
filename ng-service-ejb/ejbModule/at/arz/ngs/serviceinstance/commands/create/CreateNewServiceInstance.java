@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-import at.arz.ngs.commands.ScriptData;
+import at.arz.ngs.serviceinstance.commands.ScriptData;
 
 @XmlRootElement(name = "CreateNewServiceInstance")
 @XmlAccessorType(XmlAccessType.FIELD)
