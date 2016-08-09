@@ -5,7 +5,7 @@ import java.net.URI;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.PUT;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -17,8 +17,8 @@ import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
-import at.arz.ngs.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
+import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 
 @Path("/instances")
 public class ServiceInstanceResource {
@@ -26,7 +26,7 @@ public class ServiceInstanceResource {
 	@Inject
 	private ServiceInstanceAdmin instanceAdmin;
 
-	@PUT
+	@POST
 	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response execute(CreateNewServiceInstance command) {
 		// ok, aber muss dann als ergebnis die location liefern

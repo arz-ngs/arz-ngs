@@ -1,4 +1,4 @@
-package at.arz.ngs.commands.remove;
+package at.arz.ngs.serviceinstance.commands.remove;
 
 
 public class RemoveServiceInstance {

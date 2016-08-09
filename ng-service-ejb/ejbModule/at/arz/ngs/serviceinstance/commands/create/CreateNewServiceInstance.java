@@ -1,4 +1,4 @@
-package at.arz.ngs.commands.create;
+package at.arz.ngs.serviceinstance.commands.create;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
