@@ -28,9 +28,12 @@ import at.arz.ngs.api.exception.EnvironmentNotFound;
 import at.arz.ngs.api.exception.HostNotFound;
 import at.arz.ngs.api.exception.ScriptNotFound;
 import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
+import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
+import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 @Stateless
@@ -221,14 +224,87 @@ public class ServiceInstanceAdmin {
 																					oldService,
 																					oldHost,
 																					oldEnvironment);
+		if (oldServiceInstance != null) {
 		oldServiceInstance.setEnvironment(newEnvironment);
 		oldServiceInstance.setHost(newHost);
 		oldServiceInstance.setScript(newScript);
 		oldServiceInstance.setService(newService);
 		oldServiceInstance.setStatus(Status.not_active);
+		} else {
+			throw new ServiceInstanceNotFound(oldServiceInstanceName, oldServiceName, oldHostName, oldEnvironmentName);
+		}
 	}
 
+	public void removeNewServiceInstance(	RemoveServiceInstance command,
+											String serviceNameString,
+											String environmentNameString,
+											String hostNameString,
+											String serviceInstanceNameString) {
+		long version = command.getVersion();
 
+		HostName hostName = new HostName(hostNameString);
+		ServiceName serviceName = new ServiceName(serviceNameString);
+		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
+		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
+
+		Service service = services.getService(serviceName);
+		Host host = hosts.getHost(hostName);
+		Environment environment = environments.getEnvironment(environmentName);
+		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
+																				service,
+																				host,
+																				environment);
+		if (serviceInstance != null) {
+		serviceInstances.removeServiceInstance(serviceInstance);
+		} else {
+			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
+		}
+	}
+
+	public ServiceInstanceResponse getServiceInstance(CreateNewServiceInstance command) {
+		String hostNameString = command.getHostName();
+		String serviceNameString = command.getServiceName();
+		String environmentNameString = command.getEnvironmentName();
+		String serviceInstanceNameString = command.getInstanceName();
+
+		HostName hostName = new HostName(hostNameString);
+		ServiceName serviceName = new ServiceName(serviceNameString);
+		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
+		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
+
+		Service service = services.getService(serviceName);
+		Host host = hosts.getHost(hostName);
+		Environment environment = environments.getEnvironment(environmentName);
+		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
+																				service,
+																				host,
+																				environment);
+		if (serviceInstance != null) {
+			ServiceInstanceResponse response = new ServiceInstanceResponse();
+			response.setEnvironmentName(serviceInstance.getEnvironment().getEnvironmentName().toString());
+			response.setServiceName(serviceInstance.getService().getServiceName().toString());
+			response.setHostName(serviceInstance.getHost().getHostName().toString());
+			response.setInstanceName(serviceInstance.getServiceInstanceName().toString());
+			
+			Script script = serviceInstance.getScript();
+			String scriptName = script.getScriptName().toString();
+			String pathStart = script.getPathStart().toString();
+			String pathStop = script.getPathStop().toString();
+			String pathRestart = script.getPathRestart().toString();
+			String pathStatus = script.getPathStatus().toString();
+			ScriptData scriptData = new ScriptData();
+			scriptData.setScriptName(scriptName);
+			scriptData.setPathStart(pathStart);
+			scriptData.setPathStop(pathStop);
+			scriptData.setPathRestart(pathRestart);
+			scriptData.setPathStatus(pathStatus);
+			response.setScript(scriptData);
+			// response.setVersion(serviceInstance.getVersion());
+			return response;
+		} else {
+			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
+		}
+	}
 
 
 }
