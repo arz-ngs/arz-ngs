@@ -2,6 +2,7 @@ package at.arz.ngs.service.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import javax.persistence.Query;
 
@@ -63,6 +64,7 @@ public class JPAServiceRepositoryIT
 		assertEquals(1, repository.getAllServices().size());
 		try {
 			repository.getService(serviceName1);
+			fail();
 		} catch (ServiceNotFound e) {
 
 		}

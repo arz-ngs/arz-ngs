@@ -2,6 +2,7 @@ package at.arz.ngs.serviceinstance.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import javax.persistence.Query;
 
@@ -111,6 +112,7 @@ public class JPAServiceInstanceRepositoryIT
 		assertEquals(1, repository.getAllInstances().size());
 		try {
 			repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1);
+			fail();
 		} catch (ServiceInstanceNotFound e) {
 
 		}

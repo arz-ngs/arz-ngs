@@ -2,6 +2,7 @@ package at.arz.ngs.host.jpa;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import javax.persistence.Query;
 
@@ -14,7 +15,6 @@ import at.arz.ngs.Host;
 import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.exception.HostNotFound;
-import at.arz.ngs.host.jpa.JPAHostRepository;
 
 public class JPAHostRepositoryIT
 		extends AbstractJpaIT {
@@ -48,6 +48,7 @@ public class JPAHostRepositoryIT
 		assertEquals(1, repository.getAllHosts().size());
 		try {
 			repository.getHost(hostName2);
+			fail();
 		} catch (HostNotFound e) {
 			
 		}

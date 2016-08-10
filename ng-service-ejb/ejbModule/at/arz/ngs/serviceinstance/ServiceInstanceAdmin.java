@@ -120,6 +120,9 @@ public class ServiceInstanceAdmin {
 		Host newHost = getOrCreateNewHost(hostName);
 		Service newService = getOrCreateNewService(serviceName);
 		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		if (scriptNameString == null || scriptNameString.equals("")) {
+			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
+		}
 		Script newScript = getOrCreateNewScript(scriptNameString,
 												pathStartString,
 												pathStopString,
@@ -129,7 +132,7 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) {
-		if (hostName == null || hostName.toString().equals("")) {
+		if (hostName == null || hostName.getName() == null || hostName.getName().equals("")) {
 			throw new EmptyField("HostName");
 		}
 		try {
@@ -141,7 +144,7 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Service getOrCreateNewService(ServiceName serviceName) {
-		if (serviceName == null || serviceName.toString().equals("")) {
+		if (serviceName == null || serviceName.getName() == null || serviceName.getName().equals("")) {
 			throw new EmptyField("ServiceName");
 		}
 		try {
@@ -153,7 +156,7 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Environment getOrCreateNewEnvironment(EnvironmentName environmentName) {
-		if (environmentName == null || environmentName.toString().equals("")) {
+		if (environmentName == null || environmentName.getName() == null || environmentName.getName().equals("")) {
 			throw new EmptyField("EnvironmentName");
 		}
 		try {
@@ -191,19 +194,25 @@ public class ServiceInstanceAdmin {
 											Host host,
 											Environment environment,
 											Script script) {
-		if (serviceInstanceName == null || serviceInstanceName.toString().equals("")) {
+		if (serviceInstanceName == null|| serviceInstanceName.getName() == null
+			|| serviceInstanceName.getName().equals("")) {
 			throw new EmptyField("ServiceInstanceName");
 		}
-		if (serviceInstances.getServiceInstance(serviceInstanceName, service, host, environment) != null) {
+
+		try {
+			serviceInstances.getServiceInstance(serviceInstanceName, service, host, environment);
 			throw new ServiceInstanceAlreadyExist(service.getServiceName().toString()+ "/"
 													+ host.getHostName().toString()
 													+ "/"
 													+ environment.getEnvironmentName().toString()
 													+ "/"
 													+ serviceInstanceName);
+		} catch (ServiceInstanceNotFound e) {
+			// wanted
 		}
 		serviceInstances.addServiceInstance(host, service, environment, script, serviceInstanceName, Status.not_active);
 	}
+
 
 	public void updateServiceInstance(	UpdateServiceInstance command,
 										String oldServiceNameString,
@@ -236,6 +245,9 @@ public class ServiceInstanceAdmin {
 		Host newHost = getOrCreateNewHost(hostName);
 		Service newService = getOrCreateNewService(serviceName);
 		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		if (scriptNameString == null || scriptNameString.equals("")) {
+			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
+		}
 		Script newScript = getOrCreateNewScript(scriptNameString,
 												pathStartString,
 												pathStopString,
@@ -277,8 +289,9 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.setHost(newHost);
 				oldServiceInstance.setScript(newScript);
 				oldServiceInstance.setService(newService);
+				oldServiceInstance.renameServiceInstance(serviceInstanceName);
 				oldServiceInstance.incrementVersion();
-				oldServiceInstance.setStatus(Status.not_active);
+				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
 			} else {
 				throw new AlreadyModified(oldServiceInstance.toString());
 			}

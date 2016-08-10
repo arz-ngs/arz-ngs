@@ -25,7 +25,7 @@ public class UpdateServiceInstance {
 	@XmlElement(required = true)
 	private String instanceName;
 
-	@XmlElement(required = false)
+	@XmlElement(required = true)
 	private ScriptData script;
 
 	/**
