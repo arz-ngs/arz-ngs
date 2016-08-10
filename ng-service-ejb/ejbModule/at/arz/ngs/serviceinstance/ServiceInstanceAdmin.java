@@ -1,5 +1,7 @@
 package at.arz.ngs.serviceinstance;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -33,9 +35,11 @@ import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.api.exception.WrongParam;
+import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
@@ -63,6 +67,34 @@ public class ServiceInstanceAdmin {
 
 	@Inject
 	private ScriptRepository scripts;
+
+	@Inject
+	private SearchEngine engine;
+
+	/**
+	 * Only for JUnit Tests
+	 * 
+	 * @param services
+	 * @param hosts
+	 * @param environments
+	 * @param serviceInstances
+	 * @param scripts
+	 * @param engine
+	 */
+	public ServiceInstanceAdmin(ServiceRepository services,
+								HostRepository hosts,
+								EnvironmentRepository environments,
+								ServiceInstanceRepository serviceInstances,
+								ScriptRepository scripts,
+								SearchEngine engine) {
+		super();
+		this.services = services;
+		this.hosts = hosts;
+		this.environments = environments;
+		this.serviceInstances = serviceInstances;
+		this.scripts = scripts;
+		this.engine = engine;
+	}
 
 	public void createNewServiceInstance(CreateNewServiceInstance command) {
 		String hostNameString = command.getHostName();
@@ -255,10 +287,10 @@ public class ServiceInstanceAdmin {
 	}
 
 	public void removeServiceInstance(	RemoveServiceInstance command,
-											String serviceNameString,
-											String environmentNameString,
-											String hostNameString,
-											String serviceInstanceNameString) {
+										String serviceNameString,
+										String environmentNameString,
+										String hostNameString,
+										String serviceInstanceNameString) {
 		long version = command.getVersion();
 
 		HostName hostName = new HostName(hostNameString);
@@ -328,6 +360,20 @@ public class ServiceInstanceAdmin {
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
+															String environmentNameString,
+															String hostNameString,
+															String serviceInstanceNameString) {
+		List<ServiceInstance> serviceInstances =
+												engine.findServiceInstances(serviceNameString,
+																			environmentNameString,
+																			hostNameString,
+																			serviceInstanceNameString);
+		ServiceInstanceOverviewList list = new ServiceInstanceOverviewList();
+		// list.setServiceInstances(serviceInstances);
+		return list;
 	}
 
 	public void performAction(	PerformAction perform,
