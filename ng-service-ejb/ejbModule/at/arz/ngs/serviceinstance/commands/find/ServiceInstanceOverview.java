@@ -21,6 +21,9 @@ public class ServiceInstanceOverview {
 	@XmlElement(required = true)
 	private String instanceName;
 
+	@XmlElement(required = true)
+	private String status;
+
 	public String getEnvironmentName() {
 		return environmentName;
 	}
@@ -53,4 +56,11 @@ public class ServiceInstanceOverview {
 		this.instanceName = instanceName;
 	}
 
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
 }
