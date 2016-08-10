@@ -10,6 +10,7 @@ import javax.persistence.EntityManager;
 
 import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.search.jpa.JPASearchEngine;
+import at.arz.ngs.search.jpa.PaginationCondition;
 
 @Stateless
 public class SearchEngine {
@@ -36,11 +37,95 @@ public class SearchEngine {
 		return searchEngine.findServiceInstances(serviceNameRegex, envNameRegex, hostNameRegex, instanceNameRegex);
 	}
 
+	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,
+														String envNameRegex,
+														String hostNameRegex,
+														String instanceNameRegex,
+														OrderCondition condition) {
+		
+		return searchEngine.findServiceInstances(	serviceNameRegex,
+													envNameRegex,
+													hostNameRegex,
+													instanceNameRegex,
+													getOrderByField(condition),
+													getOrder(condition)); 
+	}
+	
+	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,
+														String envNameRegex,
+														String hostNameRegex,
+														String instanceNameRegex,
+														OrderCondition orderCondition,
+														PaginationCondition paginationCondition) {
+		
+		return searchEngine.findServiceInstances(	serviceNameRegex,
+													envNameRegex,
+													hostNameRegex,
+													instanceNameRegex,
+													getOrderByField(orderCondition),
+													getOrder(orderCondition),
+													getElementsPerPage(paginationCondition),
+													getFirstElement(paginationCondition));
+	}
+	
+	private int getElementsPerPage(PaginationCondition condition) {
+		if (condition.getElementsPerPage() < 1) {
+			condition.setElementsPerPage(50); // default show 50
+		}
+		return condition.getElementsPerPage();
+	}
+
+	private int getFirstElement(PaginationCondition condition) {
+		if (condition.getCurrentPage() < 1) {
+			condition.setCurrentPage(1); // default page 1
+		}
+		int currentFirstElement = (condition.getCurrentPage() - 1) * condition.getElementsPerPage();
+		return currentFirstElement;
+	}
+
+	private String getOrderByField(OrderCondition condition) {
+		if (condition == null) {
+			condition = new OrderCondition();
+		}
+		if (condition.getOrderByField() == null) {
+			condition.setOrderByField(OrderCondition.ORDERBY_SERVICEINSTANCE);
+		}
+		switch (condition.getOrderByField()) {
+			case OrderCondition.ORDERBY_SERVICE:
+				return "service.serviceName";
+			case OrderCondition.ORDERBY_ENVIRONMENT:
+				return "environment.environmentName";
+			case OrderCondition.ORDERBY_HOST:
+				return "host.hostName";
+			case OrderCondition.ORDERBY_SERVICEINSTANCE:
+				return "serviceInstanceName";
+			default:
+				return "serviceInstanceName";
+		}
+	}
+
+	private String getOrder(OrderCondition condition) {
+		if (condition == null) {
+			condition = new OrderCondition();
+		}
+		if (condition.getOrder() == null) {
+			condition.setOrder(OrderCondition.ASCENDING);
+		}
+		switch (condition.getOrder()) {
+			case OrderCondition.ASCENDING:
+				return "ASC";
+			case OrderCondition.DESCENDING:
+				return "DESC";
+			default:
+				return "ASC";
+		}
+	}
+
 	public List<ServiceInstance> orderByHostNameTest() {
 		return searchEngine.orderByHostNameTest();
 	}
 
-	private static List<ServiceInstance> containingEnvironment(	List<ServiceInstance> toFilter,
+	public static List<ServiceInstance> containingEnvironment(	List<ServiceInstance> toFilter,
 																String environmentNameRegex) {
 		if (environmentNameRegex.equals("*")) {
 			return toFilter;
@@ -61,7 +146,7 @@ public class SearchEngine {
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
 	 */
-	private static List<ServiceInstance> containingServiceInstance(	List<ServiceInstance> toFilter,
+	public static List<ServiceInstance> containingServiceInstance(	List<ServiceInstance> toFilter,
 																	String serviceInstanceNameRegex) {
 		if (serviceInstanceNameRegex.equals("*")) {
 			return toFilter;
@@ -82,7 +167,7 @@ public class SearchEngine {
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
 	 */
-	private static List<ServiceInstance> containingHost(List<ServiceInstance> toFilter, String hostNameRegex) {
+	public static List<ServiceInstance> containingHost(List<ServiceInstance> toFilter, String hostNameRegex) {
 		if (hostNameRegex.equals("*")) {
 			return toFilter;
 		}
@@ -102,7 +187,7 @@ public class SearchEngine {
 	/**
 	 * Filters a List. Return a List only with Elements which regex matches the targeted entry.
 	 */
-	private static List<ServiceInstance> containingService(List<ServiceInstance> toFilter, String serviceNameRegex) {
+	public static List<ServiceInstance> containingService(List<ServiceInstance> toFilter, String serviceNameRegex) {
 		if (serviceNameRegex.equals("*")) {
 			return toFilter;
 		}

@@ -53,6 +53,65 @@ public class JPASearchEngine {
 		return getInstances.getResultList();
 	}
 
+	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,
+														String envNameRegex,
+														String hostNameRegex,
+														String instanceNameRegex,
+														String orderByField,
+														String order) {
+
+		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
+						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex "
+						+ "ORDER BY SI."
+						+ orderByField
+						+ " "
+						+ order;
+
+		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
+
+		getInstances.setParameter("serviceNameRegex", serviceNameRegex.replace('*', '%'));
+		getInstances.setParameter("envNameRegex", envNameRegex.replace('*', '%'));
+		getInstances.setParameter("hostNameRegex", hostNameRegex.replace('*', '%'));
+		getInstances.setParameter("instanceNameRegex", instanceNameRegex.replace('*', '%'));
+
+		return getInstances.getResultList();
+	}
+
+	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,
+														String envNameRegex,
+														String hostNameRegex,
+														String instanceNameRegex,
+														String orderByField,
+														String order,
+														int elementsPerPage,
+														int startByElement) {
+
+		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
+						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex "
+						+ "ORDER BY SI."
+						+ orderByField
+						+ " "
+						+ order;
+
+		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
+
+		getInstances.setParameter("serviceNameRegex", serviceNameRegex.replace('*', '%'));
+		getInstances.setParameter("envNameRegex", envNameRegex.replace('*', '%'));
+		getInstances.setParameter("hostNameRegex", hostNameRegex.replace('*', '%'));
+		getInstances.setParameter("instanceNameRegex", instanceNameRegex.replace('*', '%'));
+
+		getInstances.setMaxResults(elementsPerPage);
+		getInstances.setFirstResult(startByElement);
+
+		return getInstances.getResultList();
+	}
+
 	public List<ServiceInstance> orderByHostNameTest() {
 		String query = "SELECT si FROM ServiceInstance si ORDER BY si.host.hostName ASC";
 
