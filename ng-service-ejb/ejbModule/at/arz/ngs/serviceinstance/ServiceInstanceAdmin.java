@@ -234,6 +234,7 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.setHost(newHost);
 				oldServiceInstance.setScript(newScript);
 				oldServiceInstance.setService(newService);
+				oldServiceInstance.incrementVersion();
 				oldServiceInstance.setStatus(Status.not_active);
 			} else {
 				String error = oldServiceName+ "/"
