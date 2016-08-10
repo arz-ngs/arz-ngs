@@ -254,7 +254,7 @@ public class ServiceInstanceAdmin {
 		}
 	}
 
-	public void removeNewServiceInstance(	RemoveServiceInstance command,
+	public void removeServiceInstance(	RemoveServiceInstance command,
 											String serviceNameString,
 											String environmentNameString,
 											String hostNameString,
