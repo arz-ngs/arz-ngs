@@ -34,24 +34,17 @@ public class ServiceInstanceResource {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
-		try {
-			instanceAdmin.createNewServiceInstance(command);
+		instanceAdmin.createNewServiceInstance(command);
 
-			String path = command.getServiceName()+ "/"
-							+ command.getEnvironmentName()
-							+ "/"
-							+ command.getHostName()
-							+ "/"
-							+ command.getInstanceName();
+		String path = command.getServiceName()+ "/"
+						+ command.getEnvironmentName()
+						+ "/"
+						+ command.getHostName()
+						+ "/"
+						+ command.getInstanceName();
 
-			URI location = URI.create("/instances/" + path);
-			return Response.ok().status(Status.CREATED).location(location).build();
-		} catch (RuntimeException e) { // TODO later on if more than one exception can be thrown, more Status can be
-										// sent
-			URI location = URI.create("/instances/");
-			return Response.notModified().status(Status.CONFLICT).location(location).build();
-		}
-
+		URI location = URI.create("/instances/" + path);
+		return Response.ok().status(Status.CREATED).location(location).build();
 	}
 
 	/**
@@ -72,23 +65,17 @@ public class ServiceInstanceResource {
 											@PathParam("host") String hostName,
 											@PathParam("name") String instanceName,
 											UpdateServiceInstance command) {
+		instanceAdmin.updateServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 
-		try {
-			instanceAdmin.updateServiceInstance(command, serviceName, environmentName, hostName, instanceName);
+		String path = command.getServiceName()+ "/"
+						+ command.getEnvironmentName()
+						+ "/"
+						+ command.getHostName()
+						+ "/"
+						+ command.getInstanceName();
 
-			String path = command.getServiceName()+ "/"
-							+ command.getEnvironmentName()
-							+ "/"
-							+ command.getHostName()
-							+ "/"
-							+ command.getInstanceName();
-
-			URI location = URI.create("/instances/" + path);
-			return Response.ok().status(Status.OK).location(location).build();
-		} catch (RuntimeException e) {
-			URI location = URI.create("/instances/");
-			return Response.notModified().status(Status.CONFLICT).location(location).build();
-		}
+		URI location = URI.create("/instances/" + path);
+		return Response.ok().status(Status.OK).location(location).build();
 	}
 
 	/**
@@ -103,21 +90,13 @@ public class ServiceInstanceResource {
 	@DELETE
 	@Path("{service}/{environment}/{host}/{name}")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response deleteServiceInstance(	@PathParam("service") String serviceName,
-											@PathParam("environment") String environmentName,
-											@PathParam("host") String hostName,
-											@PathParam("name") String instanceName,
-											RemoveServiceInstance command) {
+	public void deleteServiceInstance(	@PathParam("service") String serviceName,
+										@PathParam("environment") String environmentName,
+										@PathParam("host") String hostName,
+										@PathParam("name") String instanceName,
+										RemoveServiceInstance command) {
 
-		try {
-			instanceAdmin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
-
-			URI location = URI.create("/instances/");
-			return Response.ok().status(Status.OK).build();
-		} catch (RuntimeException e) {
-			URI location = URI.create("/instances/");
-			return Response.notModified().status(Status.CONFLICT).location(location).build();
-		}
+		instanceAdmin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**
@@ -134,12 +113,7 @@ public class ServiceInstanceResource {
 														@PathParam("environment") String environmentName,
 														@PathParam("host") String hostName,
 														@PathParam("name") String instanceName) {
-
-		try {
-			return instanceAdmin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
-		} catch (RuntimeException e) {
-			return null;
-		}
+		return instanceAdmin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**
@@ -170,14 +144,7 @@ public class ServiceInstanceResource {
 		if (instanceName == null || instanceName.equals("")) {
 			instanceName = "*";
 		}
-
-		try {
-			ServiceInstanceOverviewList overview = null; // = instanceAdmin.get
-			return overview;
-
-		} catch (RuntimeException e) {
-			return null;
-		}
+		return instanceAdmin.getServiceInstances(serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**
@@ -193,18 +160,11 @@ public class ServiceInstanceResource {
 	@POST
 	@Path("{service}/{environment}/{host}/{name}")
 	@Consumes({ MediaType.APPLICATION_JSON })
-	public Response performStartStopRestart(@PathParam("service") String serviceName,
-											@PathParam("environment") String environmentName,
-											@PathParam("host") String hostName,
-											@PathParam("name") String instanceName,
-											PerformAction performAction) {
-
-		try {
-			instanceAdmin.performAction(performAction, serviceName, environmentName, hostName, instanceName);
-
-			return Response.ok().status(Status.OK).build();
-		} catch (RuntimeException e) {
-			return Response.notModified().status(Status.CONFLICT).build();
-		}
+	public void performStartStopRestart(@PathParam("service") String serviceName,
+										@PathParam("environment") String environmentName,
+										@PathParam("host") String hostName,
+										@PathParam("name") String instanceName,
+										PerformAction performAction) {
+		instanceAdmin.performAction(performAction, serviceName, environmentName, hostName, instanceName);
 	}
 }
