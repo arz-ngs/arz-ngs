@@ -206,4 +206,14 @@ public class ServiceInstance {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return service.getServiceName()+ "/"
+				+ environment.getEnvironmentName()
+				+ "/"
+				+ host.getHostName()
+				+ "/"
+				+ serviceInstanceName.getName();
+	}
 }

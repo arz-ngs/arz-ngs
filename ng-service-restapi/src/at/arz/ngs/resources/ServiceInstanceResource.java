@@ -109,7 +109,7 @@ public class ServiceInstanceResource {
 										RemoveServiceInstance command) {
 
 		try {
-			///
+			instanceAdmin.removeNewServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 
 			URI location = URI.create("/instances/");
 			return Response.ok().status(Status.OK).location(location).build();
@@ -135,9 +135,10 @@ public class ServiceInstanceResource {
 														@PathParam("name") String instanceName) {
 
 		try {
-			ServiceInstanceResponse response = null; // = instanceAdmin.get
-			return response;
-
+			return instanceAdmin.getServiceInstance(serviceName,
+																				environmentName,
+																				hostName,
+																				instanceName);
 		} catch (RuntimeException e) {
 			return null;
 		}
@@ -201,17 +202,7 @@ public class ServiceInstanceResource {
 											PerformAction performAction) {
 
 		try {
-			if (performAction.equals("start")) {
-				// performStart
-			} else if (performAction.equals("stop")) {
-				// performStop
-			}
-			else if (performAction.equals("restart")) {
-				// performRestart
-			}
-			else {
-				return Response.notModified().status(Status.CONFLICT).build();
-			}
+			instanceAdmin.performAction(performAction, serviceName, environmentName, hostName, instanceName);
 
 			return Response.ok().status(Status.OK).build();
 		} catch (RuntimeException e) {
