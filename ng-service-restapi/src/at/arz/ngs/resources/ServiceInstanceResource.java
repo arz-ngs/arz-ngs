@@ -31,7 +31,8 @@ public class ServiceInstanceResource {
 	private ServiceInstanceAdmin instanceAdmin;
 
 	@POST
-	@Consumes({ MediaType.APPLICATION_JSON })
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
 		try {
 			instanceAdmin.createNewServiceInstance(command);
@@ -50,7 +51,7 @@ public class ServiceInstanceResource {
 			URI location = URI.create("/instances/");
 			return Response.notModified().status(Status.CONFLICT).location(location).build();
 		}
-		
+
 	}
 
 	/**
@@ -103,16 +104,16 @@ public class ServiceInstanceResource {
 	@Path("{service}/{environment}/{host}/{name}")
 	@Consumes({ MediaType.APPLICATION_JSON })
 	public Response deleteServiceInstance(	@PathParam("service") String serviceName,
-										@PathParam("environment") String environmentName,
-										@PathParam("host") String hostName,
-										@PathParam("name") String instanceName,
-										RemoveServiceInstance command) {
+											@PathParam("environment") String environmentName,
+											@PathParam("host") String hostName,
+											@PathParam("name") String instanceName,
+											RemoveServiceInstance command) {
 
 		try {
-			instanceAdmin.removeNewServiceInstance(command, serviceName, environmentName, hostName, instanceName);
+			instanceAdmin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 
 			URI location = URI.create("/instances/");
-			return Response.ok().status(Status.OK).location(location).build();
+			return Response.ok().status(Status.OK).build();
 		} catch (RuntimeException e) {
 			URI location = URI.create("/instances/");
 			return Response.notModified().status(Status.CONFLICT).location(location).build();
@@ -135,10 +136,7 @@ public class ServiceInstanceResource {
 														@PathParam("name") String instanceName) {
 
 		try {
-			return instanceAdmin.getServiceInstance(serviceName,
-																				environmentName,
-																				hostName,
-																				instanceName);
+			return instanceAdmin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
 		} catch (RuntimeException e) {
 			return null;
 		}

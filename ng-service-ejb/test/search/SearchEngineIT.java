@@ -38,12 +38,17 @@ import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
-public class SearchEngineTest
+public class SearchEngineIT
 		extends AbstractJpaIT {
 
 	@Test
 	public void testFindServiceInstances() {
-		assertEquals(2, searchEngine.findServiceInstances("*", "*", "*", "*").size());
+		// assertEquals(2, searchEngine.findServiceInstances("*", "*", "*", "*").size());
+		// assertEquals(0, searchEngine.findServiceInstances("", "", "*", "*").size());
+		// assertEquals(0, searchEngine.findServiceInstances("*", "", "", "").size());
+		// assertEquals(2, searchEngine.findServiceInstances("serviceName*", "*", "*", "*").size());
+		// assertEquals(0, searchEngine.findServiceInstances("serviceName", "*", "*", "*").size());
+		assertEquals(2, searchEngine.findServiceInstances("*", "*", "hostName*", "*").size());
 	}
 
 	@Test

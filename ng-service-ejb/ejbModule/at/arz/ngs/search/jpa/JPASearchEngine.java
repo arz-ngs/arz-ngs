@@ -10,10 +10,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.ServiceInstance;
-import at.arz.ngs.api.EnvironmentName;
-import at.arz.ngs.api.HostName;
-import at.arz.ngs.api.ServiceInstanceName;
-import at.arz.ngs.api.ServiceName;
 
 @Stateless
 @TransactionAttribute(TransactionAttributeType.MANDATORY)
@@ -39,56 +35,22 @@ public class JPASearchEngine {
 														String envNameRegex,
 														String hostNameRegex,
 														String instanceNameRegex) {
-		
-		ServiceName serviceRegex = new ServiceName(serviceNameRegex);
-		EnvironmentName environmentRegex = new EnvironmentName(envNameRegex);
-		HostName hostRegex = new HostName(hostNameRegex);
-		ServiceInstanceName instanceRegex = new ServiceInstanceName(instanceNameRegex);
 
-		String query = "SELECT SI.serviceInstanceName a, SI.host.hostName b, SI.environment.environmentName c, "
-						+ "SI.service.serviceName d from ServiceInstance SI WHERE d LIKE :serviceNameRegex AND "
-						+ "c LIKE :envNameRegex AND "
-						+ "b LIKE :hostNameRegex AND "
-						+ "a LIKE :instanceNameRegex";
-
-		// String query = "SELECT si FROM ServiceInstance si WHERE si.service.serviceName LIKE :serviceNameRegex AND "
-		// + "si.environment.environmentName LIKE :envNameRegex AND "
-		// + "si.host.hostName LIKE :hostNameRegex AND "
-		// + "si.serviceInstanceName LIKE :instanceNameRegex";
-
+		String query = "SELECT SI from ServiceInstance SI "
+						+ "WHERE "
+						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex";
 
 		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
 
-		getInstances.setParameter("serviceNameRegex", serviceRegex);
-		getInstances.setParameter("envNameRegex", environmentRegex);
-		getInstances.setParameter("hostNameRegex", hostRegex);
-		getInstances.setParameter("instanceNameRegex", instanceRegex);
-
-		// String query = "SELECT si FROM ServiceInstance si WHERE si.service.serviceName LIKE :serviceNameRegex AND "
-		// + "si.environment.environmentName LIKE :envNameRegex AND "
-		// + "si.host.hostName LIKE :hostNameRegex AND "
-		// + "si.serviceInstanceName LIKE :instanceNameRegex";
-		//
-		// TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
-		//
-		// getInstances.setParameter("serviceNameRegex", serviceNameRegex);
-		// getInstances.setParameter("envNameRegex", envNameRegex);
-		// getInstances.setParameter("hostNameRegex", hostNameRegex);
-		// getInstances.setParameter("instanceNameRegex", instanceNameRegex);
+		getInstances.setParameter("serviceNameRegex", serviceNameRegex.replace('*', '%'));
+		getInstances.setParameter("envNameRegex", envNameRegex.replace('*', '%'));
+		getInstances.setParameter("hostNameRegex", hostNameRegex.replace('*', '%'));
+		getInstances.setParameter("instanceNameRegex", instanceNameRegex.replace('*', '%'));
 
 		return getInstances.getResultList();
-
-		// CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-		// CriteriaQuery<Tuple> criteriaQuery = criteriaBuilder.createTupleQuery();
-		//
-		// Root instanceRoot = criteriaQuery.from(ServiceInstance.class);
-		//
-		// Predicate predicate = criteriaBuilder.like(instanceRoot.<String> get("host.hostName"), hostNameRegex);
-		// criteriaQuery.where(predicate);
-		//
-		// criteriaQuery.select(instanceRoot);
-		// TypedQuery query = entityManager.createQuery(criteriaQuery);
-		// return query.getResultList();
 	}
 
 	public List<ServiceInstance> orderByHostNameTest() {
