@@ -24,6 +24,7 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.AlreadyModified;
+import at.arz.ngs.api.exception.AlreadyPerform;
 import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.EnvironmentNotFound;
 import at.arz.ngs.api.exception.HostNotFound;
@@ -31,12 +32,20 @@ import at.arz.ngs.api.exception.ScriptNotFound;
 import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
+import at.arz.ngs.api.exception.WrongParam;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
+import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
+/**
+ * Manages the logic and the methods of the repositores methods
+ * 
+ * @author rpci334
+ *
+ */
 @Stateless
 public class ServiceInstanceAdmin {
 
@@ -237,13 +246,7 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.incrementVersion();
 				oldServiceInstance.setStatus(Status.not_active);
 			} else {
-				String error = oldServiceName+ "/"
-								+ oldEnvironmentName
-								+ "/"
-								+ oldHostName
-								+ "/"
-								+ oldServiceInstanceName;
-				throw new AlreadyModified(error);
+				throw new AlreadyModified(oldServiceInstance.toString());
 			}
 
 		} else {
@@ -274,24 +277,17 @@ public class ServiceInstanceAdmin {
 			if (serviceInstance.getVersion() == version) {
 				serviceInstances.removeServiceInstance(serviceInstance);
 			} else {
-				String error = serviceName+ "/"
-								+ environmentName
-								+ "/"
-								+ hostName
-								+ "/"
-								+ serviceInstanceName;
-				throw new AlreadyModified(error);
+				throw new AlreadyModified(serviceInstance.toString());
 			}
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
 	}
 
-	public ServiceInstanceResponse getServiceInstance(CreateNewServiceInstance command) {
-		String hostNameString = command.getHostName();
-		String serviceNameString = command.getServiceName();
-		String environmentNameString = command.getEnvironmentName();
-		String serviceInstanceNameString = command.getInstanceName();
+	public ServiceInstanceResponse getServiceInstance(	String serviceNameString,
+														String environmentNameString,
+														String hostNameString,
+														String serviceInstanceNameString) {
 
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
@@ -311,6 +307,8 @@ public class ServiceInstanceAdmin {
 			response.setServiceName(serviceInstance.getService().getServiceName().toString());
 			response.setHostName(serviceInstance.getHost().getHostName().toString());
 			response.setInstanceName(serviceInstance.getServiceInstanceName().toString());
+			response.setStatus(serviceInstance.getStatus());
+			response.setVersion(serviceInstance.getVersion());
 
 			Script script = serviceInstance.getScript();
 			String scriptName = script.getScriptName().toString();
@@ -325,11 +323,63 @@ public class ServiceInstanceAdmin {
 			scriptData.setPathRestart(pathRestart);
 			scriptData.setPathStatus(pathStatus);
 			response.setScript(scriptData);
-			response.setVersion(serviceInstance.getVersion());
+
 			return response;
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
+	}
+
+	public void performAction(	PerformAction perform,
+	                          	String serviceInstanceNameString,
+	                          	String serviceNameString,
+	                          	String environmentNameString,
+	                          	String hostNameString) {
+		HostName hostName = new HostName(hostNameString);
+		ServiceName serviceName = new ServiceName(serviceNameString);
+		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
+		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
+
+		Service service = services.getService(serviceName);
+		Host host = hosts.getHost(hostName);
+		Environment environment = environments.getEnvironment(environmentName);
+		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
+		                                                                      	service,
+		                                                                      	host,
+		                                                                      	environment);
+		String status = serviceInstance.getStatus().name();
+		Script script = serviceInstance.getScript();
+		String param = perform.getPerformAction().toLowerCase();
+		String path;
+		if (param.equals("start") || param.equals("stop") || param.equals("restart") || param.equals("status")) {
+			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
+				if (perform.getPerformAction().toLowerCase().equals("start")) {
+					path = script.getPathStart().toString();
+					if (status.equals("active") || status.equals("not_active") || status.equals("failed")) {
+						path = script.getPathStart().toString();
+						serviceInstance.setStatus(Status.is_starting);
+					}
+				} else if (status.equals("active") || status.equals("not_active") || status.equals("failed")) {
+					path = script.getPathStop().toString();
+					serviceInstance.setStatus(Status.is_stopping);
+				} else if (perform.getPerformAction().toLowerCase().equals("restart")) {
+					path = script.getPathRestart().toString();
+					serviceInstance.setStatus(Status.is_stopping);
+				}
+				if (perform.getPerformAction().toLowerCase().equals("status")) {
+					path = script.getPathStatus().toString();
+				}
+			} else {
+				throw new AlreadyPerform(serviceInstance.toString()+ " "
+											+ status
+											+ " Sie können derzeit keine andere Aktion ausführen!");
+			}
+		} else {
+			throw new WrongParam("Falscher Parameter: "+ perform.getPerformAction()
+									+ "\n Es können folgende Parameter gesetzt werden: start, stop, restart, status");
+		}
+		// TODO execute method on server with the path as parameter
+		// execute(path)
 	}
 
 
