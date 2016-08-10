@@ -1,5 +1,6 @@
 package at.arz.ngs.serviceinstance;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -39,6 +40,7 @@ import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
@@ -371,9 +373,19 @@ public class ServiceInstanceAdmin {
 																			environmentNameString,
 																			hostNameString,
 																			serviceInstanceNameString);
-		ServiceInstanceOverviewList list = new ServiceInstanceOverviewList();
-		// list.setServiceInstances(serviceInstances);
-		return list;
+		ServiceInstanceOverviewList ovList = new ServiceInstanceOverviewList();
+		List<ServiceInstanceOverview> list = new ArrayList<ServiceInstanceOverview>();
+		for (ServiceInstance instance : serviceInstances) {
+			ServiceInstanceOverview ov = new ServiceInstanceOverview();
+			ov.setEnvironmentName(instance.getEnvironment().getEnvironmentName().toString());
+			ov.setHostName(instance.getHost().getHostName().toString());
+			ov.setInstanceName(instance.getServiceInstanceName().toString());
+			ov.setServiceName(instance.getService().getServiceName().toString());
+			ov.setStatus(instance.getStatus().toString());
+			list.add(ov);
+		}
+		ovList.setServiceInstances(list);
+		return ovList;
 	}
 
 	public void performAction(	PerformAction perform,

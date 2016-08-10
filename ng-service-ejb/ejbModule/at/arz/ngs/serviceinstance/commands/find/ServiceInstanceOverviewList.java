@@ -15,4 +15,12 @@ public class ServiceInstanceOverviewList {
 	@XmlElementWrapper(name = "service-instances")
 	@XmlElement(name = "service-instance")
 	private List<ServiceInstanceOverview> serviceInstances;
+
+	public List<ServiceInstanceOverview> getServiceInstances() {
+		return serviceInstances;
+	}
+
+	public void setServiceInstances(List<ServiceInstanceOverview> serviceInstances) {
+		this.serviceInstances = serviceInstances;
+	}
 }
