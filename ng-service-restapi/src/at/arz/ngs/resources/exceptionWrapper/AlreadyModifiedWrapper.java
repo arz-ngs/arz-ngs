@@ -1,4 +1,4 @@
-package at.arz.ngs.resources;
+package at.arz.ngs.resources.exceptionWrapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -6,6 +6,7 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 import at.arz.ngs.api.exception.AlreadyModified;
+import at.arz.ngs.resources.NgsApiError;
 
 @Provider
 public class AlreadyModifiedWrapper
