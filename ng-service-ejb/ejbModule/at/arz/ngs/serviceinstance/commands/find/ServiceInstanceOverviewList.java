@@ -13,7 +13,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ServiceInstanceOverviewList {
 	
 	@XmlElementWrapper(name = "service-instances")
-	@XmlElement(name = "service-instance")
+	@XmlElement(name = "service-instances")
 	private List<ServiceInstanceOverview> serviceInstances;
 
 	public List<ServiceInstanceOverview> getServiceInstances() {

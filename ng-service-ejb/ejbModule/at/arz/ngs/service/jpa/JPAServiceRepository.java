@@ -2,10 +2,7 @@ package at.arz.ngs.service.jpa;
 
 import java.util.List;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -16,9 +13,7 @@ import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.exception.ServiceNotFound;
 
-@Stateless
-@Local(ServiceRepository.class)
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@Dependent
 public class JPAServiceRepository
 		implements ServiceRepository {
 

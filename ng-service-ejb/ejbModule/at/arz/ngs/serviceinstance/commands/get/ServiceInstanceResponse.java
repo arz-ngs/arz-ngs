@@ -4,14 +4,12 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
 
 import at.arz.ngs.api.Status;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 
-@XmlRootElement(name = "ServiceInstance")
+@XmlRootElement(name = "service-instance")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = { "environmentName", "hostName", "serviceName", "instanceName" })
 public class ServiceInstanceResponse {
 
 	@XmlElement(required = true)

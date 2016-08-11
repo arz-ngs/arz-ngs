@@ -2,8 +2,7 @@ package at.arz.ngs.host.jpa;
 
 import java.util.List;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -14,8 +13,7 @@ import at.arz.ngs.HostRepository;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.exception.HostNotFound;
 
-@Stateless
-@Local(HostRepository.class)
+@Dependent
 public class JPAHostRepository
 		implements HostRepository {
 

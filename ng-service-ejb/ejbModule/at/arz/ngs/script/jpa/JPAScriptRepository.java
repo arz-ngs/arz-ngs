@@ -2,10 +2,7 @@ package at.arz.ngs.script.jpa;
 
 import java.util.List;
 
-import javax.ejb.Local;
-import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -20,9 +17,7 @@ import at.arz.ngs.api.PathStop;
 import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.exception.ScriptNotFound;
 
-@Stateless
-@Local(ScriptRepository.class)
-@TransactionAttribute(TransactionAttributeType.MANDATORY)
+@Dependent
 public class JPAScriptRepository
 		implements ScriptRepository {
 
