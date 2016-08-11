@@ -1,10 +1,10 @@
 package at.arz.ngs.script;
 
-import javax.ejb.EJB;
+import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-@EJB
+@Stateless
 public class ScriptAdmin {
 
 	@PersistenceContext

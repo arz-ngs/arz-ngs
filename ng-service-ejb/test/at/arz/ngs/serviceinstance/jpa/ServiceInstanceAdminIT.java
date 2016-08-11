@@ -61,7 +61,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void testAddServiceInstance() {
+	public void addServiceInstanceTest() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "environment2";
@@ -129,7 +129,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstanceParamNullTest3() {
+	public void addServiceInstanceParamNullTest2() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "asdf";
@@ -160,7 +160,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstanceNullTest4() {
+	public void addServiceInstanceNullTest3() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "asdfasdf";
@@ -186,7 +186,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstanceScriptNameNullTest() {
+	public void addServiceInstanceScriptNameNullorEmptyTestShouldGenerateScriptName() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "asdfasdfadf";
@@ -220,7 +220,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void deleteServiceInstance() {
+	public void deleteServiceInstanceTest() {
 		String environmentName = "environment1";
 		String hostName = "host1";
 		String serviceName = "service1";
@@ -252,7 +252,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstance() {
+	public void updateServiceInstanceTest() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 		String environmentName = "environment2";
 		String hostName = "host2";
@@ -294,7 +294,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstance2() {
+	public void updateServiceInstanceTest2() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "environment2";
@@ -339,7 +339,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstance3() {
+	public void updateServiceInstanceTestVersionAlreadyModifiedNegativeInteger() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "environment2";
@@ -391,7 +391,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstance4() {
+	public void updateServiceInstanceTestVersionAlreadyModifiedPositiveInteger() {
 
 		String environmentName = "environment1";
 		String hostName = "host1";
@@ -440,7 +440,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstanceFieldNullTest() {
+	public void updateServiceInstanceFieldsNullorEmptyTest() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 		String environmentName = "environment2";
 		String hostName = null;
@@ -477,7 +477,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void updateServiceInstanceFieldNullTest1() {
+	public void updateServiceInstanceScriptFieldsNullorEmptyTest() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 		String environmentName = "environment2";
 		String hostName = "asdf";
@@ -488,38 +488,6 @@ public class ServiceInstanceAdminIT
 		scriptData.setScriptName("scriptName2");
 		scriptData.setPathStart(null);
 		scriptData.setPathStop("");
-		scriptData.setPathRestart("restart2");
-		scriptData.setPathStatus("status2");
-		UpdateServiceInstance command = new UpdateServiceInstance();
-		command.setEnvironmentName(environmentName);
-		command.setHostName(hostName);
-		command.setInstanceName(instanceName);
-		command.setScript(scriptData);
-		command.setServiceName(serviceName);
-		command.setVersion(0);
-
-		String oldServiceName = "service1";
-		String oldEnvironmentName = "environment1";
-		String oldHostName = "host1";
-		String oldInstanceName = "instance1";
-
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
-
-		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
-	}
-
-	@Test
-	public void updateServiceInstanceFieldNullTest2() {
-		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
-		String environmentName = "environment2";
-		String hostName = "zzz";
-		String serviceName = "service2";
-		String instanceName = "adsas";
-
-		ScriptData scriptData = new ScriptData();
-		scriptData.setScriptName("");
-		scriptData.setPathStart("start2");
-		scriptData.setPathStop("stop2");
 		scriptData.setPathRestart("restart2");
 		scriptData.setPathStatus("status2");
 		UpdateServiceInstance command = new UpdateServiceInstance();

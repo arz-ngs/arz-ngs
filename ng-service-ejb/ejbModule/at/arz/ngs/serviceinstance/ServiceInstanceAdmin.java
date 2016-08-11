@@ -98,6 +98,10 @@ public class ServiceInstanceAdmin {
 		this.engine = engine;
 	}
 
+	protected ServiceInstanceAdmin() {
+		// EJB Constructor
+	}
+
 	public void createNewServiceInstance(CreateNewServiceInstance command) {
 		String hostNameString = command.getHostName();
 		String serviceNameString = command.getServiceName();

@@ -2,7 +2,7 @@
     <wb-module deploy-name="ng-service-restapi">
         <wb-resource deploy-path="/" source-path="/WebContent" tag="defaultRootSource"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src"/>
-        <property name="context-root" value="ng-service-restapi"/>
         <property name="java-output-path" value="/ng-service-restapi/build/classes"/>
+        <property name="context-root" value="ngs"/>
     </wb-module>
 </project-modules>
