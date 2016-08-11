@@ -1,0 +1,12 @@
+
+Get:
+
+curl -i http://localhost:8080/ngs/api/v1/instances
+
+
+
+
+
+Create:
+
+curl -H "Content-Type: application/json" -X POST -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
