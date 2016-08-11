@@ -61,7 +61,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstance() {
+	public void testAddServiceInstance() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "environment2";
@@ -98,7 +98,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstanceNullTest() {
+	public void addServiceInstanceParamNullTest() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "";
@@ -129,7 +129,7 @@ public class ServiceInstanceAdminIT
 	}
 
 	@Test
-	public void addServiceInstanceNullTest3() {
+	public void addServiceInstanceParamNullTest3() {
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
 		String environmentName = "asdf";
