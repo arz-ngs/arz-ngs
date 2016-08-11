@@ -1,4 +1,4 @@
-package at.arz.ngs.search.jpa;
+package at.arz.ngs.search;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

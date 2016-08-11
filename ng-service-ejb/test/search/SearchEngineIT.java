@@ -35,8 +35,8 @@ import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.OrderCondition;
+import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.search.SearchEngine;
-import at.arz.ngs.search.jpa.PaginationCondition;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 

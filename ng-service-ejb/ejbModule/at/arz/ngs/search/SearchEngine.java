@@ -10,7 +10,6 @@ import javax.persistence.EntityManager;
 
 import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.search.jpa.JPASearchEngine;
-import at.arz.ngs.search.jpa.PaginationCondition;
 
 @Stateless
 public class SearchEngine {
@@ -27,7 +26,7 @@ public class SearchEngine {
 	 * @param em
 	 */
 	public SearchEngine(EntityManager em) {
-		searchEngine = new JPASearchEngine(em);
+		searchEngine = new JPASearchEngine(em, true);
 	}
 
 	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,

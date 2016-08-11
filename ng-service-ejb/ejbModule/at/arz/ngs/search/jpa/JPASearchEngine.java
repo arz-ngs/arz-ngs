@@ -18,6 +18,12 @@ public class JPASearchEngine {
 	@PersistenceContext(unitName = "ng-service-model")
 	private EntityManager entityManager;
 
+	/**
+	 * default is false. Is used to change in the queries from CHAR to VARCHAR (CHAR is needed for MySQL, VARCHAR for
+	 * Derby)
+	 */
+	private boolean isUnitTestRun = false;
+
 	protected JPASearchEngine() {
 		// ejb constructor
 	}
@@ -27,8 +33,9 @@ public class JPASearchEngine {
 	 * 
 	 * @param entityManager
 	 */
-	public JPASearchEngine(EntityManager entityManager) {
+	public JPASearchEngine(EntityManager entityManager, boolean isUnitTestRun) {
 		this.entityManager = entityManager;
+		this.isUnitTestRun = isUnitTestRun;
 	}
 
 	public List<ServiceInstance> findServiceInstances(	String serviceNameRegex,
@@ -42,6 +49,10 @@ public class JPASearchEngine {
 						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
 						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
 						+ "CAST(SI.serviceInstanceName CHAR(255)) LIKE :instanceNameRegex";
+
+		if (isUnitTestRun) {
+			query = query.replace("CHAR", "VARCHAR");
+		}
 
 		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
 
@@ -69,6 +80,10 @@ public class JPASearchEngine {
 						+ orderByField
 						+ " "
 						+ order;
+
+		if (isUnitTestRun) {
+			query = query.replace("CHAR", "VARCHAR");
+		}
 
 		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
 
@@ -98,6 +113,10 @@ public class JPASearchEngine {
 						+ orderByField
 						+ " "
 						+ order;
+
+		if (isUnitTestRun) {
+			query = query.replace("CHAR", "VARCHAR");
+		}
 
 		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
 
