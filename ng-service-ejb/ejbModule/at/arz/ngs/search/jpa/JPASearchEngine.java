@@ -38,10 +38,10 @@ public class JPASearchEngine {
 
 		String query = "SELECT SI from ServiceInstance SI "
 						+ "WHERE "
-						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
-						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
-						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
-						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex";
+						+ "CAST(SI.service.serviceName CHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName CHAR(255)) LIKE :instanceNameRegex";
 
 		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
 
@@ -61,10 +61,10 @@ public class JPASearchEngine {
 														String order) {
 
 		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
-						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
-						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
-						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
-						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex "
+						+ "CAST(SI.service.serviceName CHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName CHAR(255)) LIKE :instanceNameRegex "
 						+ "ORDER BY SI."
 						+ orderByField
 						+ " "
@@ -90,10 +90,10 @@ public class JPASearchEngine {
 														int startByElement) {
 
 		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
-						+ "CAST(SI.service.serviceName VARCHAR(255)) LIKE :serviceNameRegex AND "
-						+ "CAST(SI.environment.environmentName VARCHAR(255)) LIKE :envNameRegex AND "
-						+ "CAST(SI.host.hostName VARCHAR(255)) LIKE :hostNameRegex AND "
-						+ "CAST(SI.serviceInstanceName VARCHAR(255)) LIKE :instanceNameRegex "
+						+ "CAST(SI.service.serviceName CHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName CHAR(255)) LIKE :instanceNameRegex "
 						+ "ORDER BY SI."
 						+ orderByField
 						+ " "

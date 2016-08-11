@@ -19,8 +19,8 @@ import at.arz.ngs.resources.exceptionWrapper.ServiceInstanceAlreadyExistWrapper;
 import at.arz.ngs.resources.exceptionWrapper.ServiceInstanceNotFoundWrapper;
 import at.arz.ngs.resources.exceptionWrapper.WrongParamWrapper;
 
-@ApplicationPath("/api")
-public class AppPath
+@ApplicationPath("/v1")
+public class NgsRestAPIV1
 		extends Application {
 
 	@Override

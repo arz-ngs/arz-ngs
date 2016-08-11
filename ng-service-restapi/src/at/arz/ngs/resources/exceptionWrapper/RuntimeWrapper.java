@@ -1,5 +1,8 @@
 package at.arz.ngs.resources.exceptionWrapper;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
@@ -11,8 +14,11 @@ import at.arz.ngs.resources.NgsApiError;
 public class RuntimeWrapper
 		implements ExceptionMapper<RuntimeException> {
 
+	private static final Logger log = Logger.getLogger(RuntimeWrapper.class.getName());
+
 	@Override
 	public Response toResponse(RuntimeException e) {
+		log.log(Level.WARNING, "unexpected exception during rest call:" + e.getMessage(), e);
 		NgsApiError error = new NgsApiError(e.getClass().getSimpleName(), e.toString());
 		return Response	.status(Response.Status.CONFLICT)
 						.type(MediaType.APPLICATION_JSON)

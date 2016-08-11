@@ -8,7 +8,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 
-@XmlRootElement(name = "ServiceInstacne-overview")
+@XmlRootElement(name = "serviceInstance-overview")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ServiceInstanceOverviewList {
 	
