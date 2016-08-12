@@ -12,9 +12,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
+import at.arz.ngs.EnvironmentRepository;
+import at.arz.ngs.HostRepository;
+import at.arz.ngs.ScriptRepository;
+import at.arz.ngs.ServiceInstanceRepository;
+import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.exception.AlreadyModified;
 import at.arz.ngs.api.exception.EmptyField;
-import at.arz.ngs.api.exception.ServiceInstanceNotFound;
+import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
@@ -32,13 +37,23 @@ public class ServiceInstanceAdminIT
 
 	private ServiceInstanceAdmin admin;
 
+	private ServiceRepository services;
+	private HostRepository hosts;
+	private EnvironmentRepository environments;
+	private ScriptRepository scripts;
+	private ServiceInstanceRepository instances;
+
 	@Before
 	public void setUpBefore() throws Exception {
-		admin = new ServiceInstanceAdmin(	new JPAServiceRepository(getEntityManager()),
-											new JPAHostRepository(getEntityManager()),
-											new JPAEnvironmentRepository(getEntityManager()),
-											new JPAServiceInstanceRepository(getEntityManager()),
-											new JPAScriptRepository(getEntityManager()),
+		services = new JPAServiceRepository(getEntityManager());
+		hosts = new JPAHostRepository(getEntityManager());
+		environments = new JPAEnvironmentRepository(getEntityManager());
+		scripts = new JPAScriptRepository(getEntityManager());
+		admin = new ServiceInstanceAdmin(	services,
+											hosts,
+											environments,
+											instances,
+											scripts,
 											new SearchEngine(getEntityManager()));
 		String environmentName = "environment1";
 		String hostName = "host1";
@@ -244,7 +259,7 @@ public class ServiceInstanceAdminIT
 		try {
 			admin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
 			fail();
-		} catch (ServiceInstanceNotFound e) {
+		} catch (ServiceNotFound e) {
 			// ok
 		}
 
@@ -506,6 +521,71 @@ public class ServiceInstanceAdminIT
 		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
+	}
+
+	@Test
+	public void implicitDeleteUnusedHostsTest() {
+		String environmentName = "environment2";
+		String hostName = "host1";
+		String serviceName = "service2";
+		String instanceName = "instance2";
+
+		ScriptData scriptData = new ScriptData();
+		scriptData.setScriptName("scriptName2");
+		scriptData.setPathStart("start2");
+		scriptData.setPathStop("stop2");
+		scriptData.setPathRestart("restart2");
+		scriptData.setPathStatus("status2");
+		CreateNewServiceInstance command = new CreateNewServiceInstance();
+		command.setEnvironmentName(environmentName);
+		command.setHostName(hostName);
+		command.setInstanceName(instanceName);
+		command.setScript(scriptData);
+		command.setServiceName(serviceName);
+		assertEquals(1, hosts.getAllHosts().size());
+		admin.createNewServiceInstance(command);
+		assertEquals(1, hosts.getAllHosts().size());
+
+		String environmentName3 = "environment3";
+		String hostName3 = "host3";
+		String serviceName3 = "service3";
+		String instanceName3 = "instance3";
+
+		ScriptData scriptData3 = new ScriptData();
+		scriptData.setScriptName("scriptName3");
+		scriptData.setPathStart("start3");
+		scriptData.setPathStop("stop3");
+		scriptData.setPathRestart("restart3");
+		scriptData.setPathStatus("status3");
+		CreateNewServiceInstance command3 = new CreateNewServiceInstance();
+		command.setEnvironmentName(environmentName3);
+		command.setHostName(hostName3);
+		command.setInstanceName(instanceName3);
+		command.setScript(scriptData3);
+		command.setServiceName(serviceName3);
+		admin.createNewServiceInstance(command3);
+		assertEquals(2, hosts.getAllHosts().size());
+		RemoveServiceInstance commandDelete = new RemoveServiceInstance();
+		commandDelete.setVersion(0);
+		admin.removeServiceInstance(commandDelete,
+									serviceName3,
+									environmentName3,
+									hostName3,
+									instanceName3);
+		assertEquals(1, hosts.getAllHosts().size());
+		RemoveServiceInstance commandDelete2 = new RemoveServiceInstance();
+		commandDelete2.setVersion(0);
+		admin.removeServiceInstance(commandDelete2, serviceName, environmentName, hostName, instanceName);
+		assertEquals(1, hosts.getAllHosts().size());
+
+		String environmentName2 = "environment1";
+		String hostName2 = "host1";
+		String serviceName2 = "service1";
+		String instanceName2 = "instance1";
+		RemoveServiceInstance commandDelete3 = new RemoveServiceInstance();
+		commandDelete3.setVersion(0);
+		admin.removeServiceInstance(commandDelete3, serviceName2, environmentName2, hostName2, instanceName2);
+		assertEquals(0, hosts.getAllHosts().size());
 	}
 
 	/**
