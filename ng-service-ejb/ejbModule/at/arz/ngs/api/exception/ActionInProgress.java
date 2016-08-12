@@ -10,18 +10,13 @@ import javax.ejb.ApplicationException;
  *
  */
 @ApplicationException
-public class AlreadyPerform
+public class ActionInProgress
 		extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 	private String serviceInstance;
 
-	public AlreadyPerform(String serviceInstance) {
+	public ActionInProgress(String serviceInstance) {
 		super(serviceInstance);
-		this.serviceInstance = serviceInstance;
-	}
-
-	public String getReason() {
-		return serviceInstance;
 	}
 }
