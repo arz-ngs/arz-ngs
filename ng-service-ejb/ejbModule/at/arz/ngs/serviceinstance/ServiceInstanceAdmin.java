@@ -121,9 +121,9 @@ public class ServiceInstanceAdmin {
 		String pathRestartString = scriptData.getPathRestart();
 		String pathStatusString = scriptData.getPathStatus();
 
-		Host newHost = getOrCreateNewHost(hostName);
 		Service newService = getOrCreateNewService(serviceName);
 		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		Host newHost = getOrCreateNewHost(hostName);
 		if (scriptNameString == null || scriptNameString.equals("")) {
 			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
 		}
@@ -246,9 +246,9 @@ public class ServiceInstanceAdmin {
 		String pathRestartString = scriptData.getPathRestart();
 		String pathStatusString = scriptData.getPathStatus();
 
-		Host newHost = getOrCreateNewHost(hostName);
 		Service newService = getOrCreateNewService(serviceName);
 		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		Host newHost = getOrCreateNewHost(hostName);
 		if (scriptNameString == null || scriptNameString.equals("")) {
 			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
 		}
@@ -279,10 +279,10 @@ public class ServiceInstanceAdmin {
 										Script newScript,
 										ServiceInstanceName serviceInstanceName,
 										long version) {
+		Service oldService = services.getService(oldServiceName);
 		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
 		// exist
 		Host oldHost = hosts.getHost(oldHostName);
-		Service oldService = services.getService(oldServiceName);
 		ServiceInstance oldServiceInstance = serviceInstances.getServiceInstance(	oldServiceInstanceName,
 																					oldService,
 																					oldHost,
@@ -315,14 +315,14 @@ public class ServiceInstanceAdmin {
 		}
 		long version = command.getVersion();
 
-		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
+		HostName hostName = new HostName(hostNameString);
 		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
 
 		Service service = services.getService(serviceName);
-		Host host = hosts.getHost(hostName);
 		Environment environment = environments.getEnvironment(environmentName);
+		Host host = hosts.getHost(hostName);
 		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
 																				service,
 																				host,
@@ -349,8 +349,8 @@ public class ServiceInstanceAdmin {
 		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
 
 		Service service = services.getService(serviceName);
-		Host host = hosts.getHost(hostName);
 		Environment environment = environments.getEnvironment(environmentName);
+		Host host = hosts.getHost(hostName);
 		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
 																				service,
 																				host,
@@ -417,11 +417,11 @@ public class ServiceInstanceAdmin {
 		return ovList;
 	}
 
-	public void performAction(	PerformAction perform,
-								String serviceInstanceNameString,
-								String serviceNameString,
+	public void performAction(	String serviceNameString,
 								String environmentNameString,
-								String hostNameString) {
+								String hostNameString,
+								String serviceInstanceNameString,
+								PerformAction perform) {
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
@@ -441,7 +441,6 @@ public class ServiceInstanceAdmin {
 		if (param.equals("start") || param.equals("stop") || param.equals("restart") || param.equals("status")) {
 			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
 				if (perform.getPerformAction().toLowerCase().equals("start")) {
-					path = script.getPathStart().toString();
 					if (status.equals("active") || status.equals("not_active") || status.equals("failed")) {
 						path = script.getPathStart().toString();
 						serviceInstance.setStatus(Status.is_starting);
