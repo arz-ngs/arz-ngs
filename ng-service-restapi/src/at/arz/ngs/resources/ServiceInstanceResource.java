@@ -31,7 +31,7 @@ public class ServiceInstanceResource {
 	@Inject
 	private ServiceInstanceAdmin instanceAdmin;
 
-	@POST
+	@PUT
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
@@ -70,7 +70,7 @@ public class ServiceInstanceResource {
 	 * @param command Object with the new data.
 	 * @return Returns a HTTP status if the operation was successul or not.
 	 */
-	@PUT
+	@POST
 	@Path("{service}/{environment}/{host}/{name}")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
@@ -176,7 +176,7 @@ public class ServiceInstanceResource {
 	 * @return
 	 */
 	@POST
-	@Path("{service}/{environment}/{host}/{name}")
+	@Path("{service}/{environment}/{host}/{name}/action")
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void performStartStopRestart(@PathParam("service") String serviceName,
 										@PathParam("environment") String environmentName,

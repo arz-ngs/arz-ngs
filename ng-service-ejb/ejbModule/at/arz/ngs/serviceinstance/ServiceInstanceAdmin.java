@@ -18,6 +18,7 @@ import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.HostName;
+import at.arz.ngs.api.Path;
 import at.arz.ngs.api.PathRestart;
 import at.arz.ngs.api.PathStart;
 import at.arz.ngs.api.PathStatus;
@@ -120,7 +121,6 @@ public class ServiceInstanceAdmin {
 		String pathRestartString = scriptData.getPathRestart();
 		String pathStatusString = scriptData.getPathStatus();
 
-
 		Host newHost = getOrCreateNewHost(hostName);
 		Service newService = getOrCreateNewService(serviceName);
 		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
@@ -217,7 +217,6 @@ public class ServiceInstanceAdmin {
 		}
 		serviceInstances.addServiceInstance(host, service, environment, script, serviceInstanceName, Status.not_active);
 	}
-
 
 	public void updateServiceInstance(	UpdateServiceInstance command,
 										String oldServiceNameString,
@@ -363,18 +362,20 @@ public class ServiceInstanceAdmin {
 			response.setVersion(serviceInstance.getVersion());
 
 			Script script = serviceInstance.getScript();
-			String scriptName = script.getScriptName().toString();
-			String pathStart = script.getPathStart().toString();
-			String pathStop = script.getPathStop().toString();
-			String pathRestart = script.getPathRestart().toString();
-			String pathStatus = script.getPathStatus().toString();
-			ScriptData scriptData = new ScriptData();
-			scriptData.setScriptName(scriptName);
-			scriptData.setPathStart(pathStart);
-			scriptData.setPathStop(pathStop);
-			scriptData.setPathRestart(pathRestart);
-			scriptData.setPathStatus(pathStatus);
-			response.setScript(scriptData);
+			if (script != null) {
+				String scriptName = script.getScriptName().getName();
+				String pathStart = getPath(script.getPathStart());
+				String pathStop = getPath(script.getPathStop());
+				String pathRestart = getPath(script.getPathRestart());
+				String pathStatus = getPath(script.getPathStatus());
+				ScriptData scriptData = new ScriptData();
+				scriptData.setScriptName(scriptName);
+				scriptData.setPathStart(pathStart);
+				scriptData.setPathStop(pathStop);
+				scriptData.setPathRestart(pathRestart);
+				scriptData.setPathStatus(pathStatus);
+				response.setScript(scriptData);
+			}
 
 			return response;
 		} else {
@@ -382,15 +383,22 @@ public class ServiceInstanceAdmin {
 		}
 	}
 
+	private String getPath(Path path) {
+		if (path == null) {
+			return null;
+		}
+
+		return path.getPath();
+	}
+
 	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
 															String environmentNameString,
 															String hostNameString,
 															String serviceInstanceNameString) {
-		List<ServiceInstance> serviceInstances =
-												engine.findServiceInstances(serviceNameString,
-																			environmentNameString,
-																			hostNameString,
-																			serviceInstanceNameString);
+		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
+																				environmentNameString,
+																				hostNameString,
+																				serviceInstanceNameString);
 		ServiceInstanceOverviewList ovList = new ServiceInstanceOverviewList();
 		List<ServiceInstanceOverview> list = new ArrayList<ServiceInstanceOverview>();
 		for (ServiceInstance instance : serviceInstances) {
@@ -407,10 +415,10 @@ public class ServiceInstanceAdmin {
 	}
 
 	public void performAction(	PerformAction perform,
-	                          	String serviceInstanceNameString,
-	                          	String serviceNameString,
-	                          	String environmentNameString,
-	                          	String hostNameString) {
+								String serviceInstanceNameString,
+								String serviceNameString,
+								String environmentNameString,
+								String hostNameString) {
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
@@ -420,9 +428,9 @@ public class ServiceInstanceAdmin {
 		Host host = hosts.getHost(hostName);
 		Environment environment = environments.getEnvironment(environmentName);
 		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
-		                                                                      	service,
-		                                                                      	host,
-		                                                                      	environment);
+																				service,
+																				host,
+																				environment);
 		String status = serviceInstance.getStatus().name();
 		Script script = serviceInstance.getScript();
 		String param = perform.getPerformAction().toLowerCase();
@@ -457,6 +465,5 @@ public class ServiceInstanceAdmin {
 		// TODO execute method on server with the path as parameter
 		// execute(path)
 	}
-
 
 }
