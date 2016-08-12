@@ -27,8 +27,8 @@ import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.api.exception.ActionInProgress;
 import at.arz.ngs.api.exception.AlreadyModified;
-import at.arz.ngs.api.exception.AlreadyPerform;
 import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.EnvironmentNotFound;
 import at.arz.ngs.api.exception.HostNotFound;
@@ -456,13 +456,13 @@ public class ServiceInstanceAdmin {
 					path = script.getPathStatus().toString();
 				}
 			} else {
-				throw new AlreadyPerform(serviceInstance.toString()+ " "
+				throw new ActionInProgress(serviceInstance.toString()+ " "
 											+ status
-											+ " Sie können derzeit keine andere Aktion ausführen!");
+											+ " Cannot perform action while another action is in progress.");
 			}
 		} else {
-			throw new WrongParam("Falscher Parameter: "+ perform.getPerformAction()
-									+ "\n Es können folgende Parameter gesetzt werden: start, stop, restart, status");
+			throw new WrongParam(perform.getPerformAction()
+									+ " -- Use only this action commands: start, stop, restart, status");
 		}
 		// TODO execute method on server with the path as parameter
 		// execute(path)

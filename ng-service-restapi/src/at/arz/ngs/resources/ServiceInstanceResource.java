@@ -183,6 +183,6 @@ public class ServiceInstanceResource {
 										@PathParam("host") String hostName,
 										@PathParam("name") String instanceName,
 										PerformAction performAction) {
-		instanceAdmin.performAction(performAction, serviceName, environmentName, hostName, instanceName);
+		instanceAdmin.performAction(serviceName, environmentName, hostName, instanceName, performAction);
 	}
 }
