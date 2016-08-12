@@ -12,13 +12,13 @@ import at.arz.ngs.serviceinstance.commands.ScriptData;
 public class UpdateServiceInstance {
 
 	@XmlElement(required = true)
+	private String serviceName;
+
+	@XmlElement(required = true)
 	private String environmentName;
 
 	@XmlElement(required = true)
 	private String hostName;
-
-	@XmlElement(required = true)
-	private String serviceName;
 
 	@XmlElement(required = true)
 	private String instanceName;
@@ -27,10 +27,10 @@ public class UpdateServiceInstance {
 	private ScriptData script;
 
 	/**
-	 * Has to be set to edit a ServiceInstance.
+	 * Has to be set to edit a ServiceInstance. If not set default is -1.
 	 */
 	@XmlElement(required = true)
-	private long version;
+	private long version = -1;
 
 	public String getEnvironmentName() {
 		return environmentName;

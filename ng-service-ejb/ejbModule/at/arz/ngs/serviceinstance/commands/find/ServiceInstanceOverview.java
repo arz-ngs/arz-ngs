@@ -10,13 +10,13 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class ServiceInstanceOverview {
 
 	@XmlElement(required = true)
+	private String serviceName;
+
+	@XmlElement(required = true)
 	private String environmentName;
 
 	@XmlElement(required = true)
 	private String hostName;
-
-	@XmlElement(required = true)
-	private String serviceName;
 
 	@XmlElement(required = true)
 	private String instanceName;

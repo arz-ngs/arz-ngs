@@ -13,13 +13,13 @@ import at.arz.ngs.serviceinstance.commands.ScriptData;
 public class ServiceInstanceResponse {
 
 	@XmlElement(required = true)
+	private String serviceName;
+
+	@XmlElement(required = true)
 	private String environmentName;
 
 	@XmlElement(required = true)
 	private String hostName;
-
-	@XmlElement(required = true)
-	private String serviceName;
 
 	@XmlElement(required = true)
 	private String instanceName;

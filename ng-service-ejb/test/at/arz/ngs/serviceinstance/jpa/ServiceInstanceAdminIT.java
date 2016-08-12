@@ -29,7 +29,6 @@ import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
-import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 public class ServiceInstanceAdminIT
@@ -242,20 +241,9 @@ public class ServiceInstanceAdminIT
 		String serviceName = "service1";
 		String instanceName = "instance1";
 
-		RemoveServiceInstance command = new RemoveServiceInstance();
-		command.setVersion(1); // current version in DB is 0 so it should not work the first time
-
-		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
-		try {
-			admin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
-			fail();
-		} catch (AlreadyModified e) {
-			// ok
-		}
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
-		command.setVersion(0);
-		admin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
+		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 
 		try {
 			admin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
@@ -566,26 +554,19 @@ public class ServiceInstanceAdminIT
 		command3.setServiceName(serviceName3);
 		admin.createNewServiceInstance(command3);
 		assertEquals(2, hosts.getAllHosts().size());
-		RemoveServiceInstance commandDelete = new RemoveServiceInstance();
-		commandDelete.setVersion(0);
-		admin.removeServiceInstance(commandDelete,
-									serviceName3,
+		admin.removeServiceInstance(serviceName3,
 									environmentName3,
 									hostName3,
 									instanceName3);
 		assertEquals(1, hosts.getAllHosts().size());
-		RemoveServiceInstance commandDelete2 = new RemoveServiceInstance();
-		commandDelete2.setVersion(0);
-		admin.removeServiceInstance(commandDelete2, serviceName, environmentName, hostName, instanceName);
+		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 		assertEquals(1, hosts.getAllHosts().size());
 
 		String environmentName2 = "environment1";
 		String hostName2 = "host1";
 		String serviceName2 = "service1";
 		String instanceName2 = "instance1";
-		RemoveServiceInstance commandDelete3 = new RemoveServiceInstance();
-		commandDelete3.setVersion(0);
-		admin.removeServiceInstance(commandDelete3, serviceName2, environmentName2, hostName2, instanceName2);
+		admin.removeServiceInstance(serviceName2, environmentName2, hostName2, instanceName2);
 		assertEquals(0, hosts.getAllHosts().size());
 	}
 

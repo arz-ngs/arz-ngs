@@ -21,7 +21,6 @@ import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
-import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 @Path("instances")
@@ -103,14 +102,12 @@ public class ServiceInstanceResource {
 	 */
 	@DELETE
 	@Path("{service}/{environment}/{host}/{name}")
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public void deleteServiceInstance(	@PathParam("service") String serviceName,
 										@PathParam("environment") String environmentName,
 										@PathParam("host") String hostName,
-										@PathParam("name") String instanceName,
-										RemoveServiceInstance command) {
+										@PathParam("name") String instanceName) {
 
-		instanceAdmin.removeServiceInstance(command, serviceName, environmentName, hostName, instanceName);
+		instanceAdmin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**

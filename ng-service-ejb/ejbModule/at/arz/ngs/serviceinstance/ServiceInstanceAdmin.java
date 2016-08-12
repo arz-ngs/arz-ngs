@@ -44,7 +44,6 @@ import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
-import at.arz.ngs.serviceinstance.commands.remove.RemoveServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 /**
@@ -317,15 +316,10 @@ public class ServiceInstanceAdmin {
 		}
 	}
 
-	public void removeServiceInstance(	RemoveServiceInstance command,
-										String serviceNameString,
+	public void removeServiceInstance(	String serviceNameString,
 										String environmentNameString,
 										String hostNameString,
 										String serviceInstanceNameString) {
-		if (command == null) {
-			throw new EmptyField("The version must be set to remove a Service Instance.");
-		}
-		long version = command.getVersion();
 
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
@@ -340,11 +334,7 @@ public class ServiceInstanceAdmin {
 																				host,
 																				environment);
 		if (serviceInstance != null) {
-			if (serviceInstance.getVersion() == version) {
 				serviceInstances.removeServiceInstance(serviceInstance);
-			} else {
-				throw new AlreadyModified(serviceInstance.toString());
-			}
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
