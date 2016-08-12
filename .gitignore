@@ -1,5 +1,6 @@
 *.class
 *.log
+*.gitignore
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -8,6 +9,9 @@
 *.jar
 *.war
 *.ear
+*.classpath
+*.core.xml
+
 
 /ng-service-ejb/bin/
 
