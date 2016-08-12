@@ -1,0 +1,179 @@
+@CHARSET "UTF-8";
+#main_nav {
+	border-radius: 0;
+	padding-left: 0;
+	padding-right: 0;
+	margin: 0;
+	border: 0;
+	height: 100%;
+	background-color: #125D12;
+	min-height: 500px;
+}
+
+.navigation {
+	position: fixed;
+	top: 135px;
+	z-index: 0; /*should not overlap other things -> 0*/
+}
+
+.row {
+	height: 100%;
+}
+
+html, body {
+	height: 100%; /*adjust to screen size*/
+	margin: 0;
+	padding: 0;
+}
+
+#nav-container {
+	padding: 0;
+	max-width: 500px;
+}
+
+.full-width {
+	width: 100%; /*gets the full width within an element*/
+}
+
+.nav-list {
+	padding-left: 15px;
+	font-family: sans-serif;
+	font-style: normal;
+	font-size: 22px;
+	font-weight: 500;
+	max-width: 500px;
+}
+
+.nav-list:hover {
+	background-color: #e7e7e7;
+	max-width: 500px;
+}
+
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover {
+	color: black !important; /*override bootstrap color scheme*/
+}
+
+.navbar-default .navbar-nav a {
+	color: white !important; /*override bootstrap color scheme*/
+}
+
+.navbar-default .navbar-nav a:hover {
+	color: black !important; /*override bootstrap color scheme*/
+}
+
+#ebk-title {
+	position: fixed; /*stay in position while scrolling*/
+	font-size: 250%;
+	padding-left: 30px;
+	margin-bottom: 15px;
+	color: #e7e7e7;
+	text-decoration: none;
+}
+
+#ebk-title:hover {
+	position: fixed;
+	font-size: 250%;
+	padding-left: 30px;
+	margin-bottom: 15px;
+	color: #e7e7e7;
+	text-decoration: none;
+}
+
+.secondcol {
+	z-index: 1;
+	background-color: white;
+	min-height: 500px;
+}
+
+#buttonStart {
+	position: relative;
+	left: 150px;
+	background-color: #29a20b;
+	border-color: #29a20b;
+	min-width: 100px;
+}
+
+#buttonStop {
+	position: relative;
+	left: 180px;
+	background-color: #e21414;
+	border-color: #e21414;
+	min-width: 100px;
+}
+
+#buttonRestart {
+	position: relative;
+	left: 210px;
+	background-color: #3465a4;
+	border-color: #3465a4;
+	min-width: 100px;
+}
+
+.colCheckbox {
+	width: 50px;
+}
+
+.colService {
+	width: 550px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.searchService {
+	width: 300px;
+}
+
+.colServer {
+	width: 300px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.colStatus {
+	width: 200px;
+	text-align: center;
+	vertical-align: middle;
+}
+
+.actionImage {
+	width: 30px;
+}
+
+.tbl {
+	position: relative;
+	top: 100px;
+}
+
+td {
+	height: 40px;
+}
+
+th {
+	height: 65px;
+}
+
+td {
+	text-align: center;
+	vertical-align: middle;
+}
+
+*/
+tbody tr:hover { /*blue border when hovering a column for better user experience*/
+	border: groove;
+	border-color: blue;
+}
+*/
+
+.thirdcol {
+}
+
+#user-col {
+	z-index: 2;  /*overlap other things whose index is 0 like the nav-bar*/
+	margin-top: 30px;
+	right: 0;
+	position: fixed;
+	background-color: white;
+	z-index: 2;
+	min-height: 500px;
+}
+

@@ -6,30 +6,88 @@
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
-	<title>Test</title>
+	<title>Service Instance Overview</title>
+	<link rel="stylesheet" type="text/css"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
+	<link href="main_style-AS.css" rel="stylesheet"></link>
+	<link href="main_style-DT.css" rel="stylesheet"></link>
+
 </h:head>
 <h:body>
-	<h:dataTable value="#{test.instances}" var="instance">
-		<h:column>
-			<f:facet name="header">Service-Name</f:facet>
-			<h:outputText value="#{instance.serviceName}" />
-		</h:column>
-		<h:column>
-			<f:facet name="header">Environment-Name</f:facet>
-			<h:outputText value="#{instance.environmentName}" />
-		</h:column>
-		<h:column>
-			<f:facet name="header">Host-Name</f:facet>
-			<h:outputText value="#{instance.hostName}" />
-		</h:column>
-		<h:column>
-			<f:facet name="header">Instance-Name</f:facet>
-			<h:outputText value="#{instance.instanceName}" />
-		</h:column>
-		<h:column>
-			<f:facet name="header">Status</f:facet>
-			<h:outputText value="#{instance.status}" />
-		</h:column>
-	</h:dataTable>
+	<div class="row">
+		<div id="main_nav" class="col-md-2 navbar navbar-default">
+			<div>
+				<h1>
+					<a id="ebk-title" href="#">ebk</a>
+				</h1>
+			</div>
+			<div class="navigation navbar-collapse full-width "
+				id="nav-container">
+				<ul class="nav navbar-nav full-width">
+					<li class="active nav-list full-width"><a href="#">Service
+							Übersicht</a></li>
+					<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+					</li>
+					<li class="nav-list full-width"><a href="#">Statistiken</a></li>
+				</ul>
+			</div>
+		</div>
+
+
+
+
+		<div id="mid-col" class="col-md-8 secondcol">
+			<div class="row">
+				<div class="col-md-10 menutop1">
+					<form>
+						<button type="button" class="btn btn-primary" id="buttonStart">Start</button>
+						<button type="button" class="btn btn-primary" id="buttonStop">Stopp</button>
+						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button>
+						<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button>
+					</form>
+				</div>
+
+			</div>
+			<h:dataTable value="#{serviceinstance.instances}" var="instance"
+				class="tbl table-responsive table-bordered table-hover" border="1">
+				<h:column>
+					<f:facet name="header">Service-Name</f:facet>
+					<h:outputText value="#{instance.serviceName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Environment-Name</f:facet>
+					<h:outputText value="#{instance.environmentName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Host-Name</f:facet>
+					<h:outputText value="#{instance.hostName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Instance-Name</f:facet>
+					<h:outputText value="#{instance.instanceName}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">Status</f:facet>
+					<h:outputText value="#{instance.status}" />
+				</h:column>
+			</h:dataTable>
+
+		</div>
+		<div id="user-col" class="col-md-2">
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" type="button"
+					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="true">
+					Alexander Schiegl <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="#">Action</a></li>
+					<li><a href="#">Another action</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#">Ausloggen</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </h:body>
 </html>

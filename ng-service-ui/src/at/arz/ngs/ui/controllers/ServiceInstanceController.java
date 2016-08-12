@@ -11,8 +11,8 @@ import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 
 @RequestScoped
-@Named("test")
-public class TestController {
+@Named("serviceinstance")
+public class ServiceInstanceController {
 
 	@Inject
 	private ServiceInstanceAdmin service;
