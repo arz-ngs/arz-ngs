@@ -310,6 +310,9 @@ public class ServiceInstanceAdmin {
 										String environmentNameString,
 										String hostNameString,
 										String serviceInstanceNameString) {
+		if (command == null) {
+			throw new EmptyField("The version must be set to remove a Service Instance.");
+		}
 		long version = command.getVersion();
 
 		HostName hostName = new HostName(hostNameString);

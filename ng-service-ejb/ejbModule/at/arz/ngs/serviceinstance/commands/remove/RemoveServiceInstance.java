@@ -10,7 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RemoveServiceInstance {
 
 	@XmlElement(required = true)
-	private long version;
+	private long version = -1;
 
 	public long getVersion() {
 		return version;

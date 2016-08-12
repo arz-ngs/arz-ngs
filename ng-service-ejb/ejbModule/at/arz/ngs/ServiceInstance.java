@@ -61,14 +61,17 @@ public class ServiceInstance {
 	private ServiceInstanceName serviceInstanceName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "SERVICE")
 	private Service service;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "HOST")
 	private Host host;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "ENVIRONMENT")
 	private Environment environment;
 
@@ -77,6 +80,7 @@ public class ServiceInstance {
 	private Status status;
 
 	@ManyToOne(fetch = FetchType.LAZY)
+	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE})
 	@JoinColumn(name = "SCRIPT")
 	private Script script;
 
