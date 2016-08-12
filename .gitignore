@@ -1,6 +1,5 @@
 *.class
 *.log
-*.gitignore
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
@@ -11,7 +10,10 @@
 *.ear
 *.classpath
 *.core.xml
-
+ng-service-app/.settings/
+ng-service-ejb/.settings/
+ng-service-restapi/.settings/
+ng-service-ui/.settings/
 
 /ng-service-ejb/bin/
 
