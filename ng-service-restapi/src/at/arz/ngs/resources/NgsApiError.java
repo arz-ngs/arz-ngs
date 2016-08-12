@@ -10,14 +10,24 @@ public class NgsApiError {
 
 	private String reason;
 	private String message;
+	private boolean retry;
 
 	protected NgsApiError() {
 		// jaxb constructor
 	}
 
 	public NgsApiError(String reason, String message) {
+		this(reason, message, false);
+	}
+
+	public NgsApiError(String reason, String message, boolean retry) {
 		this.reason = reason;
 		this.message = message;
+		this.retry = retry;
+	}
+
+	public boolean isRetry() {
+		return retry;
 	}
 
 	public String getMessage() {

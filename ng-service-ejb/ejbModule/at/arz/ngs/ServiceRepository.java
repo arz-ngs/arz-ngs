@@ -13,4 +13,5 @@ public interface ServiceRepository {
 
 	void removeService(Service service);
 
+	void removeUnusedServices();
 }

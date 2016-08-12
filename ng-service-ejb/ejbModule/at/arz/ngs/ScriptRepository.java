@@ -21,4 +21,6 @@ public interface ScriptRepository {
 					PathStatus pathStatus);
 
 	void removeScript(Script script);
+
+	void removeUnusedScripts();
 }

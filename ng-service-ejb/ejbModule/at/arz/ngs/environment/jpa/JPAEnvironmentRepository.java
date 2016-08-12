@@ -6,6 +6,7 @@ import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Environment;
@@ -62,5 +63,13 @@ public class JPAEnvironmentRepository
 	@Override
 	public void removeEnvironment(Environment environment) {
 			entityManager.remove(environment);
+	}
+
+	@Override
+	public void removeUnusedEnvironments() {
+		Query query =
+					entityManager.createQuery("DELETE FROM Environment e WHERE e NOT IN (SELECT i.environment FROM ServiceInstance i)");
+		int count = query.executeUpdate();
+		System.out.println(count + " unused environments removed");
 	}
 }

@@ -14,4 +14,5 @@ public interface HostRepository {
 
 	void addHost(HostName hostName);
 
+	void removeUnusedHosts();
 }

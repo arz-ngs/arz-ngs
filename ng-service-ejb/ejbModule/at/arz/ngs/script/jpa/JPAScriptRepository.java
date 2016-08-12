@@ -6,6 +6,7 @@ import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Script;
@@ -69,5 +70,13 @@ public class JPAScriptRepository
 	@Override
 	public void removeScript(Script script) {
 			entityManager.remove(script);
+	}
+
+	@Override
+	public void removeUnusedScripts() {
+		Query query =
+					entityManager.createQuery("DELETE FROM Script s WHERE s NOT IN (SELECT i.script FROM ServiceInstance i)");
+		int count = query.executeUpdate();
+		System.out.println(count + " unused scripts removed");
 	}
 }

@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import at.arz.ngs.host.jpa.JPAHostRepositoryIT;
+import at.arz.ngs.search.SearchEngineIT;
 import at.arz.ngs.service.jpa.JPAServiceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.ServiceInstanceAdminIT;
@@ -13,6 +14,7 @@ import at.arz.ngs.serviceinstance.jpa.ServiceInstanceAdminIT;
 @SuiteClasses({	JPAHostRepositoryIT.class,
 				JPAServiceInstanceRepositoryIT.class,
 				JPAServiceRepositoryIT.class,
+				SearchEngineIT.class,
 				ServiceInstanceAdminIT.class })
 public class AllTestsSuite {
 

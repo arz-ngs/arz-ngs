@@ -49,6 +49,7 @@ public class ServiceInstanceAdminIT
 		hosts = new JPAHostRepository(getEntityManager());
 		environments = new JPAEnvironmentRepository(getEntityManager());
 		scripts = new JPAScriptRepository(getEntityManager());
+		instances = new JPAServiceInstanceRepository(getEntityManager());
 		admin = new ServiceInstanceAdmin(	services,
 											hosts,
 											environments,
@@ -558,11 +559,11 @@ public class ServiceInstanceAdminIT
 		scriptData.setPathRestart("restart3");
 		scriptData.setPathStatus("status3");
 		CreateNewServiceInstance command3 = new CreateNewServiceInstance();
-		command.setEnvironmentName(environmentName3);
-		command.setHostName(hostName3);
-		command.setInstanceName(instanceName3);
-		command.setScript(scriptData3);
-		command.setServiceName(serviceName3);
+		command3.setEnvironmentName(environmentName3);
+		command3.setHostName(hostName3);
+		command3.setInstanceName(instanceName3);
+		command3.setScript(scriptData3);
+		command3.setServiceName(serviceName3);
 		admin.createNewServiceInstance(command3);
 		assertEquals(2, hosts.getAllHosts().size());
 		RemoveServiceInstance commandDelete = new RemoveServiceInstance();

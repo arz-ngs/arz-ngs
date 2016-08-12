@@ -1,4 +1,4 @@
-package search;
+package at.arz.ngs.search;
 
 import static org.junit.Assert.assertEquals;
 

@@ -6,6 +6,7 @@ import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Host;
@@ -60,5 +61,13 @@ public class JPAHostRepository
 	public void addHost(HostName hostName) {
 		Host host = new Host(hostName);
 		entityManager.persist(host);
+	}
+
+	@Override
+	public void removeUnusedHosts() {
+		Query query =
+					entityManager.createQuery("DELETE FROM Host h WHERE h NOT IN (SELECT i.host FROM ServiceInstance i)");
+		int count = query.executeUpdate();
+		System.out.println(count + " unused hosts removed");
 	}
 }

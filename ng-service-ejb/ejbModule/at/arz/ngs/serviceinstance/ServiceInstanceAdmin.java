@@ -218,6 +218,16 @@ public class ServiceInstanceAdmin {
 		serviceInstances.addServiceInstance(host, service, environment, script, serviceInstanceName, Status.not_active);
 	}
 
+	/**
+	 * Removes unused scripts, services, environments, hosts.
+	 */
+	private void removeAllUnusedElements() {
+		scripts.removeUnusedScripts();
+		services.removeUnusedServices();
+		environments.removeUnusedEnvironments();
+		hosts.removeUnusedHosts();
+	}
+
 	public void updateServiceInstance(	UpdateServiceInstance command,
 										String oldServiceNameString,
 										String oldEnvironmentNameString,
@@ -267,6 +277,8 @@ public class ServiceInstanceAdmin {
 								newScript,
 								serviceInstanceName,
 								version);
+
+		removeAllUnusedElements();
 	}
 
 	private void updateServiceInstance(	ServiceName oldServiceName,
@@ -336,6 +348,8 @@ public class ServiceInstanceAdmin {
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
+
+		removeAllUnusedElements();
 	}
 
 	public ServiceInstanceResponse getServiceInstance(	String serviceNameString,

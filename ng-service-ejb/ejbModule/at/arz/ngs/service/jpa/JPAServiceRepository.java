@@ -6,6 +6,7 @@ import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import at.arz.ngs.Service;
@@ -62,5 +63,13 @@ public class JPAServiceRepository
 	@Override
 	public void removeService(Service service) {
 		entityManager.remove(service);
+	}
+
+	@Override
+	public void removeUnusedServices() {
+		Query query =
+					entityManager.createQuery("DELETE FROM Service s WHERE s NOT IN (SELECT i.service FROM ServiceInstance i)");
+		int count = query.executeUpdate();
+		System.out.println(count + " unused services removed");
 	}
 }
