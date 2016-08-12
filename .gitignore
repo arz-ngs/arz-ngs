@@ -8,8 +8,12 @@
 *.jar
 *.war
 *.ear
-*.classpath
-*.core.xml
+
+ng-service-app/.classpath
+ng-service-ejb/.classpath
+ng-service-restapi/.classpath
+ng-service-ui/.classpath
+
 ng-service-app/.settings/
 ng-service-ejb/.settings/
 ng-service-restapi/.settings/
