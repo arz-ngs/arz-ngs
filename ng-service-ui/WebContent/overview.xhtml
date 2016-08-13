@@ -41,8 +41,9 @@
 				<div class="col-md-10 menutop1">
 					<form>
 						<button type="button" class="btn btn-primary" id="buttonStart">Start</button>
-						<button type="button" class="btn btn-primary" id="buttonStop">Stopp</button>
-						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button>
+						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button>
+						<button type="button" class="btn btn-primary" id="buttonRestart">Neustart</button>
+						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button>
 						<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button>
 					</form>
 				</div>
@@ -50,6 +51,9 @@
 			</div>
 			<h:dataTable value="#{serviceinstance.instances}" var="instance"
 				class="tbl table-responsive table-bordered table-hover" border="1">
+				<h:column>
+					<input type="checkbox"></input>
+				</h:column>
 				<h:column>
 					<f:facet name="header">Service-Name</f:facet>
 					<h:outputText value="#{instance.serviceName}" />

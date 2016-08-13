@@ -87,7 +87,7 @@ html, body {
 
 #buttonStart {
 	position: relative;
-	left: 150px;
+	left: 50px;
 	background-color: #29a20b;
 	border-color: #29a20b;
 	min-width: 100px;
@@ -95,7 +95,7 @@ html, body {
 
 #buttonStop {
 	position: relative;
-	left: 180px;
+	left: 80px;
 	background-color: #e21414;
 	border-color: #e21414;
 	min-width: 100px;
@@ -103,9 +103,17 @@ html, body {
 
 #buttonRestart {
 	position: relative;
-	left: 210px;
+	left: 110px;
 	background-color: #3465a4;
 	border-color: #3465a4;
+	min-width: 100px;
+}
+
+#buttonStatus {
+	position: relative;
+	left: 140px;
+	background-color: #f57900;
+	border-color: #f57900;
 	min-width: 100px;
 }
 
