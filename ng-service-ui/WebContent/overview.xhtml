@@ -49,25 +49,44 @@
 				</div>
 
 			</div>
-			<h:dataTable value="#{serviceinstance.instances}" var="instance"
-				class="tbl table-responsive table-bordered table-hover" border="1">
+			<h:dataTable
+				columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus" headerClass="columnCenter"
+				value="#{serviceinstance.instances}" var="instance"
+				class="tbl table-responsive table-bordered table-hover">
 				<h:column>
+					<f:facet name="header">
+							<input type="checkbox"></input>
+					</f:facet>
 					<input type="checkbox"></input>
 				</h:column>
 				<h:column>
-					<f:facet name="header">Service-Name</f:facet>
+					<f:facet name="header">Service-Name
+							<input type="search" class="searchService"
+							placeholder="Suche nach Services..." />
+					</f:facet>
+
 					<h:outputText value="#{instance.serviceName}" />
+
 				</h:column>
 				<h:column>
-					<f:facet name="header">Environment-Name</f:facet>
+					<f:facet name="header">EnvId
+					<input type="search" class="searchEnvironment"
+							placeholder="Suche nach EnvIds..." />
+					</f:facet>
 					<h:outputText value="#{instance.environmentName}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">Host-Name</f:facet>
+					<f:facet name="header">Host-Name
+					<input type="search" class="searchHost"
+							placeholder="Suche nach Hosts..." />
+					</f:facet>
 					<h:outputText value="#{instance.hostName}" />
 				</h:column>
 				<h:column>
-					<f:facet name="header">Instance-Name</f:facet>
+					<f:facet name="header">Instance-Name
+					<input type="search" class="searchInstance"
+							placeholder="Suche nach Instanzen..." />
+					</f:facet>
 					<h:outputText value="#{instance.instanceName}" />
 				</h:column>
 				<h:column>
@@ -91,6 +110,40 @@
 					<li><a href="#">Ausloggen</a></li>
 				</ul>
 			</div>
+		</div>
+		<div id="settings_col" class="col-md-2">
+			<!-- bottom settings: new instance, pagination, elements per page -->
+			<form>
+				<button type="button" class="btn btn-primary btn-lg float_right"
+					id="addNew_ServiceInstanceButton">
+					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+				</button>
+			</form>
+
+			<div id="elemPerPageDiv" class="input-group float_right">
+				<span class="input-group-addon" id="basic-addon1">Instanzen
+					pro Seite</span>
+				<h:inputText id="elemPerPage" type="text" class="form-control"
+					placeholder="Username" value="50" aria-describedby="basic-addon1" />
+			</div>
+			
+				<nav aria-label="Page navigation"> <!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
+					<ul id="pagination" class="pagination float_right">
+						<li class="disabled"><span> <span aria-hidden="true">&lt;</span>
+						</span></li>
+						<li class="active"><span>1 <span class="sr-only">(current)</span></span>
+						</li>
+						<li><a href="#"><span>2 <span class="sr-only"></span></span></a></li>
+						<li><a href="#"><span>3 <span class="sr-only"></span></span></a></li>
+						<li><a href="#"><span>4 <span class="sr-only"></span></span></a></li>
+						<li><a href="#"><span>10 <span class="sr-only"></span></span></a></li> <!-- last page should be shown here -->
+						<li><a href="#" aria-label="Next"> <span
+								aria-hidden="true">&gt;</span>
+						</a></li>
+					</ul>
+
+				</nav>
+
 		</div>
 	</div>
 </h:body>

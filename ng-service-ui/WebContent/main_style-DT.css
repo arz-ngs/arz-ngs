@@ -1,7 +1,7 @@
 @CHARSET "UTF-8";
 .menutop1 {
 	position: fixed;
-	z-index: 1;
+	z-index: 3;
 	background-color: white;
 	height: 100px;
 	padding-top: 30px;
@@ -14,14 +14,6 @@
 	height: 100px;
 }
 */
-.colCheckbox {
-	text-align: center;
-	vertical-align: middle;
-}
-
-#searchsubmit {
-	background-image: url(images/search.png);
-}
 
 #buttonSearch {
 	position: relative;
@@ -39,5 +31,8 @@
   fieldset { display: table-cell; }
 }
 
-
+.columnCenter {
+	text-align: center;
+	vertical-align: middle;
+}
 
