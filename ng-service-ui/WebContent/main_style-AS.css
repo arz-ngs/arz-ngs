@@ -110,7 +110,7 @@ html, body {
 	min-height: 500px;
 }
 
-#performActionForm\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
+#overviewForm\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
 	position: relative;
 	left: 50px;
 	background-color: #29a20b;
@@ -118,7 +118,7 @@ html, body {
 	min-width: 100px;
 }
 
-#performActionForm\:buttonStop {
+#overviewForm\:buttonStop {
 	position: relative;
 	left: 80px;
 	background-color: #e21414;
@@ -126,7 +126,7 @@ html, body {
 	min-width: 100px;
 }
 
-#performActionForm\:buttonRestart {
+#overviewForm\:buttonRestart {
 	position: relative;
 	left: 110px;
 	background-color: #3465a4;
@@ -134,7 +134,7 @@ html, body {
 	min-width: 100px;
 }
 
-#performActionForm\:buttonStatus {
+#overviewForm\:buttonStatus {
 	position: relative;
 	left: 140px;
 	background-color: #f57900;
@@ -217,7 +217,7 @@ tbody tr:hover {
 	min-height: 200px;
 }
 
-#paginationController\:addNew_ServiceInstanceButton {
+#overviewForm\:addNew_ServiceInstanceButton {
 	margin-right: 20px;
 	background-color: green;
 	margin-left: 500px; /*wrap next element sure to next line*/
@@ -229,7 +229,7 @@ tbody tr:hover {
 	margin-right: 20px;
 }
 
-#paginationController\:elemPerPage {
+#overviewForm\:elemPerPage {
 	min-width: 50px;
 	max-width: 50px;
 }

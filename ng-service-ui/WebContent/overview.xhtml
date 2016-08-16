@@ -2,7 +2,9 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	>
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
@@ -18,6 +20,7 @@
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </h:head>
 <h:body>
+	<h:form id="overviewForm">
 	<div class="row">
 		<div id="main_nav" class="col-md-2 navbar navbar-default">
 			<div>
@@ -39,7 +42,6 @@
 		<div id="mid-col" class="col-md-8 secondcol">
 			<div class="row">
 				<div class="col-md-10 menutop1">
-					<h:form id="performActionForm">
 						<h:commandButton value="Start" class="btn btn-primary"
 							id="buttonStart" action="#{actionController.start()}">
 						</h:commandButton>
@@ -52,60 +54,58 @@
 						<h:commandButton value="Status" class="btn btn-primary"
 							id="buttonStatus" action="#{actionController.status()}">
 						</h:commandButton>
-					</h:form>
+					
 				</div>
 			</div>
-			<h:dataTable
-				columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
-				headerClass="columnCenter" value="#{serviceinstance.instances}"
-				var="instance"
-				class="tbl table-responsive table-bordered table-hover">
-				<h:column>
-					<f:facet name="header">
+				<h:dataTable
+					columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
+					headerClass="columnCenter" value="#{serviceinstance.instances}"
+					var="instance"
+					class="tbl table-responsive table-bordered table-hover">
+					<h:column>
+						<f:facet name="header">
+							<input type="checkbox"></input>
+						</f:facet>
 						<input type="checkbox"></input>
-					</f:facet>
-					<input type="checkbox"></input>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Service-Name
-							<input type="search" class="searchService"
-							placeholder="Suche nach Services..." />
-					</f:facet>
-					<h:outputText value="#{instance.serviceName}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">EnvId
-					<input type="search" class="searchEnvironment"
-							placeholder="Suche nach EnvIds..." />
-					</f:facet>
-					<h:outputText value="#{instance.environmentName}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Host-Name
-					<input type="search" class="searchHost"
-							placeholder="Suche nach Hosts..." />
-					</f:facet>
-					<h:outputText value="#{instance.hostName}" />
-				</h:column>
-				<h:column>
-					<f:facet name="header">Instance-Name
-					<input type="search" class="searchInstance"
-							placeholder="Suche nach Instanzen..." />
-					</f:facet>
-					<h:form>
-						<h:commandLink
-							action="#{serviceInstanceDetail.showDetail(instance.instanceName, instance.serviceName, instance.environmentName, instance.hostName)}"
-							value="#{instance.instanceName}" />
-					</h:form>
-				</h:column>
-				<h:column>
-					<f:facet name="header">Status</f:facet>
-					<h:outputText value="#{instance.status}" />
-				</h:column>
-			</h:dataTable>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Service-Name
+							<input type="search" jsf:id="serviceRegex" class="searchService"
+								placeholder="Suche nach Services..." value="#{serviceinstance.serviceRegex}"/>
+						</f:facet>
+						<h:outputText value="#{instance.serviceName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">EnvId
+					<input type="search" jsf:id="envIdRegex" class="searchEnvironment"
+								placeholder="Suche nach EnvIds..." value="#{serviceinstance.envIdRegex}"/>
+						</f:facet>
+						<h:outputText value="#{instance.environmentName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Host-Name
+					<input type="search" jsf:id="hostRegex" class="searchHost"
+								placeholder="Suche nach Hosts..." value="#{serviceinstance.hostRegex}"/>
+						</f:facet>
+						<h:outputText value="#{instance.hostName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Instance-Name
+					<input type="search" jsf:id="instanceRegex" class="searchInstance"
+								placeholder="Suche nach Instanzen..." value="#{serviceinstance.instanceRegex}"/>
+						</f:facet>
+							<h:commandLink
+								action="#{serviceInstanceDetail.showDetail(instance.instanceName, instance.serviceName, instance.environmentName, instance.hostName)}"
+								value="#{instance.instanceName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Status</f:facet>
+						<h:outputText value="#{instance.status}" />
+					</h:column>
+				</h:dataTable>
+			
 		</div>
 		<div id="user-col" class="col-md-2">
-			<h:form>
 				<div class="dropdown">
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
@@ -119,64 +119,60 @@
 						<li><a href="#">Ausloggen</a></li>
 					</ul>
 				</div>
-			</h:form>
 		</div>
 		<div id="settings_col" class="col-md-2">
-			<h:form id="paginationController">
 				<!-- bottom settings: new instance, pagination, elements per page -->
 				<h:commandLink type="button"
 					styleClass="btn btn-primary btn-lg float_right"
-					id="addNew_ServiceInstanceButton" action="#{newServiceInstance.addNewServiceInstance()}">
+					id="addNew_ServiceInstanceButton"
+					action="#{newServiceInstance.addNewServiceInstance()}">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</h:commandLink>
 				<div id="elemPerPageDiv" class="input-group float_right">
 					<span class="input-group-addon" id="basic-addon1">Inst. pro
 						Seite</span>
 					<h:inputText id="elemPerPage" type="text" class="form-control"
-						placeholder="Username" value="50" aria-describedby="basic-addon1" />
+						placeholder="Username" value="#{serviceinstance.pagination.elementsPerPage}" aria-describedby="basic-addon1" />
 				</div>
 				<nav aria-label="Page navigation">
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
-						<li
-							class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
-								rendered="true}"
-								value="&lt;">
+						<li class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
+								rendered="true" value="&lt;" action="#{serviceinstance.performPagination(_lt)}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.firstElementClass}"><h:commandLink
-								rendered="true}"
-								value="#{serviceinstance.paginationCollection.firstElement}">
-							</h:commandLink></li>
-							<li
-							class="#{serviceinstance.paginationCollection.secondElementClass}"><h:commandLink
-								rendered="#{serviceinstance.paginationCollection.showSecondElem}}"
-								value="#{serviceinstance.paginationCollection.secondElement}">
-							</h:commandLink></li>
-							<li
-							class="#{serviceinstance.paginationCollection.thirdElementClass}"><h:commandLink
-								rendered="#{serviceinstance.paginationCollection.showThirdElem}}"
-								value="#{serviceinstance.paginationCollection.thirdElement}">
-							</h:commandLink></li>
-							<li
-							class="#{serviceinstance.paginationCollection.fourthElementClass}"><h:commandLink
-								rendered="#{serviceinstance.paginationCollection.showFourthElem}}"
-								value="#{serviceinstance.paginationCollection.fourthElement}">
-							</h:commandLink></li>
-							<li
-							class="#{serviceinstance.paginationCollection.fifthElementClass}"><h:commandLink
-								rendered="#{serviceinstance.paginationCollection.showFifthElem}}"
-								value="#{serviceinstance.paginationCollection.fithElement}">
-							</h:commandLink></li>
-							<li
-							class="#{serviceinstance.paginationCollection.rightCaredClass}"><h:commandLink
 								rendered="true"
-								value="&gt;">
+								value="#{serviceinstance.paginationCollection.firstElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.firstElement)}">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.secondElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showSecondElem}"
+								value="#{serviceinstance.paginationCollection.secondElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.secondElement)}">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.thirdElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showThirdElem}"
+								value="#{serviceinstance.paginationCollection.thirdElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.thirdElement)}">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.fourthElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showFourthElem}"
+								value="#{serviceinstance.paginationCollection.fourthElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fourthElement)}">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.fifthElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showFifthElem}"
+								value="#{serviceinstance.paginationCollection.fithElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fithElement)}">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.rightCaretClass}"><h:commandLink
+								rendered="true" value="&gt;" action="#{serviceinstance.performPagination(_gt)}">
 							</h:commandLink></li>
 					</ul>
 				</nav>
-			</h:form>
 		</div>
 	</div>
+	</h:form>
 </h:body>
 </html>

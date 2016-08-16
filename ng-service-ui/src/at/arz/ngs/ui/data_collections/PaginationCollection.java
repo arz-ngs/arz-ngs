@@ -26,7 +26,7 @@ public class PaginationCollection {
 	private String thirdElementClass;
 	private String fourthElementClass;
 	private String fifthElementClass;
-	private String rightCaredClass;
+	private String rightCaretClass;
 
 	public boolean isShowLeftCaret() {
 		return showLeftCaret;
@@ -164,12 +164,12 @@ public class PaginationCollection {
 		this.fifthElementClass = fifthElementClass;
 	}
 
-	public String getRightCaredClass() {
-		return rightCaredClass;
+	public String getRightCaretClass() {
+		return rightCaretClass;
 	}
 
-	public void setRightCaredClass(String rightCaredClass) {
-		this.rightCaredClass = rightCaredClass;
+	public void setRightCaretClass(String rightCaredClass) {
+		this.rightCaretClass = rightCaredClass;
 	}
 
 	public static String getActive() {
