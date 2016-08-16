@@ -37,6 +37,8 @@ import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.api.exception.WrongParam;
+import at.arz.ngs.search.OrderCondition;
+import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
@@ -406,6 +408,38 @@ public class ServiceInstanceAdmin {
 																				environmentNameString,
 																				hostNameString,
 																				serviceInstanceNameString);
+		return convert(serviceInstances);
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
+															String environmentNameString,
+															String hostNameString,
+															String serviceInstanceNameString,
+															OrderCondition order) {
+		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
+																				environmentNameString,
+																				hostNameString,
+																				serviceInstanceNameString,
+																				order);
+		return convert(serviceInstances);
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
+															String environmentNameString,
+															String hostNameString,
+															String serviceInstanceNameString,
+															OrderCondition order,
+															PaginationCondition pagination) {
+		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
+																				environmentNameString,
+																				hostNameString,
+																				serviceInstanceNameString,
+																				order,
+																				pagination);
+		return convert(serviceInstances);
+	}
+
+	private ServiceInstanceOverviewList convert(List<ServiceInstance> serviceInstances) {
 		ServiceInstanceOverviewList ovList = new ServiceInstanceOverviewList();
 		List<ServiceInstanceOverview> list = new ArrayList<ServiceInstanceOverview>();
 		for (ServiceInstance instance : serviceInstances) {
@@ -457,14 +491,13 @@ public class ServiceInstanceAdmin {
 					path = resolvePath(script.getPathRestart());
 					serviceInstance.setStatus(Status.is_stopping);
 				}
-
-			} else if (param.equals("status")) {
-				path = resolvePath(script.getPathStatus());
 			} else {
 				throw new ActionInProgress(serviceInstance.toString()+ " "
 											+ status
 											+ " Cannot perform action while another action is in progress.");
 			}
+		} else if (param.equals("status")) {
+			path = resolvePath(script.getPathStatus());
 		} else {
 			throw new WrongParam(perform.getPerformAction()
 									+ " -- Use only this action commands: start, stop, restart, status");
@@ -476,7 +509,7 @@ public class ServiceInstanceAdmin {
 	public String resolvePath(Path path) {
 		String p = getPath(path);
 		if (p == null) {
-			throw new EmptyField("To perform an action the correct path must be set!");
+			throw new EmptyField("To perform an action a valid path must be set!");
 		}
 		return p;
 	}

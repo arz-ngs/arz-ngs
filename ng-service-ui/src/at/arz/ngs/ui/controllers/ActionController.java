@@ -23,8 +23,12 @@ public class ActionController {
 	public String start() {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("start");
-		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
-		return "#";
+		try {
+			service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action); // TODO
+		} catch (RuntimeException e) {
+			// TODO handle exception
+		}
+		return null;
 	}
 	
 	public void stop() {
@@ -36,6 +40,12 @@ public class ActionController {
 	public void restart() {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("restart");
+		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
+	}
+
+	public void status() {
+		PerformAction action = new PerformAction();
+		action.setPerformAction("status");
 		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
 	}
 }

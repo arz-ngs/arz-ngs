@@ -34,18 +34,6 @@ public class ServiceInstanceResource {
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
-		System.err.println("\n\n\n"+ command.getEnvironmentName()
-							+ " - "
-							+ command.getHostName()
-							+ " - "
-							+ command.getInstanceName()
-							+ " - "
-							+ command.getServiceName()
-							+ " scrip: "
-							+ " - "
-							+ command.getScript().getPathStart()
-							+ "\n\n");
-
 		instanceAdmin.createNewServiceInstance(command);
 
 		String path = command.getServiceName()+ "/"

@@ -11,7 +11,11 @@
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
 	<link href="main_style-AS.css" rel="stylesheet"></link>
 	<link href="main_style-DT.css" rel="stylesheet"></link>
-
+	<script src="main_js-DT.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </h:head>
 <h:body>
 	<div class="row">
@@ -32,29 +36,33 @@
 				</ul>
 			</div>
 		</div>
-
-
-
-
 		<div id="mid-col" class="col-md-8 secondcol">
 			<div class="row">
 				<div class="col-md-10 menutop1">
-					<form>
-						<h:commandButton type="button" value="Start" class="btn btn-primary" id="buttonStart" onclick="#{actionController.start()}" />
-						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button>
-						<button type="button" class="btn btn-primary" id="buttonRestart">Neustart</button>
-						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button>
-					</form>
+					<h:form id="performActionForm">
+						<h:commandButton value="Start" class="btn btn-primary"
+							id="buttonStart" action="#{actionController.start()}">
+						</h:commandButton>
+						<h:commandButton value="Stop" class="btn btn-primary"
+							id="buttonStop" action="#{actionController.stop()}">
+						</h:commandButton>
+						<h:commandButton value="Restart" class="btn btn-primary"
+							id="buttonRestart" action="#{actionController.restart()}">
+						</h:commandButton>
+						<h:commandButton value="Status" class="btn btn-primary"
+							id="buttonStatus" action="#{actionController.status()}">
+						</h:commandButton>
+					</h:form>
 				</div>
-
 			</div>
 			<h:dataTable
-				columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus" headerClass="columnCenter"
-				value="#{serviceinstance.instances}" var="instance"
+				columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
+				headerClass="columnCenter" value="#{serviceinstance.instances}"
+				var="instance"
 				class="tbl table-responsive table-bordered table-hover">
 				<h:column>
 					<f:facet name="header">
-							<input type="checkbox"></input>
+						<input type="checkbox"></input>
 					</f:facet>
 					<input type="checkbox"></input>
 				</h:column>
@@ -63,9 +71,7 @@
 							<input type="search" class="searchService"
 							placeholder="Suche nach Services..." />
 					</f:facet>
-
 					<h:outputText value="#{instance.serviceName}" />
-
 				</h:column>
 				<h:column>
 					<f:facet name="header">EnvId
@@ -93,40 +99,41 @@
 					<h:outputText value="#{instance.status}" />
 				</h:column>
 			</h:dataTable>
-
 		</div>
 		<div id="user-col" class="col-md-2">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button"
-					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="true">
-					Alexander Schiegl <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="#">Action</a></li>
-					<li><a href="#">Another action</a></li>
-					<li role="separator" class="divider"></li>
-					<li><a href="#">Ausloggen</a></li>
-				</ul>
-			</div>
+			<h:form>
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Alexander Schiegl <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Ausloggen</a></li>
+					</ul>
+				</div>
+			</h:form>
 		</div>
 		<div id="settings_col" class="col-md-2">
-			<!-- bottom settings: new instance, pagination, elements per page -->
-			<form>
-				<button type="button" class="btn btn-primary btn-lg float_right"
+			<h:form id="paginationController">
+				<!-- bottom settings: new instance, pagination, elements per page -->
+				<h:commandLink type="button" styleClass="btn btn-primary btn-lg float_right"
 					id="addNew_ServiceInstanceButton">
+					<f:param name="newInstance" value="#{serviceinstance.addNewServiceInstance()}"></f:param>
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-				</button>
-			</form>
-
-			<div id="elemPerPageDiv" class="input-group float_right">
-				<span class="input-group-addon" id="basic-addon1">Instanzen
-					pro Seite</span>
-				<h:inputText id="elemPerPage" type="text" class="form-control"
-					placeholder="Username" value="50" aria-describedby="basic-addon1" />
-			</div>
-			
-				<nav aria-label="Page navigation"> <!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
+				</h:commandLink>
+				
+				<div id="elemPerPageDiv" class="input-group float_right">
+					<span class="input-group-addon" id="basic-addon1">Inst.
+						pro Seite</span>
+					<h:inputText id="elemPerPage" type="text" class="form-control" placeholder="Username" value="50" aria-describedby="basic-addon1" />
+				</div>
+				
+				<nav aria-label="Page navigation">
+					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
 						<li class="disabled"><span> <span aria-hidden="true">&lt;</span>
 						</span></li>
@@ -135,14 +142,14 @@
 						<li><a href="#"><span>2 <span class="sr-only"></span></span></a></li>
 						<li><a href="#"><span>3 <span class="sr-only"></span></span></a></li>
 						<li><a href="#"><span>4 <span class="sr-only"></span></span></a></li>
-						<li><a href="#"><span>10 <span class="sr-only"></span></span></a></li> <!-- last page should be shown here -->
+						<li><a href="#"><span>10 <span class="sr-only"></span></span></a></li>
+						<!-- last page should be shown here -->
 						<li><a href="#" aria-label="Next"> <span
 								aria-hidden="true">&gt;</span>
 						</a></li>
 					</ul>
-
 				</nav>
-
+			</h:form>
 		</div>
 	</div>
 </h:body>

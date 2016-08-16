@@ -7,6 +7,8 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.arz.ngs.search.OrderCondition;
+import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 
@@ -19,12 +21,22 @@ public class ServiceInstanceController {
 
 	private List<ServiceInstanceOverview> instances;
 
+	private PaginationCondition pagination;
+	private OrderCondition order;
+
 	@PostConstruct
 	public void init() {
-		instances = service.getServiceInstances("*", "*", "*", "*").getServiceInstances();
+		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
+		order = new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING);
+		instances = service.getServiceInstances("*", "*", "*", "*", order, pagination).getServiceInstances();
 	}
 
 	public List<ServiceInstanceOverview> getInstances() {
 		return instances;
+	}
+
+	public String addNewServiceInstance() {
+		// is able to be invoked!!
+		return null;
 	}
 }
