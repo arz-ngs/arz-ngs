@@ -138,7 +138,7 @@
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
 						<li class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
-								rendered="true" value="&lt;" action="#{serviceinstance.performPagination(_lt)}">
+								rendered="true" value="&lt;" action="#{serviceinstance.performPagination('_lt')}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.firstElementClass}"><h:commandLink
@@ -167,7 +167,7 @@
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.rightCaretClass}"><h:commandLink
-								rendered="true" value="&gt;" action="#{serviceinstance.performPagination(_gt)}">
+								rendered="true" value="&gt;" action="#{serviceinstance.performPagination('_gt')}">
 							</h:commandLink></li>
 					</ul>
 				</nav>

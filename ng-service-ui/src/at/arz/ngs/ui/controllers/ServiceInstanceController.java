@@ -52,23 +52,20 @@ public class ServiceInstanceController
 		try {
 			int page = new Integer(newPage);
 			pagination.setCurrentPage(page);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			if (newPage.equals("_lt")) {
 				pagination.setCurrentPage(pagination.getCurrentPage() - 1);
-			} else if (newPage.equals("_gt")) {
+			}
+			else if (newPage.equals("_gt")) {
 				pagination.setCurrentPage(pagination.getCurrentPage() + 1);
-			} else {
+			}
+			else {
 				throw e;
 			}
 		}
 		System.out.println("current page: " + pagination.getCurrentPage());
-		instances = service	.getServiceInstances(	cumputeServiceRegex(),
-													cumputeEnvRegex(),
-													cumputeHostRegex(),
-													cumputeInstanceRegex(),
-													order,
-													pagination)
-							.getServiceInstances();
+		instances = service.getServiceInstances(cumputeServiceRegex(), cumputeEnvRegex(), cumputeHostRegex(), cumputeInstanceRegex(), order, pagination).getServiceInstances();
 
 		doPaginationValidation();
 	}
@@ -84,7 +81,8 @@ public class ServiceInstanceController
 		int lastPage = 0;
 		if (overallElementCount % elemPerPage == 0) {
 			lastPage = overallElementCount / elemPerPage;
-		} else {
+		}
+		else {
 			lastPage = (overallElementCount / elemPerPage) + 1;
 		}
 		System.out.println("last page: " + lastPage);
@@ -99,31 +97,88 @@ public class ServiceInstanceController
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(false);
 			paginationCollection.setShowFifthElem(false);
-		} else if (numPages == 2) {
+		}
+		else if (numPages == 2) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(false);
 			paginationCollection.setShowFifthElem(true);
-		} else if (numPages == 3) {
+		}
+		else if (numPages == 3) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(true);
 			paginationCollection.setShowFifthElem(true);
-		} else if (numPages == 4) {
+		}
+		else if (numPages == 4) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(true);
 			paginationCollection.setShowFourthElem(true);
 			paginationCollection.setShowFifthElem(true);
-		} else if (numPages >= 5) {
+		}
+		else if (numPages >= 5) {
 			paginationCollection.setShowSecondElem(true);
 			paginationCollection.setShowThirdElem(true);
 			paginationCollection.setShowFourthElem(true);
 			paginationCollection.setShowFifthElem(true);
 			// don't hide anything
+
+			if (currentPage == 2) {
+				paginationCollection.setSecondElement("2");
+				paginationCollection.setThirdElement("3");
+				paginationCollection.setFourthElement("4");
+			}
+			else if (currentPage == lastPage - 1) {
+				paginationCollection.setFourthElement((lastPage - 1) + "");
+				paginationCollection.setThirdElement((lastPage - 2) + "");
+				paginationCollection.setSecondElement((lastPage - 3) + "");
+			}
+			else { //if the current page is somewhere in the middle
+				paginationCollection.setSecondElement((currentPage - 1) + "");
+				paginationCollection.setThirdElement(currentPage + "");
+				paginationCollection.setFourthElement((currentPage + 1) + "");
+			}
 		}
 
 		paginationCollection.setFithElement(lastPage + "");
 
+		//now highlight current page to be active
+
+		if (paginationCollection.getFirstElement().equals(currentPage + "")) {
+			paginationCollection.setFirstElementClass(PaginationCollection.ACTIVE);
+			paginationCollection.setSecondElementClass(null);
+			paginationCollection.setThirdElementClass(null);
+			paginationCollection.setFourthElementClass(null);
+			paginationCollection.setFifthElementClass(null);
+		}
+		else if (paginationCollection.getFithElement().equals(currentPage + "")) {
+			paginationCollection.setFirstElementClass(null);
+			paginationCollection.setSecondElementClass(null);
+			paginationCollection.setThirdElementClass(null);
+			paginationCollection.setFourthElementClass(null);
+			paginationCollection.setFifthElementClass(PaginationCollection.ACTIVE);
+		}
+		else if (paginationCollection.getSecondElement().equals(currentPage + "")) {
+			paginationCollection.setFirstElementClass(null);
+			paginationCollection.setSecondElementClass(PaginationCollection.ACTIVE);
+			paginationCollection.setThirdElementClass(null);
+			paginationCollection.setFourthElementClass(null);
+			paginationCollection.setFifthElementClass(null);
+		}
+		else if (paginationCollection.getThirdElement().equals(currentPage + "")) {
+			paginationCollection.setFirstElementClass(null);
+			paginationCollection.setSecondElementClass(null);
+			paginationCollection.setThirdElementClass(PaginationCollection.ACTIVE);
+			paginationCollection.setFourthElementClass(null);
+			paginationCollection.setFifthElementClass(null);
+		}
+		else if (paginationCollection.getFourthElement().equals(currentPage + "")) {
+			paginationCollection.setFirstElementClass(null);
+			paginationCollection.setSecondElementClass(null);
+			paginationCollection.setThirdElementClass(null);
+			paginationCollection.setFourthElementClass(PaginationCollection.ACTIVE);
+			paginationCollection.setFifthElementClass(null);
+		}
 	}
 
 	private String cumputeServiceRegex() {
