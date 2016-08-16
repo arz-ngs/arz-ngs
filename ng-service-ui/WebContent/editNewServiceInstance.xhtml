@@ -63,26 +63,26 @@
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="serviceInstanceName">Service Instanz</span>
-							<h:inputText value="" type="text" class="form-control"
-								p:placeholder="Instanz eines Services"
+							<h:inputText value="#{editServiceInstance.instance}"  class="form-control"
+								p:placeholder="Instanz eines Services" type="text"
 								aria-describedby="serviceInstanceName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
-							<h:inputText value="" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.service}" type="text" class="form-control"
 								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
 								aria-describedby="serviceName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="environmentName">EnvId</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.environment}" type="text" class="form-control"
 								p:placeholder="EnvId oder das Environment"
 								aria-describedby="environmentName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.host}" type="text" class="form-control"
 								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
 						</div>
 					</div>
@@ -92,35 +92,35 @@
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="scriptName">Script
 								Name</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.scriptName}" type="text" class="form-control"
 								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
 								aria-describedby="scriptName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="startPath">Start
 								Pfad</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.pathStart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
 								aria-describedby="startPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
 								Pfad</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.pathStop}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
 								aria-describedby="stopPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="restartPath">Restart
 								Pfad</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.pathRestart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
 								aria-describedby="restartPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="statusPath">Status
 								Pfad</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.pathStatus}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
 								aria-describedby="statusPath"></h:inputText>
 						</div>

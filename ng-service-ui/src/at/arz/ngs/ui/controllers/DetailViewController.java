@@ -27,6 +27,8 @@ public class DetailViewController
 	private String environment;
 	private String host;
 	private String status;
+	private String version;
+	private String completeName;
 
 
 	private String scriptName;
@@ -61,6 +63,8 @@ public class DetailViewController
 		this.environment = response.getEnvironmentName();
 		this.host = response.getHostName();
 		this.status = response.getStatus().name();
+		this.version = String.valueOf(response.getVersion());
+		this.completeName = this.service + "/" + this.environment + "/" + this.host + "/" + this.instance;
 
 		ScriptData scriptData = response.getScript();
 		scriptName = scriptData.getScriptName();
@@ -68,7 +72,7 @@ public class DetailViewController
 		pathStop = scriptData.getPathStop();
 		pathRestart = scriptData.getPathRestart();
 		pathStatus = scriptData.getPathStatus();
-		return "detailview?faces-redirect=true";
+		return "detailview";
 	}
 
 	// public String detail() {
@@ -79,6 +83,14 @@ public class DetailViewController
 	// host = "testHost";
 	// return "";
 	// }
+
+	public String getCompleteName() {
+		return completeName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
 
 	public String getInstance() {
 		return instance;
