@@ -58,32 +58,32 @@
 						<div>
 							<h1>
 								xxxInstanceName<span style="float: right;"
-									class="label label-default">aktiv</span>
+									class="label label-default">#{detail.status}</span>
 							</h1>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="serviceInstanceName">Service Instanz</span>
-							<h:inputText value="" type="text" class="form-control"
+							<h:inputText value="#{detail.instance}" type="text" class="form-control"
 								p:placeholder="Instanz eines Services"
 								aria-describedby="serviceInstanceName" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
-							<h:inputText value="" type="text" class="form-control"
+							<h:inputText value="#{detail.service}" type="text" class="form-control"
 								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
 								aria-describedby="serviceName" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="environmentName">EnvId</span>
-							<h:inputText type="text" class="form-control"
+							<h:inputText value="#{detail.environment}" type="text" class="form-control"
 								p:placeholder="EnvId oder das Environment"
 								aria-describedby="environmentName" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
-							<h:inputText type="text" class="form-control" p:placeholder="Host"
+							<h:inputText value="#{detail.host}" type="text" class="form-control" p:placeholder="Host"
 								aria-describedby="hostName" disabled="true"></h:inputText>
 						</div>
 					</div>
@@ -92,31 +92,31 @@
 						<h2>Script</h2>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="scriptName">Script
-								Name</span> <h:inputText type="text" class="form-control"
+								Name</span> <h:inputText value="#{detail.scriptName}" type="text" class="form-control"
 								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
 								aria-describedby="scriptName" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="startPath">Start
-								Pfad</span> <h:inputText type="text" class="form-control"
+								Pfad</span> <h:inputText value="#{detail.pathStart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
 								aria-describedby="startPath" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
-								Pfad</span> <h:inputText type="text" class="form-control"
+								Pfad</span> <h:inputText value="#{detail.pathStop}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
 								aria-describedby="stopPath" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="restartPath">Restart
-								Pfad</span> <h:inputText type="text" class="form-control"
+								Pfad</span> <h:inputText value="#{detail.pathRestart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
 								aria-describedby="restartPath" disabled="true"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="statusPath">Status
-								Pfad</span> <h:inputText type="text" class="form-control"
+								Pfad</span> <h:inputText value="#{detail.pathStatus}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
 								aria-describedby="statusPath" disabled="true"></h:inputText>
 						</div>
