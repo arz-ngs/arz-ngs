@@ -21,6 +21,7 @@
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </h:head>
 <h:body>
+	<h:form>
 	<div class="row">
 		<div id="main_nav" class="col-md-2 navbar navbar-default">
 			<div>
@@ -52,37 +53,36 @@
 				</div>
 			</div>
 			<div class="edit-new_mid">
-				<form>
 					<div>
 						<!-- general input/settings -->
 						<div>
 							<h1>
-								Editieren/Neu xxxInstanceName
+								Neue Service Instanz anlegen
 							</h1>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="serviceInstanceName">Service Instanz</span>
-							<h:inputText value="#{editServiceInstance.instance}"  class="form-control"
+							<h:inputText value="#{newServiceInstance.instance}"  class="form-control"
 								p:placeholder="Instanz eines Services" type="text"
 								aria-describedby="serviceInstanceName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
-							<h:inputText value="#{editServiceInstance.service}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.service}" class="form-control"
 								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
-								aria-describedby="serviceName"></h:inputText>
+								aria-describedby="serviceName" type="text" ></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="environmentName">EnvId</span>
-							<h:inputText value="#{editServiceInstance.environment}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.environment}" type="text" class="form-control"
 								p:placeholder="EnvId oder das Environment"
 								aria-describedby="environmentName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
-							<h:inputText value="#{editServiceInstance.host}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.host}" type="text" class="form-control"
 								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
 						</div>
 					</div>
@@ -92,35 +92,35 @@
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="scriptName">Script
 								Name</span>
-							<h:inputText value="#{editServiceInstance.scriptName}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.scriptName}" type="text" class="form-control"
 								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
 								aria-describedby="scriptName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="startPath">Start
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.pathStart}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.pathStart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
 								aria-describedby="startPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.pathStop}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.pathStop}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
 								aria-describedby="stopPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="restartPath">Restart
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.pathRestart}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.pathRestart}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
 								aria-describedby="restartPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="statusPath">Status
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.pathStatus}" type="text" class="form-control"
+							<h:inputText value="#{newServiceInstance.pathStatus}" type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
 								aria-describedby="statusPath"></h:inputText>
 						</div>
@@ -136,12 +136,11 @@
 					</div>
 					<div>
 						<!-- submit button -->
-						<button type="button" class="btn btn-primary float_right"
-							id="submit_input">
-							Speichern
-						</button>
+						<h:commandButton type="submit" class="btn btn-primary float_right"
+							id="submit_input" value="Speichern" action="#{newServiceInstance.saveNewServiceInstance}">
+						</h:commandButton>
 					</div>
-				</form>
+
 			</div>
 		</div>
 		<div id="user-col" class="col-md-2 thirdcol">
@@ -160,5 +159,6 @@
 			</div>
 		</div>
 	</div>
+					</h:form>
 </h:body>
 </html>
