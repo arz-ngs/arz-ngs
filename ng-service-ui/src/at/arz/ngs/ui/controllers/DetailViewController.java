@@ -12,7 +12,7 @@ import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 
 @RequestScoped
-@Named("detail")
+@Named("serviceInstanceDetail")
 public class DetailViewController
 		implements Serializable {
 
@@ -54,12 +54,13 @@ public class DetailViewController
 	}
 
 
-	public String detail(String instance, String service, String environment, String host) {
+	public String showDetail(String instance, String service, String environment, String host) {
 		ServiceInstanceResponse response = admin.getServiceInstance(service, environment, host, instance);
-		instance = response.getInstanceName();
-		service = response.getServiceName();
-		environment = response.getEnvironmentName();
-		host = response.getHostName();
+		this.instance = response.getInstanceName();
+		this.service = response.getServiceName();
+		this.environment = response.getEnvironmentName();
+		this.host = response.getHostName();
+		this.status = response.getStatus().name();
 
 		ScriptData scriptData = response.getScript();
 		scriptName = scriptData.getScriptName();
@@ -67,7 +68,7 @@ public class DetailViewController
 		pathStop = scriptData.getPathStop();
 		pathRestart = scriptData.getPathRestart();
 		pathStatus = scriptData.getPathStatus();
-		return "";
+		return "detailview?faces-redirect=true";
 	}
 
 	// public String detail() {
