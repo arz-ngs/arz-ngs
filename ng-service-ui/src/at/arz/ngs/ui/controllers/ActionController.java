@@ -20,10 +20,11 @@ public class ActionController {
 		System.out.println("\n\n\n\n\\n\n\nTEST");
 	}
 	
-	public void start() {
+	public String start() {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("start");
 		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
+		return "#";
 	}
 	
 	public void stop() {

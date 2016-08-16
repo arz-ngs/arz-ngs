@@ -440,25 +440,26 @@ public class ServiceInstanceAdmin {
 																				environment);
 		String status = serviceInstance.getStatus().name();
 		Script script = serviceInstance.getScript();
+		if (script == null) {
+			throw new EmptyField("Script must be set to perform an action on an instance!");
+		}
 		String param = perform.getPerformAction().toLowerCase();
 		String path;
-		if (param.equals("start") || param.equals("stop") || param.equals("restart") || param.equals("status")) {
+		if (param.equals("start") || param.equals("stop") || param.equals("restart")) {
 			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
-				if (perform.getPerformAction().toLowerCase().equals("start")) {
-					if (status.equals("active") || status.equals("not_active") || status.equals("failed")) {
-						path = script.getPathStart().toString();
-						serviceInstance.setStatus(Status.is_starting);
-					}
-				} else if (status.equals("active") || status.equals("not_active") || status.equals("failed")) {
-					path = script.getPathStop().toString();
+				if (param.equals("start")) {
+					path = resolvePath(script.getPathStart());
+					serviceInstance.setStatus(Status.is_starting);
+				} else if (param.equals("stop")) {
+					path = resolvePath(script.getPathStop());
 					serviceInstance.setStatus(Status.is_stopping);
-				} else if (perform.getPerformAction().toLowerCase().equals("restart")) {
-					path = script.getPathRestart().toString();
+				} else if (param.equals("restart")) {
+					path = resolvePath(script.getPathRestart());
 					serviceInstance.setStatus(Status.is_stopping);
 				}
-				if (perform.getPerformAction().toLowerCase().equals("status")) {
-					path = script.getPathStatus().toString();
-				}
+
+			} else if (param.equals("status")) {
+				path = resolvePath(script.getPathStatus());
 			} else {
 				throw new ActionInProgress(serviceInstance.toString()+ " "
 											+ status
@@ -470,6 +471,14 @@ public class ServiceInstanceAdmin {
 		}
 		// TODO execute method on server with the path as parameter
 		// execute(path)
+	}
+
+	public String resolvePath(Path path) {
+		String p = getPath(path);
+		if (p == null) {
+			throw new EmptyField("To perform an action the correct path must be set!");
+		}
+		return p;
 	}
 
 }
