@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+	<title>Edit Service Instance</title>
+	<link rel="stylesheet" type="text/css"
+		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
+	<link href="main_style-AS.css" rel="stylesheet"></link>
+	<link href="main_style-DT.css" rel="stylesheet"></link>
+	<script src="main_js-AS.js"></script>
+	<script src="main_js-DT.js"></script>
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</h:head>
+<h:body>
+	<h:form>
+	<div class="row">
+		<div id="main_nav" class="col-md-2 navbar navbar-default">
+			<div>
+				<h1>
+					<a id="ebk-title" href="#">ebk</a>
+				</h1>
+			</div>
+			<div class="navigation navbar-collapse full-width "
+				id="nav-container">
+				<ul class="nav navbar-nav full-width">
+					<li class="active nav-list full-width"><a href="#">Service
+							Übersicht</a></li>
+					<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+					</li>
+					<li class="nav-list full-width"><a href="#">Statistiken</a></li>
+				</ul>
+			</div>
+		</div>
+		<div id="mid-col" class="col-md-8 secondcol">
+			<div class="row">
+				<div class="col-md-10 menutop1">
+<!-- 					<form> -->
+<!-- 						<button type="button" class="btn btn-primary" id="buttonStart">Start</button> -->
+<!-- 						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button> -->
+<!-- 						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button> -->
+<!-- 						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button> -->
+<!-- 												<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button> -->
+<!-- 					</form> -->
+				</div>
+			</div>
+			<div class="edit-new_mid">
+					<div>
+						<!-- general input/settings -->
+						<div>
+							<h1>
+
+							</h1>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor"
+								id="serviceInstanceName">Service Instanz</span>
+							<h:inputText value="#{editServiceInstance.instance}"  class="form-control"
+								p:placeholder="Instanz eines Services" type="text"
+								aria-describedby="serviceInstanceName"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
+							<h:inputText value="#{editServiceInstance.service}" class="form-control"
+								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
+								aria-describedby="serviceName" type="text" ></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor"
+								id="environmentName">EnvId</span>
+							<h:inputText value="#{editServiceInstance.environment}" type="text" class="form-control"
+								p:placeholder="EnvId oder das Environment"
+								aria-describedby="environmentName"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
+							<h:inputText value="#{editServiceInstance.host}" type="text" class="form-control"
+								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
+						</div>
+					</div>
+					<div class="outer_input_seperator">
+						<!-- Script relational settings/input -->
+						<h2>Script</h2>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="scriptName">Script
+								Name</span>
+							<h:inputText value="#{editServiceInstance.scriptName}" type="text" class="form-control"
+								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
+								aria-describedby="scriptName"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="startPath">Start
+								Pfad</span>
+							<h:inputText value="#{editServiceInstance.pathStart}" type="text" class="form-control"
+								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
+								aria-describedby="startPath"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
+								Pfad</span>
+							<h:inputText value="#{editServiceInstance.pathStop}" type="text" class="form-control"
+								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
+								aria-describedby="stopPath"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="restartPath">Restart
+								Pfad</span>
+							<h:inputText value="#{editServiceInstance.pathRestart}" type="text" class="form-control"
+								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
+								aria-describedby="restartPath"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="statusPath">Status
+								Pfad</span>
+							<h:inputText value="#{editServiceInstance.pathStatus}" type="text" class="form-control"
+								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
+								aria-describedby="statusPath"></h:inputText>
+						</div>
+					</div>
+					<div class="outer_input_seperator">
+						<!-- space for more information -->
+						<h2>Zusätzliche Informationen</h2>
+						<div class="form-group">
+							<h:inputTextarea class="form-control" rows="5"
+								id="additionalInformation"
+								p:placeholder="Zusätzliche Informationen zur Intanz eines Services..."></h:inputTextarea>
+						</div>
+					</div>
+					<div>
+						<!-- submit button -->
+						<h:commandButton type="submit" class="btn btn-primary float_right"
+							id="submit_input" value="Speichern" action="#{editServiceInstance.saveEditedServiceInstance}">
+						</h:commandButton>
+					</div>
+
+			</div>
+		</div>
+		<div id="user-col" class="col-md-2 thirdcol">
+			<div class="dropdown">
+				<button class="btn btn-default dropdown-toggle" type="button"
+					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="true">
+					Alexander Schiegl <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+					<li><a href="#">Action</a></li>
+					<li><a href="#">Another action</a></li>
+					<li role="separator" class="divider"></li>
+					<li><a href="#">Ausloggen</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+					</h:form>
+</h:body>
+</html>
