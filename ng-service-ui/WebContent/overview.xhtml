@@ -126,9 +126,7 @@
 				<!-- bottom settings: new instance, pagination, elements per page -->
 				<h:commandLink type="button"
 					styleClass="btn btn-primary btn-lg float_right"
-					id="addNew_ServiceInstanceButton">
-					<f:param name="newInstance"
-						value="#{newServiceInstance.addNewServiceInstance()}"></f:param>
+					id="addNew_ServiceInstanceButton" action="#{newServiceInstance.addNewServiceInstance()}">
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</h:commandLink>
 				<div id="elemPerPageDiv" class="input-group float_right">
@@ -140,21 +138,41 @@
 				<nav aria-label="Page navigation">
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
-						<li class="disabled"><span> <span aria-hidden="true">&lt;</span>
-						</span></li>
-						<li class="active"><span>1 <span class="sr-only">(current)</span></span>
-						</li>
-						<li><a href="#"><span>2 <span class="sr-only"></span></span></a></li>
-						<h:commandLink rendered="false" 
-						value="xxx">
-							<span>3 <span class="sr-only"></span></span>
-						</h:commandLink>
-						<li><a href="#"><span>4 <span class="sr-only"></span></span></a></li>
-						<li><a href="#"><span>10 <span class="sr-only"></span></span></a></li>
-						<!-- last page should be shown here -->
-						<li><a href="#" aria-label="Next"> <span
-								aria-hidden="true">&gt;</span>
-						</a></li>
+						<li
+							class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
+								rendered="true}"
+								value="&lt;">
+							</h:commandLink></li>
+						<li
+							class="#{serviceinstance.paginationCollection.firstElementClass}"><h:commandLink
+								rendered="true}"
+								value="#{serviceinstance.paginationCollection.firstElement}">
+							</h:commandLink></li>
+							<li
+							class="#{serviceinstance.paginationCollection.secondElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showSecondElem}}"
+								value="#{serviceinstance.paginationCollection.secondElement}">
+							</h:commandLink></li>
+							<li
+							class="#{serviceinstance.paginationCollection.thirdElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showThirdElem}}"
+								value="#{serviceinstance.paginationCollection.thirdElement}">
+							</h:commandLink></li>
+							<li
+							class="#{serviceinstance.paginationCollection.fourthElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showFourthElem}}"
+								value="#{serviceinstance.paginationCollection.fourthElement}">
+							</h:commandLink></li>
+							<li
+							class="#{serviceinstance.paginationCollection.fifthElementClass}"><h:commandLink
+								rendered="#{serviceinstance.paginationCollection.showFifthElem}}"
+								value="#{serviceinstance.paginationCollection.fithElement}">
+							</h:commandLink></li>
+							<li
+							class="#{serviceinstance.paginationCollection.rightCaredClass}"><h:commandLink
+								rendered="true"
+								value="&gt;">
+							</h:commandLink></li>
 					</ul>
 				</nav>
 			</h:form>

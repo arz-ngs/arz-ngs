@@ -12,6 +12,7 @@ import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
+import at.arz.ngs.ui.data_collections.PaginationCollection;
 
 @ViewScoped
 @Named("serviceinstance")
@@ -27,12 +28,14 @@ public class ServiceInstanceController
 
 	private PaginationCondition pagination;
 	private OrderCondition order;
+	private PaginationCollection paginationCollection;
 
 	@PostConstruct
 	public void init() {
 		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
 		order = new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING);
 		instances = service.getServiceInstances("*", "*", "*", "*", order, pagination).getServiceInstances();
+		paginationCollection = new PaginationCollection();
 	}
 
 	public List<ServiceInstanceOverview> getInstances() {
@@ -42,5 +45,13 @@ public class ServiceInstanceController
 	public String addNewServiceInstance() {
 		// is able to be invoked!!
 		return null;
+	}
+
+	public PaginationCollection getPaginationCollection() {
+		return paginationCollection;
+	}
+
+	public PaginationCondition getPagination() {
+		return pagination;
 	}
 }
