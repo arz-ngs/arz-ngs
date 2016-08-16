@@ -93,7 +93,9 @@
 							placeholder="Suche nach Instanzen..." />
 					</f:facet>
 					<h:form>
-					<h:commandLink action="#{serviceInstanceDetail.showDetail(instance.instanceName, instance.serviceName, instance.environmentName, instance.hostName)}" value="#{instance.instanceName}" />
+						<h:commandLink
+							action="#{serviceInstanceDetail.showDetail(instance.instanceName, instance.serviceName, instance.environmentName, instance.hostName)}"
+							value="#{instance.instanceName}" />
 					</h:form>
 				</h:column>
 				<h:column>
@@ -122,18 +124,19 @@
 		<div id="settings_col" class="col-md-2">
 			<h:form id="paginationController">
 				<!-- bottom settings: new instance, pagination, elements per page -->
-				<h:commandLink type="button" styleClass="btn btn-primary btn-lg float_right"
+				<h:commandLink type="button"
+					styleClass="btn btn-primary btn-lg float_right"
 					id="addNew_ServiceInstanceButton">
-					<f:param name="newInstance" value="#{serviceinstance.addNewServiceInstance()}"></f:param>
+					<f:param name="newInstance"
+						value="#{newServiceInstance.addNewServiceInstance()}"></f:param>
 					<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 				</h:commandLink>
-				
 				<div id="elemPerPageDiv" class="input-group float_right">
-					<span class="input-group-addon" id="basic-addon1">Inst.
-						pro Seite</span>
-					<h:inputText id="elemPerPage" type="text" class="form-control" placeholder="Username" value="50" aria-describedby="basic-addon1" />
+					<span class="input-group-addon" id="basic-addon1">Inst. pro
+						Seite</span>
+					<h:inputText id="elemPerPage" type="text" class="form-control"
+						placeholder="Username" value="50" aria-describedby="basic-addon1" />
 				</div>
-				
 				<nav aria-label="Page navigation">
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
@@ -142,7 +145,10 @@
 						<li class="active"><span>1 <span class="sr-only">(current)</span></span>
 						</li>
 						<li><a href="#"><span>2 <span class="sr-only"></span></span></a></li>
-						<li><a href="#"><span>3 <span class="sr-only"></span></span></a></li>
+						<h:commandLink rendered="false" 
+						value="xxx">
+							<span>3 <span class="sr-only"></span></span>
+						</h:commandLink>
 						<li><a href="#"><span>4 <span class="sr-only"></span></span></a></li>
 						<li><a href="#"><span>10 <span class="sr-only"></span></span></a></li>
 						<!-- last page should be shown here -->
