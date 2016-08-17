@@ -13,6 +13,7 @@ public class OrderCondition {
 	public static final String ORDERBY_ENVIRONMENT = "environment";
 	public static final String ORDERBY_HOST = "host";
 	public static final String ORDERBY_SERVICEINSTANCE = "instance";
+	public static final String ORDERBY_STATUS = "status";
 
 	public static final String ASCENDING = "ascending";
 	public static final String DESCENDING = "descending";

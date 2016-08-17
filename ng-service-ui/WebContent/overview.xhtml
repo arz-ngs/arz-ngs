@@ -111,7 +111,11 @@
 								value="#{instance.instanceName}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">Status</f:facet>
+						<f:facet name="header">Status     
+								<h:commandLink action="#{serviceinstance.sortAction('status')}" > 
+   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.statusOrderSRC}" alt="asc_disabled" />
+								</h:commandLink>
+								</f:facet>
 						<h:outputText value="#{instance.status}" />
 					</h:column>
 				</h:dataTable>

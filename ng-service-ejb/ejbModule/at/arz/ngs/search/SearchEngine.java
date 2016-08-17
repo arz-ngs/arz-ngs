@@ -105,6 +105,8 @@ public class SearchEngine {
 				return "host.hostName";
 			case OrderCondition.ORDERBY_SERVICEINSTANCE:
 				return "serviceInstanceName";
+			case OrderCondition.ORDERBY_STATUS:
+				return "status";
 			default:
 				return "serviceInstanceName";
 		}

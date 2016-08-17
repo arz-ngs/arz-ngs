@@ -11,6 +11,7 @@ public class OrderImgCollection {
 	private String envOrderSRC;
 	private String hostOrderSRC;
 	private String instanceOrderSRC;
+	private String statusOrderSRC;
 
 	private String lastSortedBy = "service";
 	private boolean lastSortedASC = true; // true if ASC was last, false if descending
@@ -61,6 +62,14 @@ public class OrderImgCollection {
 
 	public void setInstanceOrderSRC(String instanceOrderSRC) {
 		this.instanceOrderSRC = instanceOrderSRC;
+	}
+
+	public String getStatusOrderSRC() {
+		return statusOrderSRC;
+	}
+
+	public void setStatusOrderSRC(String statusOrderSRC) {
+		this.statusOrderSRC = statusOrderSRC;
 	}
 
 }

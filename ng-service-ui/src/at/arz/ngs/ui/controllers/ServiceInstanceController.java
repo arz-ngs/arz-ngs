@@ -79,7 +79,7 @@ public class ServiceInstanceController
 		} else if (sortBy.equals("instance")) {
 			order.setOrderByField(OrderCondition.ORDERBY_SERVICEINSTANCE);
 		} else if (sortBy.equals("status")) {
-			// order.setOrderByField(OrderCondition.ORDERBY_SERVICEINSTANCE); //TODO
+			order.setOrderByField(OrderCondition.ORDERBY_STATUS);
 		}
 
 		instances = service	.getServiceInstances(	cumputeServiceRegex(),
@@ -101,6 +101,7 @@ public class ServiceInstanceController
 		orderCollection.setEnvOrderSRC(resolveOrderImg("envId"));
 		orderCollection.setHostOrderSRC(resolveOrderImg("host"));
 		orderCollection.setInstanceOrderSRC(resolveOrderImg("instance"));
+		orderCollection.setStatusOrderSRC(resolveOrderImg("status"));
 	}
 
 	private String resolveOrderImg(String field) {
