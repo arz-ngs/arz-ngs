@@ -57,7 +57,7 @@
 					
 				</div>
 			</div>
-				<h:dataTable
+				<h:dataTable id="overviewTable"
 					columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
 					headerClass="columnCenter" value="#{serviceinstance.instances}"
 					var="instance"
@@ -69,28 +69,40 @@
 						<input type="checkbox"></input>
 					</h:column>
 					<h:column>
-						<f:facet name="header">Service-Name
-							<input type="search" jsf:id="serviceRegex" class="searchService"
+						<f:facet name="header">Service-Name     
+								<h:commandLink action="#{serviceinstance.sortAction('service')}" > 
+   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.serviceOrderSRC}" alt="asc_disabled" />
+								</h:commandLink>
+							<input type="search" jsf:id="serviceRegex" class="searchService" 
 								placeholder="Suche nach Services..." value="#{serviceinstance.serviceRegex}"/>
 						</f:facet>
-						<h:outputText value="#{instance.serviceName}" />
+						<h:outputText value="#{instance.serviceName}" /> 
 					</h:column>
 					<h:column>
-						<f:facet name="header">EnvId
+						<f:facet name="header">EnvId     
+								<h:commandLink action="#{serviceinstance.sortAction('envId')}" > 
+   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.envOrderSRC}" alt="asc_disabled" />
+								</h:commandLink>
 					<input type="search" jsf:id="envIdRegex" class="searchEnvironment"
 								placeholder="Suche nach EnvIds..." value="#{serviceinstance.envIdRegex}"/>
 						</f:facet>
 						<h:outputText value="#{instance.environmentName}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">Host-Name
+						<f:facet name="header">Host-Name     
+								<h:commandLink action="#{serviceinstance.sortAction('host')}" > 
+   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.hostOrderSRC}" alt="asc_disabled" />
+								</h:commandLink>
 					<input type="search" jsf:id="hostRegex" class="searchHost"
 								placeholder="Suche nach Hosts..." value="#{serviceinstance.hostRegex}"/>
 						</f:facet>
 						<h:outputText value="#{instance.hostName}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">Instance-Name
+						<f:facet name="header">Instance-Name     
+								<h:commandLink action="#{serviceinstance.sortAction('instance')}" > 
+   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.instanceOrderSRC}" alt="asc_disabled" />
+								</h:commandLink>
 					<input type="search" jsf:id="instanceRegex" class="searchInstance"
 								placeholder="Suche nach Instanzen..." value="#{serviceinstance.instanceRegex}"/>
 						</f:facet>
@@ -138,7 +150,8 @@
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
 						<li class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
-								rendered="true" value="&lt;" action="#{serviceinstance.performPagination('_lt')}">
+								rendered="true" value="&lt;" action="#{serviceinstance.performPagination('_lt')}"
+								disabled="#{serviceinstance.paginationCollection.leftCaretDisabled}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.firstElementClass}"><h:commandLink
@@ -165,9 +178,10 @@
 								rendered="#{serviceinstance.paginationCollection.showFifthElem}"
 								value="#{serviceinstance.paginationCollection.fithElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fithElement)}">
 							</h:commandLink></li>
-						<li
+						<li 
 							class="#{serviceinstance.paginationCollection.rightCaretClass}"><h:commandLink
-								rendered="true" value="&gt;" action="#{serviceinstance.performPagination('_gt')}">
+								rendered="true" value="&gt;" action="#{serviceinstance.performPagination('_gt')}" 
+								disabled="#{serviceinstance.paginationCollection.rightCaretDisabled}">
 							</h:commandLink></li>
 					</ul>
 				</nav>

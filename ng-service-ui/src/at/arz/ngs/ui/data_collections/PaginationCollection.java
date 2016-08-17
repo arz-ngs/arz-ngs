@@ -8,6 +8,8 @@ public class PaginationCollection {
 
 	private boolean showLeftCaret = true;
 	private boolean showRightCaret = true;
+	private boolean leftCaretDisabled;
+	private boolean rightCaretDisabled;
 
 	private boolean showSecondElem = true;
 	private boolean showThirdElem = true;
@@ -27,6 +29,22 @@ public class PaginationCollection {
 	private String fourthElementClass;
 	private String fifthElementClass;
 	private String rightCaretClass;
+
+	public boolean isLeftCaretDisabled() {
+		return leftCaretDisabled;
+	}
+
+	public void setLeftCaretDisabled(boolean leftCaretDisabled) {
+		this.leftCaretDisabled = leftCaretDisabled;
+	}
+
+	public boolean isRightCaretDisabled() {
+		return rightCaretDisabled;
+	}
+
+	public void setRightCaretDisabled(boolean rightCaretDisabled) {
+		this.rightCaretDisabled = rightCaretDisabled;
+	}
 
 	public boolean isShowLeftCaret() {
 		return showLeftCaret;

@@ -110,6 +110,10 @@ html, body {
 	min-height: 500px;
 }
 
+.sortBy {
+	height: 20px;
+}
+
 #overviewForm\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
 	position: relative;
 	left: 50px;
