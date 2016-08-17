@@ -14,12 +14,13 @@
 	<link href="main_style-AS.css" rel="stylesheet"></link>
 	<link href="main_style-DT.css" rel="stylesheet"></link>
 	<script src="main_js-DT.js"></script>
+	<script src="main_js-AS.js"></script>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 	<script
 		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </h:head>
-<h:body>
+<body jsf:id="body" onload="onWindowLoad()" onresize="adjustCollumnSizes()" >
 	<h:form id="overviewForm">
 	<div class="row">
 		<div id="main_nav" class="col-md-2 navbar navbar-default">
@@ -42,31 +43,34 @@
 		<div id="mid-col" class="col-md-8 secondcol">
 			<div class="row">
 				<div class="col-md-10 menutop1">
+						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
+							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
+						</h:commandButton>
 						<h:commandButton value="Start" class="btn btn-primary"
-							id="buttonStart" action="#{actionController.start()}">
+							id="buttonStart" action="#{actionController.start(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Stop" class="btn btn-primary"
-							id="buttonStop" action="#{actionController.stop()}">
+							id="buttonStop" action="#{actionController.stop(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Restart" class="btn btn-primary"
-							id="buttonRestart" action="#{actionController.restart()}">
+							id="buttonRestart" action="#{actionController.restart(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Status" class="btn btn-primary"
-							id="buttonStatus" action="#{actionController.status()}">
+							id="buttonStatus" action="#{actionController.status(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 					
 				</div>
 			</div>
 				<h:dataTable id="overviewTable"
 					columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
-					headerClass="columnCenter" value="#{serviceinstance.instances}"
-					var="instance"
+					headerClass="columnCenter" value="#{serviceinstance.instancesCollection}"
+					var="instanceCollection"
 					class="tbl table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">
-							<input type="checkbox"></input>
+								<input type="checkbox" onclick="check_all(this)"></input>
 						</f:facet>
-						<input type="checkbox"></input>
+						<h:selectBooleanCheckbox value="#{instanceCollection.checked}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Service-Name     
@@ -76,7 +80,7 @@
 							<input type="search" jsf:id="serviceRegex" class="searchService" 
 								placeholder="Suche nach Services..." value="#{serviceinstance.serviceRegex}"/>
 						</f:facet>
-						<h:outputText value="#{instance.serviceName}" /> 
+						<h:outputText value="#{instanceCollection.serviceInstance.serviceName}" /> 
 					</h:column>
 					<h:column>
 						<f:facet name="header">EnvId     
@@ -86,17 +90,17 @@
 					<input type="search" jsf:id="envIdRegex" class="searchEnvironment"
 								placeholder="Suche nach EnvIds..." value="#{serviceinstance.envIdRegex}"/>
 						</f:facet>
-						<h:outputText value="#{instance.environmentName}" />
+						<h:outputText value="#{instanceCollection.serviceInstance.environmentName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Host-Name     
 								<h:commandLink action="#{serviceinstance.sortAction('host')}" > 
    									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.hostOrderSRC}" alt="asc_disabled" />
 								</h:commandLink>
-					<input type="search" jsf:id="hostRegex" class="searchHost"
+								<input type="search" jsf:id="hostRegex" class="searchHost"
 								placeholder="Suche nach Hosts..." value="#{serviceinstance.hostRegex}"/>
 						</f:facet>
-						<h:outputText value="#{instance.hostName}" />
+						<h:outputText value="#{instanceCollection.serviceInstance.hostName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Instance-Name     
@@ -107,8 +111,8 @@
 								placeholder="Suche nach Instanzen..." value="#{serviceinstance.instanceRegex}"/>
 						</f:facet>
 							<h:commandLink
-								action="#{serviceInstanceDetail.showDetail(instance.instanceName, instance.serviceName, instance.environmentName, instance.hostName)}"
-								value="#{instance.instanceName}" />
+								action="#{serviceInstanceDetail.showDetail(instanceCollection.serviceInstance.instanceName, instanceCollection.serviceInstance.serviceName, instanceCollection.serviceInstance.environmentName, instanceCollection.serviceInstance.hostName)}"
+								value="#{instanceCollection.serviceInstance.instanceName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Status     
@@ -116,7 +120,7 @@
    									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.statusOrderSRC}" alt="asc_disabled" />
 								</h:commandLink>
 								</f:facet>
-						<h:outputText value="#{instance.status}" />
+						<h:outputText value="#{instanceCollection.serviceInstance.status}" />
 					</h:column>
 				</h:dataTable>
 			
@@ -192,5 +196,5 @@
 		</div>
 	</div>
 	</h:form>
-</h:body>
+</body>
 </html>

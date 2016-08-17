@@ -1,12 +1,14 @@
 package at.arz.ngs.ui.controllers;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
-import at.arz.ngs.serviceinstance.commands.action.PerformAction;
+import at.arz.ngs.ui.data_collections.OverviewCollection;
 
 @RequestScoped
 @Named("actionController")
@@ -17,35 +19,45 @@ public class ActionController {
 	
 	@PostConstruct
 	public void init() {
-		System.out.println("\n\n\n\n\\n\n\nTEST");
 	}
 	
-	public String start() {
-		PerformAction action = new PerformAction();
-		action.setPerformAction("start");
-		try {
-			service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action); // TODO
-		} catch (RuntimeException e) {
-			// TODO handle exception
+	public void start(List<OverviewCollection> overviewList) {
+		for (OverviewCollection oc : overviewList) {
+			if (oc.isChecked()) {
+				System.out.println("start service instance: " + oc.getServiceInstance().toString());
+				// invoke admin to perform action + exception handling
+			}
+			oc.setChecked(false); // set default, no checkbox checked
 		}
-		return null;
 	}
 	
-	public void stop() {
-		PerformAction action = new PerformAction();
-		action.setPerformAction("stop");
-		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
+	public void stop(List<OverviewCollection> overviewList) {
+		for (OverviewCollection oc : overviewList) {
+			if (oc.isChecked()) {
+				System.out.println("stop service instance: " + oc.getServiceInstance().toString());
+				// invoke admin to perform action + exception handling
+			}
+			oc.setChecked(false); // set default, no checkbox checked
+		}
 	}
 	
-	public void restart() {
-		PerformAction action = new PerformAction();
-		action.setPerformAction("restart");
-		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
+	public void restart(List<OverviewCollection> overviewList) {
+		for (OverviewCollection oc : overviewList) {
+			if (oc.isChecked()) {
+				System.out.println("restart service instance: " + oc.getServiceInstance().toString());
+				// invoke admin to perform action + exception handling
+			}
+			oc.setChecked(false); // set default, no checkbox checked
+		}
 	}
 
-	public void status() {
-		PerformAction action = new PerformAction();
-		action.setPerformAction("status");
-		service.performAction("arctis", "pebk123", "lnx003", "arctis_1", action);
+	public void status(List<OverviewCollection> overviewList) {
+		for (OverviewCollection oc : overviewList) {
+			if (oc.isChecked()) {
+				System.out.println("get status for service instance: " + oc.getServiceInstance().toString());
+				// invoke admin to perform action + exception handling
+			}
+			oc.setChecked(false); // set default, no checkbox checked
+		}
 	}
 }

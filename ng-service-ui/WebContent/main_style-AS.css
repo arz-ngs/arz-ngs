@@ -6,7 +6,6 @@
 	padding-right: 0;
 	margin: 0;
 	border: 0;
-	height: 100%;
 	background-color: #125D12;
 	min-height: 500px;
 }
@@ -22,7 +21,6 @@
 }
 
 html, body {
-	height: 100%; /*adjust to screen size*/
 	margin: 0;
 	padding: 0;
 }
@@ -39,6 +37,7 @@ html, body {
 .edit-new_mid {
 	margin-top: 100px;
 }
+
 
 .input_descriptor {
 	min-width: 130px;
@@ -236,6 +235,10 @@ tbody tr:hover {
 #overviewForm\:elemPerPage {
 	min-width: 50px;
 	max-width: 50px;
+}
+
+#overviewForm\:buttonFormSubmit {
+	display: none;
 }
 
 #pagination {

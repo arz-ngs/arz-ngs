@@ -1,6 +1,7 @@
 package at.arz.ngs.ui.controllers;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -14,6 +15,7 @@ import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.ui.data_collections.OrderImgCollection;
+import at.arz.ngs.ui.data_collections.OverviewCollection;
 import at.arz.ngs.ui.data_collections.PaginationCollection;
 
 @ViewScoped
@@ -26,7 +28,7 @@ public class ServiceInstanceController
 	@Inject
 	private ServiceInstanceAdmin service;
 
-	private List<ServiceInstanceOverview> instances;
+	private List<OverviewCollection> instancesCollection;
 
 	private PaginationCondition pagination;
 	private PaginationCollection paginationCollection;
@@ -44,10 +46,9 @@ public class ServiceInstanceController
 	public void init() {
 		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
 		order = new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING);
-		ServiceInstanceOverviewList si_overviewList =
-													service.getServiceInstances("*", "*", "*", "*", order, pagination);
-		numElementsFound = si_overviewList.getNumElementsFound();
-		instances = si_overviewList.getServiceInstances();
+
+		mapToOverviewCollection(service.getServiceInstances("*", "*", "*", "*", order, pagination));
+
 		paginationCollection = new PaginationCollection();
 		orderCollection = new OrderImgCollection();
 
@@ -55,8 +56,24 @@ public class ServiceInstanceController
 		doSortValidation("instance");
 	}
 
-	public List<ServiceInstanceOverview> getInstances() {
-		return instances;
+	private void mapToOverviewCollection(ServiceInstanceOverviewList list) {
+		numElementsFound = list.getNumElementsFound();
+
+		instancesCollection = new ArrayList<OverviewCollection>();
+		for (ServiceInstanceOverview o : list.getServiceInstances()) {
+			instancesCollection.add(new OverviewCollection(o));
+		}
+	}
+
+	public void formSubmit() {
+		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
+															cumputeEnvRegex(),
+															cumputeHostRegex(),
+															cumputeInstanceRegex(),
+															order,
+															pagination));
+
+		doPaginationValidation();
 	}
 
 	public void sortAction(String sortBy) {
@@ -82,13 +99,12 @@ public class ServiceInstanceController
 			order.setOrderByField(OrderCondition.ORDERBY_STATUS);
 		}
 
-		instances = service	.getServiceInstances(	cumputeServiceRegex(),
-													cumputeEnvRegex(),
-													cumputeHostRegex(),
-													cumputeInstanceRegex(),
-													order,
-													pagination)
-							.getServiceInstances();
+		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
+															cumputeEnvRegex(),
+															cumputeHostRegex(),
+															cumputeInstanceRegex(),
+															order,
+															pagination));
 
 		doSortValidation(sortBy);
 	}
@@ -96,7 +112,7 @@ public class ServiceInstanceController
 	private void doSortValidation(String lastSortedBy) {
 		orderCollection.setLastSortedASC(order.getOrder().equals(OrderCondition.ASCENDING));
 		orderCollection.setLastSortedBy(lastSortedBy);
-		
+
 		orderCollection.setServiceOrderSRC(resolveOrderImg("service"));
 		orderCollection.setEnvOrderSRC(resolveOrderImg("envId"));
 		orderCollection.setHostOrderSRC(resolveOrderImg("host"));
@@ -120,27 +136,22 @@ public class ServiceInstanceController
 		try {
 			int page = new Integer(newPage);
 			pagination.setCurrentPage(page);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			if (newPage.equals("_lt")) {
 				pagination.setCurrentPage(pagination.getCurrentPage() - 1);
-			}
-			else if (newPage.equals("_gt")) {
+			} else if (newPage.equals("_gt")) {
 				pagination.setCurrentPage(pagination.getCurrentPage() + 1);
-			}
-			else {
+			} else {
 				throw e;
 			}
 		}
 
-		ServiceInstanceOverviewList si_overviceList = service.getServiceInstances(	cumputeServiceRegex(),
-																					cumputeEnvRegex(),
-																					cumputeHostRegex(),
-																					cumputeInstanceRegex(),
-																					order,
-																					pagination);
-		numElementsFound = si_overviceList.getNumElementsFound();
-		instances = si_overviceList.getServiceInstances();
+		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
+															cumputeEnvRegex(),
+															cumputeHostRegex(),
+															cumputeInstanceRegex(),
+															order,
+															pagination));
 
 		doPaginationValidation();
 	}
@@ -156,8 +167,7 @@ public class ServiceInstanceController
 		int lastPage = 0;
 		if (overallElementCount % elemPerPage == 0) {
 			lastPage = overallElementCount / elemPerPage;
-		}
-		else {
+		} else {
 			lastPage = (overallElementCount / elemPerPage) + 1;
 		}
 
@@ -177,8 +187,7 @@ public class ServiceInstanceController
 			paginationCollection.setSecondElement("-1"); // not shown here
 			paginationCollection.setThirdElement("-1");
 			paginationCollection.setFourthElement("-1");
-		}
-		else if (numPages == 2) {
+		} else if (numPages == 2) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(false);
@@ -187,8 +196,7 @@ public class ServiceInstanceController
 			paginationCollection.setSecondElement("-1");
 			paginationCollection.setThirdElement("-1");
 			paginationCollection.setFourthElement("-1");
-		}
-		else if (numPages == 3) {
+		} else if (numPages == 3) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(true);
@@ -197,8 +205,7 @@ public class ServiceInstanceController
 			paginationCollection.setSecondElement("-1");
 			paginationCollection.setThirdElement("-1");
 			paginationCollection.setFourthElement("2");
-		}
-		else if (numPages == 4) {
+		} else if (numPages == 4) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(true);
 			paginationCollection.setShowFourthElem(true);
@@ -207,8 +214,7 @@ public class ServiceInstanceController
 			paginationCollection.setSecondElement("-1");
 			paginationCollection.setThirdElement("2");
 			paginationCollection.setFourthElement("3");
-		}
-		else if (numPages >= 5) {
+		} else if (numPages >= 5) {
 			paginationCollection.setShowSecondElem(true);
 			paginationCollection.setShowThirdElem(true);
 			paginationCollection.setShowFourthElem(true);
@@ -219,13 +225,11 @@ public class ServiceInstanceController
 				paginationCollection.setSecondElement("2");
 				paginationCollection.setThirdElement("3");
 				paginationCollection.setFourthElement("4");
-			}
-			else if (currentPage == lastPage || currentPage == lastPage - 1) {
+			} else if (currentPage == lastPage || currentPage == lastPage - 1) {
 				paginationCollection.setFourthElement((lastPage - 1) + "");
 				paginationCollection.setThirdElement((lastPage - 2) + "");
 				paginationCollection.setSecondElement((lastPage - 3) + "");
-			}
-			else { //if the current page is somewhere in the middle
+			} else { // if the current page is somewhere in the middle
 				paginationCollection.setSecondElement((currentPage - 1) + "");
 				paginationCollection.setThirdElement(currentPage + "");
 				paginationCollection.setFourthElement((currentPage + 1) + "");
@@ -234,7 +238,7 @@ public class ServiceInstanceController
 
 		paginationCollection.setFithElement(lastPage + "");
 
-		//now highlight current page to be active
+		// now highlight current page to be active
 
 		if (paginationCollection.getFirstElement().equals(currentPage + "")) {
 			paginationCollection.setFirstElementClass(PaginationCollection.ACTIVE);
@@ -242,29 +246,25 @@ public class ServiceInstanceController
 			paginationCollection.setThirdElementClass(null);
 			paginationCollection.setFourthElementClass(null);
 			paginationCollection.setFifthElementClass(null);
-		}
-		else if (paginationCollection.getFithElement().equals(currentPage + "")) {
+		} else if (paginationCollection.getFithElement().equals(currentPage + "")) {
 			paginationCollection.setFirstElementClass(null);
 			paginationCollection.setSecondElementClass(null);
 			paginationCollection.setThirdElementClass(null);
 			paginationCollection.setFourthElementClass(null);
 			paginationCollection.setFifthElementClass(PaginationCollection.ACTIVE);
-		}
-		else if (paginationCollection.getSecondElement().equals(currentPage + "")) {
+		} else if (paginationCollection.getSecondElement().equals(currentPage + "")) {
 			paginationCollection.setFirstElementClass(null);
 			paginationCollection.setSecondElementClass(PaginationCollection.ACTIVE);
 			paginationCollection.setThirdElementClass(null);
 			paginationCollection.setFourthElementClass(null);
 			paginationCollection.setFifthElementClass(null);
-		}
-		else if (paginationCollection.getThirdElement().equals(currentPage + "")) {
+		} else if (paginationCollection.getThirdElement().equals(currentPage + "")) {
 			paginationCollection.setFirstElementClass(null);
 			paginationCollection.setSecondElementClass(null);
 			paginationCollection.setThirdElementClass(PaginationCollection.ACTIVE);
 			paginationCollection.setFourthElementClass(null);
 			paginationCollection.setFifthElementClass(null);
-		}
-		else if (paginationCollection.getFourthElement().equals(currentPage + "")) {
+		} else if (paginationCollection.getFourthElement().equals(currentPage + "")) {
 			paginationCollection.setFirstElementClass(null);
 			paginationCollection.setSecondElementClass(null);
 			paginationCollection.setThirdElementClass(null);
@@ -357,10 +357,6 @@ public class ServiceInstanceController
 		this.instanceRegex = instanceRegex;
 	}
 
-	public void setInstances(List<ServiceInstanceOverview> instances) {
-		this.instances = instances;
-	}
-
 	public void setPagination(PaginationCondition pagination) {
 		this.pagination = pagination;
 	}
@@ -375,6 +371,14 @@ public class ServiceInstanceController
 
 	public void setOrderCollection(OrderImgCollection orderCollection) {
 		this.orderCollection = orderCollection;
+	}
+
+	public List<OverviewCollection> getInstancesCollection() {
+		return instancesCollection;
+	}
+
+	public void setInstancesCollection(List<OverviewCollection> instancesCollection) {
+		this.instancesCollection = instancesCollection;
 	}
 
 }
