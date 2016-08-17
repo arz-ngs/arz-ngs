@@ -8,7 +8,7 @@
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
-	<title>Service Instance Detail</title>
+	<title>Detailansicht Service Instanz</title>
 	<link rel="stylesheet" type="text/css"
 		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
 	<link href="main_style-AS.css" rel="stylesheet"></link>
@@ -16,12 +16,14 @@
 	<script src="main_js-AS.js"></script>
 	<script src="main_js-DT.js"></script>
 	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.9/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.9/js/bootstrap-dialog.min.js"></script>
 </h:head>
 <h:body>
-	<h:form>
+	<h:form id="overviewForm">
 		<div class="row">
 			<div id="main_nav" class="col-md-2 navbar navbar-default">
 				<div>
@@ -54,10 +56,10 @@
 					<div>
 						<!-- general input/settings -->
 						<div>
-							<h1>
+							<h2>
 								#{serviceInstanceDetail.completeName}<span style="float: right;"
 									class="label label-default">#{serviceInstanceDetail.status}</span>
-							</h1>
+							</h2>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
@@ -65,28 +67,30 @@
 							<h:inputText value="#{serviceInstanceDetail.instance}"
 								type="text" class="form-control"
 								p:placeholder="Instanz eines Services"
-								aria-describedby="serviceInstanceName" disabled="true"></h:inputText>
+								aria-describedby="serviceInstanceName"
+								readonly="#{facesContext.renderResponse}" />
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
-							<h:inputText value="#{serviceInstanceDetail.service}" type="text"
+							<h:inputText value="#{serviceInstanceDetail.service}"
+								readonly="#{facesContext.renderResponse}" type="text"
 								class="form-control"
 								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
-								aria-describedby="serviceName" disabled="true"></h:inputText>
+								aria-describedby="serviceName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="environmentName">EnvId</span>
 							<h:inputText value="#{serviceInstanceDetail.environment}"
-								type="text" class="form-control"
-								p:placeholder="EnvId oder das Environment"
-								aria-describedby="environmentName" disabled="true"></h:inputText>
+								readonly="#{facesContext.renderResponse}" type="text"
+								class="form-control" p:placeholder="EnvId oder das Environment"
+								aria-describedby="environmentName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
 							<h:inputText value="#{serviceInstanceDetail.host}" type="text"
-								class="form-control" p:placeholder="Host"
-								aria-describedby="hostName" disabled="true"></h:inputText>
+								readonly="#{facesContext.renderResponse}" class="form-control"
+								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
 						</div>
 					</div>
 					<div class="outer_input_seperator">
@@ -97,40 +101,45 @@
 								Name</span>
 							<h:inputText value="#{serviceInstanceDetail.scriptName}"
 								type="text" class="form-control"
+								readonly="#{facesContext.renderResponse}"
 								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
-								aria-describedby="scriptName" disabled="true"></h:inputText>
+								aria-describedby="scriptName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="startPath">Start
 								Pfad</span>
 							<h:inputText value="#{serviceInstanceDetail.pathStart}"
 								type="text" class="form-control"
+								readonly="#{facesContext.renderResponse}"
 								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
-								aria-describedby="startPath" disabled="true"></h:inputText>
+								aria-describedby="startPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
 								Pfad</span>
 							<h:inputText value="#{serviceInstanceDetail.pathStop}"
 								type="text" class="form-control"
+								readonly="#{facesContext.renderResponse}"
 								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
-								aria-describedby="stopPath" disabled="true"></h:inputText>
+								aria-describedby="stopPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="restartPath">Restart
 								Pfad</span>
 							<h:inputText value="#{serviceInstanceDetail.pathRestart}"
 								type="text" class="form-control"
+								readonly="#{facesContext.renderResponse}"
 								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
-								aria-describedby="restartPath" disabled="true"></h:inputText>
+								aria-describedby="restartPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="statusPath">Status
 								Pfad</span>
 							<h:inputText value="#{serviceInstanceDetail.pathStatus}"
 								type="text" class="form-control"
+								readonly="#{facesContext.renderResponse}"
 								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
-								aria-describedby="statusPath" disabled="true"></h:inputText>
+								aria-describedby="statusPath"></h:inputText>
 						</div>
 					</div>
 					<div class="outer_input_seperator">
@@ -139,15 +148,15 @@
 						<div class="form-group">
 							<h:inputTextarea class="form-control" rows="5"
 								id="additionalInformation"
-								p:placeholder="Zusätzliche Informationen zur Intanz eines Services..."
-								disabled="true"></h:inputTextarea>
+								readonly="#{facesContext.renderResponse}"
+								p:placeholder="Zusätzliche Informationen zur Intanz eines Services..."></h:inputTextarea>
 						</div>
 					</div>
 					<div>
 						<!-- submit button -->
 						<h:commandButton value="Editieren" type="submit"
 							class="btn btn-primary float_right" id="submit_input"
-							action="#{editServiceInstance.editServiceInstance(serviceInstanceDetail.instance)}">
+							action="#{editServiceInstance.editServiceInstance(serviceInstanceDetail.instance, serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host)}">
 							<!-- 							<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span> -->
 						</h:commandButton>
 					</div>
@@ -168,7 +177,22 @@
 					</ul>
 				</div>
 			</div>
+			<div id="settings_col" class="col-md-2">
+				<!-- bottom settings: new instance, pagination, elements per page -->
+				<h:commandLink type="button"
+					styleClass="btn btn-primary btn-lg float_right"
+					id="delete_ServiceInstanceButton"
+					action="#{deleteServiceInstance.deleteServiceInstance(serviceInstanceDetail.instance, serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host)}">
+					<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+				</h:commandLink>
+			</div>
 		</div>
+		<h:outputScript rendered="#{serviceInstanceDetail.showPopup}">
+    	 BootstrapDialog.show({
+            title: 'Say-hello dialog',
+            message: '#{serviceInstanceDetail.error}'
+        });
+		</h:outputScript>
 	</h:form>
 </h:body>
 </html>

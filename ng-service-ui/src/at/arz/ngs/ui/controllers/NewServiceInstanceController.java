@@ -56,7 +56,7 @@ public class NewServiceInstanceController
 		scriptData.setPathStatus(this.pathStatus);
 		command.setScript(scriptData);
 		admin.createNewServiceInstance(command);
-		return "";
+		return "overview";
 	}
 
 	public String getInstance() {

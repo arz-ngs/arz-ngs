@@ -21,6 +21,8 @@ public class DetailViewController
 
 	@Inject
 	private ServiceInstanceAdmin admin;
+	private boolean showPopup;
+
 
 	private String instance;
 	private String service;
@@ -37,6 +39,16 @@ public class DetailViewController
 	private String pathRestart;
 	private String pathStatus;
 
+	private String error = "asdf";
+
+
+	public String getError() {
+		return error;
+	}
+
+	public void setError(String error) {
+		this.error = error;
+	}
 
 	@PostConstruct
 	public void init() {
@@ -57,7 +69,17 @@ public class DetailViewController
 
 
 	public String showDetail(String instance, String service, String environment, String host) {
-		ServiceInstanceResponse response = admin.getServiceInstance(service, environment, host, instance);
+		ServiceInstanceResponse response = null;
+		this.showPopup = true;
+		try {
+		response = admin.getServiceInstance(service, environment, host, instance);
+		} catch (RuntimeException e) {
+			this.error = e.getMessage();
+		}
+		// Ajax.oncomplete("alert('peek-a-boo');");
+		// FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("alert('peek-a-boo');");
+		// RequestContext.getCurrentInstance().execute("alert('Hi'')");
+
 		this.instance = response.getInstanceName();
 		this.service = response.getServiceName();
 		this.environment = response.getEnvironmentName();
@@ -135,6 +157,58 @@ public class DetailViewController
 
 	public String getPathStatus() {
 		return pathStatus;
+	}
+
+	public void setService(String service) {
+		this.service = service;
+	}
+
+	public void setEnvironment(String environment) {
+		this.environment = environment;
+	}
+
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public void setCompleteName(String completeName) {
+		this.completeName = completeName;
+	}
+
+	public void setScriptName(String scriptName) {
+		this.scriptName = scriptName;
+	}
+
+	public void setPathStart(String pathStart) {
+		this.pathStart = pathStart;
+	}
+
+	public void setPathStop(String pathStop) {
+		this.pathStop = pathStop;
+	}
+
+	public void setPathRestart(String pathRestart) {
+		this.pathRestart = pathRestart;
+	}
+
+	public void setPathStatus(String pathStatus) {
+		this.pathStatus = pathStatus;
+	}
+
+	public boolean isShowPopup() {
+		return showPopup;
+	}
+
+	public void setShowPopup(boolean showPopup) {
+		this.showPopup = showPopup;
 	}
 
 }

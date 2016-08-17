@@ -36,3 +36,32 @@
 	vertical-align: middle;
 }
 
+#overviewForm\:delete_ServiceInstanceButton {
+	background-color: red;
+	border: none;
+	bottom: 20px;
+	right: 20px;
+	position: fixed;
+}
+
+.hideElem {
+	display: none;
+}
+
+.modal-header {
+	background-color: red !important;
+}
+
+.modal-content {
+	width: 190%;
+	right: 45%;
+}
+
+
+#errorMessage {
+	background: grey;
+	z-index: 4;
+	position: fixed;
+	width: 100%;
+	height: 300px;
+}

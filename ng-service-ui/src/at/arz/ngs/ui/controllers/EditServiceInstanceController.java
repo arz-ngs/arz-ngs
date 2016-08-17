@@ -9,7 +9,8 @@ import javax.inject.Named;
 
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
-import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
+import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
 @RequestScoped
 @Named("editServiceInstance")
@@ -29,57 +30,80 @@ public class EditServiceInstanceController
 	private String oldPathStop;
 	private String oldPathRestart;
 	private String oldPathStatus;
+	private long version;
 
 	private String instance;
 	private String service;
 	private String environment;
 	private String host;
-	private String status;
 
-	private String scriptName;
-	private String pathStart;
-	private String pathStop;
-	private String pathRestart;
-	private String pathStatus;
+	private ServiceInstanceResponse response;
 
-	// private String completeName;
+	private String completeName;
 
 	@Inject
 	ServiceInstanceAdmin admin;
 
 	@PostConstruct
 	public void init() {
+		response = new ServiceInstanceResponse();
 	}
 
-	public String editServiceInstance(String a) {
-		System.err.println("\n\n\n\n\n" + a);
+	public ServiceInstanceResponse getResponse() {
+		return response;
+	}
 
-		System.err.println("\n\n\n\n" + this.instance + " edit");
+	public void setResponse(ServiceInstanceResponse response) {
+		this.response = response;
+	}
+
+	public String editServiceInstance(String instance, String service, String environment, String host) {
+		this.instance = instance;
+		this.service = service;
+		this.environment = environment;
+		this.host = host;
+		this.response = admin.getServiceInstance(service, environment, host, instance);
+		this.oldService = response.getServiceName();
+		this.oldEnvironment = response.getEnvironmentName();
+		this.oldHost = response.getHostName();
+		this.oldInstance = response.getInstanceName();
+		this.version = response.getVersion();
+		ScriptData oldScriptData = response.getScript();
+		this.oldScriptName = oldScriptData.getScriptName();
+		this.oldPathStart = oldScriptData.getPathStart();
+		this.oldPathStop = oldScriptData.getPathStop();
+		this.oldPathRestart = oldScriptData.getPathRestart();
+		this.oldPathStatus = oldScriptData.getPathStatus();
+		this.completeName = service + "/" + environment + "/" + host + "/" + instance;
 		return "editServiceInstance";
 	}
 
-	public String saveEditedServiceInstance() {
+	public String getCompleteName() {
+		return completeName;
+	}
 
-		CreateNewServiceInstance command = new CreateNewServiceInstance();
-		command.setServiceName(this.service);
-		command.setEnvironmentName(this.environment);
-		command.setHostName(this.host);
-		command.setInstanceName(this.instance);
-		// version
+	public String saveEditedServiceInstance() {
+		UpdateServiceInstance command = new UpdateServiceInstance();
+		command.setServiceName(this.oldService);
+		command.setEnvironmentName(this.oldEnvironment);
+		command.setHostName(this.oldHost);
+		command.setInstanceName(this.oldInstance);
+
 		ScriptData scriptData = new ScriptData();
-		scriptData.setScriptName(this.scriptName);
-		scriptData.setPathStart(this.pathStart);
-		scriptData.setPathStop(this.pathStop);
-		scriptData.setPathRestart(this.pathRestart);
-		scriptData.setPathStatus(this.pathStatus);
+		scriptData.setScriptName(this.oldScriptName);
+		scriptData.setPathStart(this.oldPathStart);
+		scriptData.setPathStop(this.oldPathStop);
+		scriptData.setPathRestart(this.oldPathRestart);
+		scriptData.setPathStatus(this.oldPathStatus);
 		command.setScript(scriptData);
-		admin.createNewServiceInstance(command);
-		// admin.updateServiceInstance(command,
-		// oldServiceNameString,
-		// oldEnvironmentNameString,
-		// oldHostNameString,
-		// oldServiceInstanceNameString);
-		return "";
+		command.setVersion(this.version);
+
+		admin.updateServiceInstance(command,
+									this.response.getServiceName(),
+									this.response.getEnvironmentName(),
+									this.response.getHostName(),
+									this.response.getInstanceName());
+		return "overview?faces-redirect=true";
 	}
 
 
@@ -97,30 +121,6 @@ public class EditServiceInstanceController
 
 	public String getHost() {
 		return host;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public String getScriptName() {
-		return scriptName;
-	}
-
-	public String getPathStart() {
-		return pathStart;
-	}
-
-	public String getPathStop() {
-		return pathStop;
-	}
-
-	public String getPathRestart() {
-		return pathRestart;
-	}
-
-	public String getPathStatus() {
-		return pathStatus;
 	}
 
 	public String getOldInstance() {
@@ -219,28 +219,12 @@ public class EditServiceInstanceController
 		this.host = host;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public long getVersion() {
+		return version;
 	}
 
-	public void setScriptName(String scriptName) {
-		this.scriptName = scriptName;
-	}
-
-	public void setPathStart(String pathStart) {
-		this.pathStart = pathStart;
-	}
-
-	public void setPathStop(String pathStop) {
-		this.pathStop = pathStop;
-	}
-
-	public void setPathRestart(String pathRestart) {
-		this.pathRestart = pathRestart;
-	}
-
-	public void setPathStatus(String pathStatus) {
-		this.pathStatus = pathStatus;
+	public void setVersion(long version) {
+		this.version = version;
 	}
 
 }
