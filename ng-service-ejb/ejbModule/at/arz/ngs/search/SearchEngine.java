@@ -67,6 +67,13 @@ public class SearchEngine {
 													getFirstElement(paginationCondition));
 	}
 	
+	public int getNumElementsFound(	String serviceNameRegex,
+									String envNameRegex,
+									String hostNameRegex,
+									String instanceNameRegex) {
+		return searchEngine.getNumElementsFound(serviceNameRegex, envNameRegex, hostNameRegex, instanceNameRegex);
+	}
+
 	private int getElementsPerPage(PaginationCondition condition) {
 		if (condition.getElementsPerPage() < 1) {
 			condition.setElementsPerPage(50); // default show 50

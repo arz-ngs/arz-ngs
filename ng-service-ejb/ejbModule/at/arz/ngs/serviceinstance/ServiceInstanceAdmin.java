@@ -408,7 +408,7 @@ public class ServiceInstanceAdmin {
 																				environmentNameString,
 																				hostNameString,
 																				serviceInstanceNameString);
-		return convert(serviceInstances);
+		return convert(serviceInstances, serviceInstances.size());
 	}
 
 	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
@@ -421,7 +421,7 @@ public class ServiceInstanceAdmin {
 																				hostNameString,
 																				serviceInstanceNameString,
 																				order);
-		return convert(serviceInstances);
+		return convert(serviceInstances, serviceInstances.size());
 	}
 
 	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
@@ -436,10 +436,30 @@ public class ServiceInstanceAdmin {
 																				serviceInstanceNameString,
 																				order,
 																				pagination);
-		return convert(serviceInstances);
+		return convert(	serviceInstances,
+						getNumElementsFound(serviceNameString,
+											environmentNameString,
+											hostNameString,
+											serviceInstanceNameString));
 	}
 
-	private ServiceInstanceOverviewList convert(List<ServiceInstance> serviceInstances) {
+	/**
+	 * Returns the number of elements which are available in the current regex selection.
+	 * Differs to the size of the {@link ServiceInstanceOverviewList.serviceInstances} only if pagination is enabled.
+	 * If pagination is enabled the value is NOT the count of the current selection of the page, but the size of the
+	 * regex selection, thus the size of the regex selection is greater.
+	 */
+	private int getNumElementsFound(String serviceNameString,
+									String environmentNameString,
+									String hostNameString,
+									String serviceInstanceNameString) {
+		return engine.getNumElementsFound(	serviceNameString,
+											environmentNameString,
+											hostNameString,
+											serviceInstanceNameString);
+	}
+
+	private ServiceInstanceOverviewList convert(List<ServiceInstance> serviceInstances, int numElementsFound) {
 		ServiceInstanceOverviewList ovList = new ServiceInstanceOverviewList();
 		List<ServiceInstanceOverview> list = new ArrayList<ServiceInstanceOverview>();
 		for (ServiceInstance instance : serviceInstances) {
@@ -451,7 +471,10 @@ public class ServiceInstanceAdmin {
 			ov.setStatus(instance.getStatus().toString());
 			list.add(ov);
 		}
+
 		ovList.setServiceInstances(list);
+		ovList.setNumElementsFound(numElementsFound);
+
 		return ovList;
 	}
 

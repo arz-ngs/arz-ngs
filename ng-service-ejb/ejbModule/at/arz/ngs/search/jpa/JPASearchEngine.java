@@ -43,8 +43,7 @@ public class JPASearchEngine {
 														String hostNameRegex,
 														String instanceNameRegex) {
 
-		String query = "SELECT SI from ServiceInstance SI "
-						+ "WHERE "
+		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
 						+ "CAST(SI.service.serviceName CHAR(255)) LIKE :serviceNameRegex AND "
 						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
 						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
@@ -129,6 +128,30 @@ public class JPASearchEngine {
 		getInstances.setFirstResult(startByElement);
 
 		return getInstances.getResultList();
+	}
+
+	public int getNumElementsFound(	String serviceNameRegex,
+									String envNameRegex,
+									String hostNameRegex,
+									String instanceNameRegex) {
+		String query = "SELECT SI from ServiceInstance SI "+ "WHERE "
+						+ "CAST(SI.service.serviceName CHAR(255)) LIKE :serviceNameRegex AND "
+						+ "CAST(SI.environment.environmentName CHAR(255)) LIKE :envNameRegex AND "
+						+ "CAST(SI.host.hostName CHAR(255)) LIKE :hostNameRegex AND "
+						+ "CAST(SI.serviceInstanceName CHAR(255)) LIKE :instanceNameRegex";
+
+		if (isUnitTestRun) {
+			query = query.replace("CHAR", "VARCHAR");
+		}
+
+		TypedQuery<ServiceInstance> getInstances = entityManager.createQuery(query, ServiceInstance.class);
+
+		getInstances.setParameter("serviceNameRegex", serviceNameRegex.replace('*', '%'));
+		getInstances.setParameter("envNameRegex", envNameRegex.replace('*', '%'));
+		getInstances.setParameter("hostNameRegex", hostNameRegex.replace('*', '%'));
+		getInstances.setParameter("instanceNameRegex", instanceNameRegex.replace('*', '%'));
+
+		return getInstances.getResultList().size();
 	}
 
 	public List<ServiceInstance> orderByHostNameTest() {

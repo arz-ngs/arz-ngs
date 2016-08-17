@@ -12,6 +12,7 @@ import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
+import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.ui.data_collections.OrderImgCollection;
 import at.arz.ngs.ui.data_collections.PaginationCollection;
 
@@ -28,21 +29,25 @@ public class ServiceInstanceController
 	private List<ServiceInstanceOverview> instances;
 
 	private PaginationCondition pagination;
-	private OrderCondition order;
 	private PaginationCollection paginationCollection;
+	private int numElementsFound;
 
 	private String serviceRegex;
 	private String envIdRegex;
 	private String hostRegex;
 	private String instanceRegex;
 
+	private OrderCondition order;
 	private OrderImgCollection orderCollection;
 
 	@PostConstruct
 	public void init() {
 		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
 		order = new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING);
-		instances = service.getServiceInstances("*", "*", "*", "*", order, pagination).getServiceInstances();
+		ServiceInstanceOverviewList si_overviewList =
+													service.getServiceInstances("*", "*", "*", "*", order, pagination);
+		numElementsFound = si_overviewList.getNumElementsFound();
+		instances = si_overviewList.getServiceInstances();
 		paginationCollection = new PaginationCollection();
 		orderCollection = new OrderImgCollection();
 
@@ -126,7 +131,15 @@ public class ServiceInstanceController
 				throw e;
 			}
 		}
-		instances = service.getServiceInstances(cumputeServiceRegex(), cumputeEnvRegex(), cumputeHostRegex(), cumputeInstanceRegex(), order, pagination).getServiceInstances();
+
+		ServiceInstanceOverviewList si_overviceList = service.getServiceInstances(	cumputeServiceRegex(),
+																					cumputeEnvRegex(),
+																					cumputeHostRegex(),
+																					cumputeInstanceRegex(),
+																					order,
+																					pagination);
+		numElementsFound = si_overviceList.getNumElementsFound();
+		instances = si_overviceList.getServiceInstances();
 
 		doPaginationValidation();
 	}
@@ -135,8 +148,8 @@ public class ServiceInstanceController
 	 * Computes the fields in the pagination (ui)
 	 */
 	private void doPaginationValidation() {
-		int overallElementCount = 10; // get the real value from admin (with regex params, without pagination, without
-										// order, only number of count)
+		int overallElementCount = numElementsFound;
+
 		int currentPage = pagination.getCurrentPage();
 		int elemPerPage = pagination.getElementsPerPage();
 		int lastPage = 0;
