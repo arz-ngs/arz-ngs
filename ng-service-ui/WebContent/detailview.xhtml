@@ -189,8 +189,8 @@
 		</div>
 		<h:outputScript rendered="#{serviceInstanceDetail.showPopup}">
     	 BootstrapDialog.show({
-            title: 'Say-hello dialog',
-            message: '#{serviceInstanceDetail.error}'
+            title: '#{serviceInstanceDetail.errorList.headerInformation}',
+            message: '#{serviceInstanceDetail.errorList.messages}'
         });
 		</h:outputScript>
 	</h:form>

@@ -7,6 +7,11 @@ public class ErrorCollection {
 	private String message;
 	private String stackTrace;
 
+	public ErrorCollection(String error, String message) {
+		this.error = error;
+		this.message = message;
+	}
+
 	public String getError() {
 		return error;
 	}

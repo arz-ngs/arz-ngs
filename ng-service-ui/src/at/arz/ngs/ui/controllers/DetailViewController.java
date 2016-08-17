@@ -10,19 +10,19 @@ import javax.inject.Named;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
+import at.arz.ngs.ui.data_collections.ErrorCollection;
+import at.arz.ngs.ui.data_collections.ErrorList;
 
 @RequestScoped
 @Named("serviceInstanceDetail")
 public class DetailViewController
 		implements Serializable {
 
-
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private ServiceInstanceAdmin admin;
 	private boolean showPopup;
-
 
 	private String instance;
 	private String service;
@@ -32,7 +32,6 @@ public class DetailViewController
 	private String version;
 	private String completeName;
 
-
 	private String scriptName;
 	private String pathStart;
 	private String pathStop;
@@ -40,7 +39,7 @@ public class DetailViewController
 	private String pathStatus;
 
 	private String error = "asdf";
-
+	private ErrorList errorList;
 
 	public String getError() {
 		return error;
@@ -52,6 +51,7 @@ public class DetailViewController
 
 	@PostConstruct
 	public void init() {
+		errorList = new ErrorList();
 		// ServiceInstanceResponse response = admin.getServiceInstance("arctis", "pebk123", "lnx002", "arctis_1");
 		// instance = response.getInstanceName();
 		// service = response.getServiceName();
@@ -67,18 +67,19 @@ public class DetailViewController
 		// pathStatus = scriptData.getPathStatus();
 	}
 
-
 	public String showDetail(String instance, String service, String environment, String host) {
 		ServiceInstanceResponse response = null;
-		this.showPopup = true;
+
+		errorList = new ErrorList();
 		try {
-		response = admin.getServiceInstance(service, environment, host, instance);
+			response = admin.getServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
-			this.error = e.getMessage();
+			errorList.addError(new ErrorCollection(e.getClass().getSimpleName(), e.getMessage()));
 		}
-		// Ajax.oncomplete("alert('peek-a-boo');");
-		// FacesContext.getCurrentInstance().getPartialViewContext().getEvalScripts().add("alert('peek-a-boo');");
-		// RequestContext.getCurrentInstance().execute("alert('Hi'')");
+
+		if (errorList.getErrors().size() > 0) { // if an exception was thrown, display message
+			this.showPopup = true;
+		}
 
 		this.instance = response.getInstanceName();
 		this.service = response.getServiceName();
@@ -96,15 +97,6 @@ public class DetailViewController
 		pathStatus = scriptData.getPathStatus();
 		return "detailview";
 	}
-
-	// public String detail() {
-	//
-	// instance = "testInstance";
-	// service = "testService";
-	// environment = "testEnvironment";
-	// host = "testHost";
-	// return "";
-	// }
 
 	public String getCompleteName() {
 		return completeName;
@@ -133,7 +125,6 @@ public class DetailViewController
 	public String getHost() {
 		return host;
 	}
-
 
 	public String getStatus() {
 		return status;
@@ -209,6 +200,14 @@ public class DetailViewController
 
 	public void setShowPopup(boolean showPopup) {
 		this.showPopup = showPopup;
+	}
+
+	public ErrorList getErrorList() {
+		return errorList;
+	}
+
+	public void setErrorList(ErrorList errorList) {
+		this.errorList = errorList;
 	}
 
 }
