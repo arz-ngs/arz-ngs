@@ -1,4 +1,4 @@
-package at.arz.ngs.resources.exceptionWrapper;
+package at.arz.ngs.resources.exceptionMapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -9,7 +9,7 @@ import at.arz.ngs.api.exception.JPAException;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class JPAExceptionWrapper
+public class JPAExceptionMapper
 		implements ExceptionMapper<JPAException> {
 
 	@Override

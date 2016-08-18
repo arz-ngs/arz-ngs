@@ -7,17 +7,17 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
 import at.arz.ngs.resources.ServiceInstanceResource;
-import at.arz.ngs.resources.exceptionWrapper.AlreadyModifiedWrapper;
-import at.arz.ngs.resources.exceptionWrapper.AlreadyPerformWrapper;
-import at.arz.ngs.resources.exceptionWrapper.EmptyFieldWrapper;
-import at.arz.ngs.resources.exceptionWrapper.EnvironmentNotFoundWrapper;
-import at.arz.ngs.resources.exceptionWrapper.HostNotFoundWrapper;
-import at.arz.ngs.resources.exceptionWrapper.JPAExceptionWrapper;
-import at.arz.ngs.resources.exceptionWrapper.NoPermissionWrapper;
-import at.arz.ngs.resources.exceptionWrapper.RuntimeWrapper;
-import at.arz.ngs.resources.exceptionWrapper.ServiceInstanceAlreadyExistWrapper;
-import at.arz.ngs.resources.exceptionWrapper.ServiceInstanceNotFoundWrapper;
-import at.arz.ngs.resources.exceptionWrapper.WrongParamWrapper;
+import at.arz.ngs.resources.exceptionMapper.AlreadyModifiedMapper;
+import at.arz.ngs.resources.exceptionMapper.AlreadyPerformMapper;
+import at.arz.ngs.resources.exceptionMapper.EmptyFieldMapper;
+import at.arz.ngs.resources.exceptionMapper.EnvironmentNotFoundMapper;
+import at.arz.ngs.resources.exceptionMapper.HostNotFoundMapper;
+import at.arz.ngs.resources.exceptionMapper.JPAExceptionMapper;
+import at.arz.ngs.resources.exceptionMapper.NoPermissionMapper;
+import at.arz.ngs.resources.exceptionMapper.RuntimeMapper;
+import at.arz.ngs.resources.exceptionMapper.ServiceInstanceAlreadyExistMapper;
+import at.arz.ngs.resources.exceptionMapper.ServiceInstanceNotFoundMapper;
+import at.arz.ngs.resources.exceptionMapper.WrongParamMapper;
 
 @ApplicationPath("/v1")
 public class NgsRestAPIV1
@@ -30,17 +30,17 @@ public class NgsRestAPIV1
 		classes.add(ServiceInstanceResource.class);
 
 		// Exception Mapper
-		classes.add(AlreadyModifiedWrapper.class);
-		classes.add(AlreadyPerformWrapper.class);
-		classes.add(EmptyFieldWrapper.class);
-		classes.add(EnvironmentNotFoundWrapper.class);
-		classes.add(HostNotFoundWrapper.class);
-		classes.add(JPAExceptionWrapper.class);
-		classes.add(NoPermissionWrapper.class);
-		classes.add(RuntimeWrapper.class);
-		classes.add(ServiceInstanceAlreadyExistWrapper.class);
-		classes.add(ServiceInstanceNotFoundWrapper.class);
-		classes.add(WrongParamWrapper.class);
+		classes.add(AlreadyModifiedMapper.class);
+		classes.add(AlreadyPerformMapper.class);
+		classes.add(EmptyFieldMapper.class);
+		classes.add(EnvironmentNotFoundMapper.class);
+		classes.add(HostNotFoundMapper.class);
+		classes.add(JPAExceptionMapper.class);
+		classes.add(NoPermissionMapper.class);
+		classes.add(RuntimeMapper.class);
+		classes.add(ServiceInstanceAlreadyExistMapper.class);
+		classes.add(ServiceInstanceNotFoundMapper.class);
+		classes.add(WrongParamMapper.class);
 		return classes;
 	}
 }

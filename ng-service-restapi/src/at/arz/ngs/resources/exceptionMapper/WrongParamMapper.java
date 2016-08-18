@@ -1,19 +1,19 @@
-package at.arz.ngs.resources.exceptionWrapper;
+package at.arz.ngs.resources.exceptionMapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import at.arz.ngs.api.exception.HostNotFound;
+import at.arz.ngs.api.exception.WrongParam;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class HostNotFoundWrapper
-		implements ExceptionMapper<HostNotFound> {
+public class WrongParamMapper
+		implements ExceptionMapper<WrongParam> {
 
 	@Override
-	public Response toResponse(HostNotFound e) {
+	public Response toResponse(WrongParam e) {
 		NgsApiError error = new NgsApiError(e.getClass().getSimpleName(), e.getMessage());
 		return Response	.status(Response.Status.CONFLICT)
 						.type(MediaType.APPLICATION_JSON)

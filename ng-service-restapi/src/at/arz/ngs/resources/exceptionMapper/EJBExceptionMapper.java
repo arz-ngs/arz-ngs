@@ -1,4 +1,4 @@
-package at.arz.ngs.resources.exceptionWrapper;
+package at.arz.ngs.resources.exceptionMapper;
 
 import javax.ejb.EJBException;
 import javax.persistence.PersistenceException;
@@ -10,7 +10,7 @@ import javax.ws.rs.ext.Provider;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class EJBExceptionWrapper
+public class EJBExceptionMapper
 		implements ExceptionMapper<EJBException> {
 
 	@Override

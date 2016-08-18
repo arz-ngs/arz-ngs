@@ -1,4 +1,4 @@
-package at.arz.ngs.resources.exceptionWrapper;
+package at.arz.ngs.resources.exceptionMapper;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -11,10 +11,10 @@ import javax.ws.rs.ext.Provider;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class RuntimeWrapper
+public class RuntimeMapper
 		implements ExceptionMapper<RuntimeException> {
 
-	private static final Logger log = Logger.getLogger(RuntimeWrapper.class.getName());
+	private static final Logger log = Logger.getLogger(RuntimeMapper.class.getName());
 
 	@Override
 	public Response toResponse(RuntimeException e) {

@@ -1,19 +1,19 @@
-package at.arz.ngs.resources.exceptionWrapper;
+package at.arz.ngs.resources.exceptionMapper;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
-import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
+import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class ServiceInstanceAlreadyExistWrapper
-		implements ExceptionMapper<ServiceInstanceAlreadyExist> {
+public class EmptyFieldMapper
+		implements ExceptionMapper<EmptyField> {
 
 	@Override
-	public Response toResponse(ServiceInstanceAlreadyExist e) {
+	public Response toResponse(EmptyField e) {
 		NgsApiError error = new NgsApiError(e.getClass().getSimpleName(), e.getMessage());
 		return Response	.status(Response.Status.CONFLICT)
 						.type(MediaType.APPLICATION_JSON)
