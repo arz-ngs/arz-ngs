@@ -1,9 +1,11 @@
 package at.arz.ngs.ui.controllers;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -16,7 +18,7 @@ import at.arz.ngs.ui.data_collections.ErrorCollection;
 @RequestScoped
 @Named("serviceInstanceDetail")
 public class DetailViewController
-implements Serializable {
+		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,19 +45,9 @@ implements Serializable {
 	@PostConstruct
 	public void init() {
 		errorCollection = new ErrorCollection();
-		// ServiceInstanceResponse response = admin.getServiceInstance("arctis", "pebk123", "lnx002", "arctis_1");
-		// instance = response.getInstanceName();
-		// service = response.getServiceName();
-		// environment = response.getEnvironmentName();
-		// host = response.getHostName();
-		// status = response.getStatus().toString();
-		//
-		// ScriptData scriptData = response.getScript();
-		// scriptName = scriptData.getScriptName();
-		// pathStart = scriptData.getPathStart();
-		// pathStop = scriptData.getPathStop();
-		// pathRestart = scriptData.getPathRestart();
-		// pathStatus = scriptData.getPathStatus();
+
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+		showDetail(params.get("instance"), params.get("service"), params.get("env"), params.get("host"));
 	}
 
 	public String showDetail(String instance, String service, String environment, String host) {
@@ -66,7 +58,7 @@ implements Serializable {
 			response = admin.getServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
 			System.err.println("\n\n\n\n\n" + "ERROR");
-			errorCollection.addError(new Error(e.getClass().getSimpleName(), e.getMessage(),e.getStackTrace()));
+			errorCollection.addError(new Error(e.getClass().getSimpleName(), e.getMessage(), e.getStackTrace()));
 			errorCollection.setShowPopup(true);
 		}
 		if (!errorCollection.isShowPopup()) {

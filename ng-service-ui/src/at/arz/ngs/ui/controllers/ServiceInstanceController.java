@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.faces.view.ViewScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -20,7 +20,7 @@ import at.arz.ngs.ui.data_collections.OrderImgCollection;
 import at.arz.ngs.ui.data_collections.OverviewCollection;
 import at.arz.ngs.ui.data_collections.PaginationCollection;
 
-@ViewScoped
+@SessionScoped
 @Named("serviceinstance")
 public class ServiceInstanceController
 		implements Serializable {

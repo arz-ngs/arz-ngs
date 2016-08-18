@@ -23,6 +23,9 @@ public class NewServiceInstanceController
 	@Inject
 	ServiceInstanceAdmin admin;
 
+	@Inject
+	private ServiceInstanceController serviceInstanceController;
+
 	private String instance;
 	private String service;
 	private String environment;
@@ -68,6 +71,7 @@ public class NewServiceInstanceController
 			return null;
 		}
 
+		serviceInstanceController.formSubmit();
 		return "overview";
 	}
 

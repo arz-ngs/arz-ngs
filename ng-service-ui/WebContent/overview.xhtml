@@ -120,7 +120,7 @@
 					</h:column>
 					<h:column>
 						<f:facet name="header">Instance-Name     
-								<h:commandLink
+							<h:commandLink
 								action="#{serviceinstance.sortAction('instance')}">
 								<h:graphicImage class="sortBy"
 									value="#{serviceinstance.orderCollection.instanceOrderSRC}"
@@ -130,9 +130,13 @@
 								class="searchInstance" placeholder="Suche nach Instanzen..."
 								value="#{serviceinstance.instanceRegex}" />
 						</f:facet>
-						<h:commandLink
-							action="#{serviceInstanceDetail.showDetail(instanceCollection.serviceInstance.instanceName, instanceCollection.serviceInstance.serviceName, instanceCollection.serviceInstance.environmentName, instanceCollection.serviceInstance.hostName)}"
-							value="#{instanceCollection.serviceInstance.instanceName}" />
+						<h:outputLink value="detailview.xhtml">
+							<f:param name="instance" value="#{instanceCollection.serviceInstance.instanceName}"/>
+							<f:param name="service" value="#{instanceCollection.serviceInstance.serviceName}"/>
+							<f:param name="env" value="#{instanceCollection.serviceInstance.environmentName}"/>
+							<f:param name="host" value="#{instanceCollection.serviceInstance.hostName}"/>
+							<h:outputText value="#{instanceCollection.serviceInstance.instanceName}" />
+						</h:outputLink>
 					</h:column>
 					<h:column>
 						<f:facet name="header">Status     
@@ -235,7 +239,22 @@
             	label: 'Schließen',
             	action: function(dialogRef) {
             		dialogRef.close();
-            		history.go(-1);
+            		console.log("test");
+            	}
+            }]
+        });
+		</h:outputScript>
+		<h:outputScript
+			rendered="#{actionController.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{actionController.errorCollection.headerInformation}',
+            message: '#{actionController.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		console.log("test");
             	}
             }]
         });

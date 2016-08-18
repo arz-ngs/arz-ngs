@@ -539,7 +539,7 @@ public class ServiceInstanceAdmin {
 																				environment);
 		String status = serviceInstance.getStatus().name();
 		Script script = serviceInstance.getScript();
-		if (script == null) {
+		if (!checkScriptIfPathNotMissing(perform, script)) {
 			throw new EmptyField("Script must be set to perform an action on an instance!");
 		}
 		String param = perform.getPerformAction().toLowerCase();
@@ -569,6 +569,39 @@ public class ServiceInstanceAdmin {
 		}
 		// TODO execute method on server with the path as parameter
 		// execute(path)
+	}
+
+	private boolean checkScriptIfPathNotMissing(PerformAction action, Script script) {
+		if (script == null) {
+			return false;
+		}
+		switch (action.getPerformAction()) {
+			case "start":
+				if (script.getPathStart() == null|| script.getPathStart().getPath() == null
+					|| script.getPathStart().getPath().equals("")) {
+					return false;
+				}
+				break;
+			case "stop":
+				if (script.getPathStop() == null|| script.getPathStop().getPath() == null
+					|| script.getPathStop().getPath().equals("")) {
+					return false;
+				}
+				break;
+			case "restart":
+				if (script.getPathRestart() == null|| script.getPathRestart().getPath() == null
+					|| script.getPathRestart().getPath().equals("")) {
+					return false;
+				}
+				break;
+			case "status":
+				if (script.getPathStatus() == null|| script.getPathStatus().getPath() == null
+					|| script.getPathStatus().getPath().equals("")) {
+					return false;
+				}
+				break;
+		}
+		return true;
 	}
 
 	public String resolvePath(Path path) {

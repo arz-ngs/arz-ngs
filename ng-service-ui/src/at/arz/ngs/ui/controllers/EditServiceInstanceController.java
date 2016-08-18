@@ -47,6 +47,9 @@ public class EditServiceInstanceController
 	@Inject
 	ServiceInstanceAdmin admin;
 
+	@Inject
+	private ServiceInstanceController serviceInstanceController;
+
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -127,7 +130,9 @@ public class EditServiceInstanceController
 			errorCollection.setShowPopup(true);
 			return null;
 		}
-		return "overview?faces-redirect=true";
+
+		serviceInstanceController.formSubmit();
+		return "overview";
 	}
 
 	public String getInstance() {
