@@ -28,3 +28,15 @@ curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/ngs/api
 Perform Action:
 
 curl -H "Content-Type: application/json" -X POST -d '{"performAction":"start"}' http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx001/arctis_2/action
+
+
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_2", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_3", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_4", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+
+
+
+
+
+curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx003/arctis_1

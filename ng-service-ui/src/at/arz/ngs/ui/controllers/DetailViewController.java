@@ -10,19 +10,18 @@ import javax.inject.Named;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
+import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
-import at.arz.ngs.ui.data_collections.ErrorList;
 
 @RequestScoped
 @Named("serviceInstanceDetail")
 public class DetailViewController
-		implements Serializable {
+implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private ServiceInstanceAdmin admin;
-	private boolean showPopup;
 
 	private String instance;
 	private String service;
@@ -38,20 +37,11 @@ public class DetailViewController
 	private String pathRestart;
 	private String pathStatus;
 
-	private String error = "asdf";
-	private ErrorList errorList;
-
-	public String getError() {
-		return error;
-	}
-
-	public void setError(String error) {
-		this.error = error;
-	}
+	private ErrorCollection errorCollection;
 
 	@PostConstruct
 	public void init() {
-		errorList = new ErrorList();
+		errorCollection = new ErrorCollection();
 		// ServiceInstanceResponse response = admin.getServiceInstance("arctis", "pebk123", "lnx002", "arctis_1");
 		// instance = response.getInstanceName();
 		// service = response.getServiceName();
@@ -70,31 +60,30 @@ public class DetailViewController
 	public String showDetail(String instance, String service, String environment, String host) {
 		ServiceInstanceResponse response = null;
 
-		errorList = new ErrorList();
+		errorCollection = new ErrorCollection();
 		try {
 			response = admin.getServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
-			errorList.addError(new ErrorCollection(e.getClass().getSimpleName(), e.getMessage()));
+			System.err.println("\n\n\n\n\n" + "ERROR");
+			errorCollection.addError(new Error(e.getClass().getSimpleName(), e.getMessage(),e.getStackTrace()));
+			errorCollection.setShowPopup(true);
 		}
+		if (!errorCollection.isShowPopup()) {
+			this.instance = response.getInstanceName();
+			this.service = response.getServiceName();
+			this.environment = response.getEnvironmentName();
+			this.host = response.getHostName();
+			this.status = response.getStatus().name();
+			this.version = String.valueOf(response.getVersion());
+			this.completeName = this.service + "/" + this.environment + "/" + this.host + "/" + this.instance;
 
-		if (errorList.getErrors().size() > 0) { // if an exception was thrown, display message
-			this.showPopup = true;
+			ScriptData scriptData = response.getScript();
+			scriptName = scriptData.getScriptName();
+			pathStart = scriptData.getPathStart();
+			pathStop = scriptData.getPathStop();
+			pathRestart = scriptData.getPathRestart();
+			pathStatus = scriptData.getPathStatus();
 		}
-
-		this.instance = response.getInstanceName();
-		this.service = response.getServiceName();
-		this.environment = response.getEnvironmentName();
-		this.host = response.getHostName();
-		this.status = response.getStatus().name();
-		this.version = String.valueOf(response.getVersion());
-		this.completeName = this.service + "/" + this.environment + "/" + this.host + "/" + this.instance;
-
-		ScriptData scriptData = response.getScript();
-		scriptName = scriptData.getScriptName();
-		pathStart = scriptData.getPathStart();
-		pathStop = scriptData.getPathStop();
-		pathRestart = scriptData.getPathRestart();
-		pathStatus = scriptData.getPathStatus();
 		return "detailview";
 	}
 
@@ -194,20 +183,12 @@ public class DetailViewController
 		this.pathStatus = pathStatus;
 	}
 
-	public boolean isShowPopup() {
-		return showPopup;
+	public ErrorCollection getErrorCollection() {
+		return errorCollection;
 	}
 
-	public void setShowPopup(boolean showPopup) {
-		this.showPopup = showPopup;
-	}
-
-	public ErrorList getErrorList() {
-		return errorList;
-	}
-
-	public void setErrorList(ErrorList errorList) {
-		this.errorList = errorList;
+	public void setErrorCollection(ErrorCollection errorCollection) {
+		this.errorCollection = errorCollection;
 	}
 
 }

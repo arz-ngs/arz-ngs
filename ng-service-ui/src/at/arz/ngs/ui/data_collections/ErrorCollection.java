@@ -1,39 +1,66 @@
 package at.arz.ngs.ui.data_collections;
 
+import java.util.ArrayList;
+import java.util.List;
 
 public class ErrorCollection {
 
-	private String error;
-	private String message;
-	private String stackTrace;
+	private String headerInformation;
+	private List<Error> errors;
+	private String messages;
+	private int count;
+	private boolean showPopup;
 
-	public ErrorCollection(String error, String message) {
-		this.error = error;
-		this.message = message;
+	public ErrorCollection() {
+		errors = new ArrayList<Error>();
+		messages = "";
 	}
 
-	public String getError() {
-		return error;
+	public String getHeaderInformation() {
+		if (count == 1) {
+			return "1 Error ist aufgetreten!";
+		} else {
+			return count + " Errors sind aufgetreten!";
+		}
 	}
 
-	public void setError(String error) {
-		this.error = error;
+	public void setHeaderInformation(String headerInformation) {
+		this.headerInformation = headerInformation;
 	}
 
-	public String getMessage() {
-		return message;
+
+	public void addError(Error ec) {
+		errors.add(ec);
+		messages += ec.getError() + ":" + ec.getMessage() + "<br/><br/>";
+		count++;
 	}
 
-	public void setMessage(String message) {
-		this.message = message;
+	public List<Error> getErrors() {
+		return errors;
 	}
 
-	public String getStackTrace() {
-		return stackTrace;
+	public void setErrors(List<Error> errors) {
+		this.errors = errors;
 	}
 
-	public void setStackTrace(String stackTrace) {
-		this.stackTrace = stackTrace;
+	public String getMessages() {
+		for (Error e : errors) {
+			messages += e.getError() + ": " + e.getStackTrace() + "<br/><br/>";
+		}
+		return messages;
 	}
+
+	public void setMessages(String messages) {
+		this.messages = messages;
+	}
+
+	public boolean isShowPopup() {
+		return showPopup;
+	}
+
+	public void setShowPopup(boolean showPopup) {
+		this.showPopup = showPopup;
+	}
+	
 
 }

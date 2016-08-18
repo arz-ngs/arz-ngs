@@ -187,10 +187,18 @@
 				</h:commandLink>
 			</div>
 		</div>
-		<h:outputScript rendered="#{serviceInstanceDetail.showPopup}">
+		<h:outputScript rendered="#{serviceInstanceDetail.errorCollection.showPopup}">
     	 BootstrapDialog.show({
-            title: '#{serviceInstanceDetail.errorList.headerInformation}',
-            message: '#{serviceInstanceDetail.errorList.messages}'
+            title: '#{serviceInstanceDetail.errorCollection.headerInformation}',
+            message: '#{serviceInstanceDetail.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		history.go(-1);
+            	}
+            }]
         });
 		</h:outputScript>
 	</h:form>
