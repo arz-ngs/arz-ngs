@@ -14,6 +14,7 @@ import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
+import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 import at.arz.ngs.ui.data_collections.OrderImgCollection;
 import at.arz.ngs.ui.data_collections.OverviewCollection;
@@ -27,7 +28,7 @@ public class ServiceInstanceController
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	private ServiceInstanceAdmin service;
+	private ServiceInstanceAdmin admin;
 
 	private List<OverviewCollection> instancesCollection;
 
@@ -50,7 +51,13 @@ public class ServiceInstanceController
 		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
 		order = new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING);
 
-		mapToOverviewCollection(service.getServiceInstances("*", "*", "*", "*", order, pagination));
+		errorCollection = new ErrorCollection();
+		try {
+			mapToOverviewCollection(admin.getServiceInstances("*", "*", "*", "*", order, pagination));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
 
 		paginationCollection = new PaginationCollection();
 		orderCollection = new OrderImgCollection();
@@ -69,12 +76,18 @@ public class ServiceInstanceController
 	}
 
 	public void formSubmit() {
-		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
-															cumputeEnvRegex(),
-															cumputeHostRegex(),
-															cumputeInstanceRegex(),
-															order,
-															pagination));
+		errorCollection = new ErrorCollection();
+		try {
+			mapToOverviewCollection(admin.getServiceInstances(cumputeServiceRegex(),
+																cumputeEnvRegex(),
+																cumputeHostRegex(),
+																cumputeInstanceRegex(),
+																order,
+																pagination));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
 
 		doPaginationValidation();
 	}
@@ -102,12 +115,18 @@ public class ServiceInstanceController
 			order.setOrderByField(OrderCondition.ORDERBY_STATUS);
 		}
 
-		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
-															cumputeEnvRegex(),
-															cumputeHostRegex(),
-															cumputeInstanceRegex(),
-															order,
-															pagination));
+		errorCollection = new ErrorCollection();
+		try {
+			mapToOverviewCollection(admin.getServiceInstances(cumputeServiceRegex(),
+																cumputeEnvRegex(),
+																cumputeHostRegex(),
+																cumputeInstanceRegex(),
+																order,
+																pagination));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
 
 		doSortValidation(sortBy);
 	}
@@ -149,12 +168,18 @@ public class ServiceInstanceController
 			}
 		}
 
-		mapToOverviewCollection(service.getServiceInstances(cumputeServiceRegex(),
-															cumputeEnvRegex(),
-															cumputeHostRegex(),
-															cumputeInstanceRegex(),
-															order,
-															pagination));
+		errorCollection = new ErrorCollection();
+		try {
+			mapToOverviewCollection(admin.getServiceInstances(cumputeServiceRegex(),
+																cumputeEnvRegex(),
+																cumputeHostRegex(),
+																cumputeInstanceRegex(),
+																order,
+																pagination));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
 
 		doPaginationValidation();
 	}
@@ -313,11 +338,11 @@ public class ServiceInstanceController
 	}
 
 	public ServiceInstanceAdmin getService() {
-		return service;
+		return admin;
 	}
 
 	public void setService(ServiceInstanceAdmin service) {
-		this.service = service;
+		this.admin = service;
 	}
 
 	public OrderCondition getOrder() {

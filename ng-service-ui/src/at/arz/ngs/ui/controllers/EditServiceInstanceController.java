@@ -66,7 +66,17 @@ public class EditServiceInstanceController
 		this.service = service;
 		this.environment = environment;
 		this.host = host;
-		this.response = admin.getServiceInstance(service, environment, host, instance);
+
+		errorCollection = new ErrorCollection();
+		try {
+			this.response = admin.getServiceInstance(service, environment, host, instance);
+		} catch (RuntimeException e) {
+			System.err.println("\n\n\n\n\n" + "ERROR");
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+			return null;
+		}
+
 		this.oldService = response.getServiceName();
 		this.oldEnvironment = response.getEnvironmentName();
 		this.oldHost = response.getHostName();

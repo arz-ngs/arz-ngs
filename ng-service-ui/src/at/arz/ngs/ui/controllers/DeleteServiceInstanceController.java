@@ -30,10 +30,7 @@ public class DeleteServiceInstanceController
 	public String deleteServiceInstance(String instance, String service, String environment, String host) {
 		errorCollection = new ErrorCollection();
 		try {
-		admin.removeServiceInstance(service,
-									environment,
-									host,
-									instance);
+			admin.removeServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);

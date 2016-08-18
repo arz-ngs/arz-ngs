@@ -27,17 +27,16 @@
 			<div id="main_nav" class="col-md-2 navbar navbar-default">
 				<div>
 					<h1>
-						<a id="ebk-title" href="#">ebk</a>
+						<a id="ebk-title" href="">ebk</a>
 					</h1>
 				</div>
 				<div class="navigation navbar-collapse full-width "
 					id="nav-container">
 					<ul class="nav navbar-nav full-width">
-						<li class="active nav-list full-width"><a href="#">Service
+						<li class="active nav-list full-width"><a href="">Service
 								Übersicht</a></li>
 						<li class="nav-list full-width"><a href="#">Berechtigungen</a>
 						</li>
-						<li class="nav-list full-width"><a href="#">Statistiken</a></li>
 					</ul>
 				</div>
 			</div>
@@ -226,6 +225,21 @@
 				</nav>
 			</div>
 		</div>
+		<h:outputScript
+			rendered="#{serviceinstance.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{serviceinstance.errorCollection.headerInformation}',
+            message: '#{serviceinstance.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		history.go(-1);
+            	}
+            }]
+        });
+		</h:outputScript>
 	</h:form>
 </body>
 </html>
