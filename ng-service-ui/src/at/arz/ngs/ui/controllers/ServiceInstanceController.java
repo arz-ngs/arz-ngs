@@ -77,6 +77,8 @@ public class ServiceInstanceController
 
 	public void formSubmit() {
 		errorCollection = new ErrorCollection();
+		pagination.setCurrentPage(1);
+
 		try {
 			mapToOverviewCollection(admin.getServiceInstances(cumputeServiceRegex(),
 																cumputeEnvRegex(),
