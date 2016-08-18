@@ -40,6 +40,6 @@ curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123"
 
 
 
-
-
 curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx003/arctis_1
+
+curl -H "Content-Type: application/json" -X POST -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_4","version":"0", "script": {"pathStart":"init.d/arctis start", "pathStop":"stop"}}' http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx003/arctis_4

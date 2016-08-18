@@ -113,7 +113,7 @@ html, body {
 	height: 20px;
 }
 
-#overviewForm\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
+#ngs-form\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
 	position: relative;
 	left: 50px;
 	background-color: #29a20b;
@@ -121,7 +121,7 @@ html, body {
 	min-width: 100px;
 }
 
-#overviewForm\:buttonStop {
+#ngs-form\:buttonStop {
 	position: relative;
 	left: 80px;
 	background-color: #e21414;
@@ -129,7 +129,7 @@ html, body {
 	min-width: 100px;
 }
 
-#overviewForm\:buttonRestart {
+#ngs-form\:buttonRestart {
 	position: relative;
 	left: 110px;
 	background-color: #3465a4;
@@ -137,7 +137,7 @@ html, body {
 	min-width: 100px;
 }
 
-#overviewForm\:buttonStatus {
+#ngs-form\:buttonStatus {
 	position: relative;
 	left: 140px;
 	background-color: #f57900;
@@ -220,7 +220,7 @@ tbody tr:hover {
 	min-height: 200px;
 }
 
-#overviewForm\:addNew_ServiceInstanceButton {
+#ngs-form\:addNew_ServiceInstanceButton {
 	margin-right: 20px;
 	background-color: green;
 	margin-left: 500px; /*wrap next element sure to next line*/
@@ -232,12 +232,12 @@ tbody tr:hover {
 	margin-right: 20px;
 }
 
-#overviewForm\:elemPerPage {
+#ngs-form\:elemPerPage {
 	min-width: 50px;
 	max-width: 50px;
 }
 
-#overviewForm\:buttonFormSubmit {
+#ngs-form\:buttonFormSubmit {
 	display: none;
 }
 

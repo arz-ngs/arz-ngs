@@ -206,7 +206,7 @@ public class ServiceInstanceAdmin {
 			|| serviceInstanceName.getName().equals("")) {
 			throw new EmptyField("ServiceInstanceName");
 		}
-		
+
 		if (information == null) {
 			information = "";
 		}
@@ -318,13 +318,22 @@ public class ServiceInstanceAdmin {
 																					oldService,
 																					oldHost,
 																					oldEnvironment);
-		if (serviceInstances.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment) != null) {
-			throw new ServiceInstanceAlreadyExist(newService+ "/"
-													+ newEnvironment
-													+ "/"
-													+ newHost
-													+ "/"
-													+ serviceInstanceName);
+		if (!(oldServiceInstanceName.equals(serviceInstanceName)
+				&& oldEnvironmentName.equals(newEnvironment.getEnvironmentName())
+				&& oldServiceName.equals(newService.getServiceName())
+				&& oldHostName.equals(newHost.getHostName()))) {
+
+			try {
+				serviceInstances.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment);
+				throw new ServiceInstanceAlreadyExist(newService+ "/"
+														+ newEnvironment
+														+ "/"
+														+ newHost
+														+ "/"
+														+ serviceInstanceName);
+			} catch (ServiceInstanceNotFound e) {
+				// wanted here
+			}
 		}
 		if (oldServiceInstance != null) {
 			if (version == oldServiceInstance.getVersion()) {
@@ -363,7 +372,7 @@ public class ServiceInstanceAdmin {
 																				host,
 																				environment);
 		if (serviceInstance != null) {
-				serviceInstances.removeServiceInstance(serviceInstance);
+			serviceInstances.removeServiceInstance(serviceInstance);
 		} else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}

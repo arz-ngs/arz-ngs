@@ -3,87 +3,89 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
 	<title>Aktualisiere Service Instanz</title>
-	<link rel="stylesheet" type="text/css"
-		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
-	<link href="main_style-AS.css" rel="stylesheet"></link>
-	<link href="main_style-DT.css" rel="stylesheet"></link>
-	<script src="main_js-AS.js"></script>
-	<script src="main_js-DT.js"></script>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
+	<link href="css/main_style-AS.css" rel="stylesheet"></link>
+	<link href="css/main_style-DT.css" rel="stylesheet"></link>
+	<script src="js/main_js-AS.js"></script>
+	<script src="js/main_js-DT.js"></script>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap-dialog.min.css" rel="stylesheet"
+		type="text/css" />
+	<script src="js/bootstrap-dialog.min.js"></script>
 </h:head>
-<h:body>
-	<h:form>
-	<div class="row">
-		<div id="main_nav" class="col-md-2 navbar navbar-default">
-			<div>
-				<h1>
-					<a id="ebk-title" href="#">ebk</a>
-				</h1>
-			</div>
-			<div class="navigation navbar-collapse full-width "
-				id="nav-container">
-				<ul class="nav navbar-nav full-width">
-					<li class="active nav-list full-width"><a href="#">Service
-							Übersicht</a></li>
-					<li class="nav-list full-width"><a href="#">Berechtigungen</a>
-					</li>
-					<li class="nav-list full-width"><a href="#">Statistiken</a></li>
-				</ul>
-			</div>
-		</div>
-		<div id="mid-col" class="col-md-8 secondcol">
-			<div class="row">
-				<div class="col-md-10 menutop1">
-<!-- 					<form> -->
-<!-- 						<button type="button" class="btn btn-primary" id="buttonStart">Start</button> -->
-<!-- 						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button> -->
-<!-- 						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button> -->
-<!-- 						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button> -->
-<!-- 												<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button> -->
-<!-- 					</form> -->
+<body jsf:id="body" onload="onWindowLoad()">
+	<h:form id="ngs-form">
+		<div class="row">
+			<div id="main_nav" class="col-md-2 navbar navbar-default">
+				<div>
+					<h1>
+						<a id="ebk-title" href="#">ebk</a>
+					</h1>
+				</div>
+				<div class="navigation navbar-collapse full-width "
+					id="nav-container">
+					<ul class="nav navbar-nav full-width">
+						<li class="active nav-list full-width"><a href="#">Service
+								Übersicht</a></li>
+						<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+						</li>
+						<li class="nav-list full-width"><a href="#">Statistiken</a></li>
+					</ul>
 				</div>
 			</div>
-			<div class="edit-new_mid">
+			<div id="mid-col" class="col-md-8 secondcol">
+				<div class="row">
+					<div class="col-md-10 menutop1">
+						<!-- 					<form> -->
+						<!-- 						<button type="button" class="btn btn-primary" id="buttonStart">Start</button> -->
+						<!-- 						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button> -->
+						<!-- 						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button> -->
+						<!-- 						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button> -->
+						<!-- 												<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button> -->
+						<!-- 					</form> -->
+					</div>
+				</div>
+				<div class="edit-new_mid">
 					<div>
 						<!-- general input/settings -->
 						<div>
-							<h2>
-								#{editServiceInstance.completeName}
-							</h2>
+							<h2>#{editServiceInstance.completeName}</h2>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="serviceInstanceName">Service Instanz</span>
-							<h:inputText value="#{editServiceInstance.oldInstance}"  class="form-control"
-								p:placeholder="Instanz eines Services" type="text"
-								aria-describedby="serviceInstanceName"></h:inputText>
+							<h:inputText value="#{editServiceInstance.oldInstance}"
+								class="form-control" p:placeholder="Instanz eines Services"
+								type="text" aria-describedby="serviceInstanceName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="serviceName">Service</span>
-							<h:inputText value="#{editServiceInstance.oldService}" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldService}"
+								class="form-control"
 								p:placeholder="Service (von einem Service werden mehrere (Service) Instanzen erzeugt)"
-								aria-describedby="serviceName" type="text" ></h:inputText>
+								aria-describedby="serviceName" type="text"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="environmentName">EnvId</span>
-							<h:inputText value="#{editServiceInstance.oldEnvironment}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldEnvironment}"
+								type="text" class="form-control"
 								p:placeholder="EnvId oder das Environment"
 								aria-describedby="environmentName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="hostName">Host</span>
-							<h:inputText value="#{editServiceInstance.oldHost}" type="text" class="form-control"
-								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
+							<h:inputText value="#{editServiceInstance.oldHost}" type="text"
+								class="form-control" p:placeholder="Host"
+								aria-describedby="hostName"></h:inputText>
 						</div>
 					</div>
 					<div class="outer_input_seperator">
@@ -92,35 +94,40 @@
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="scriptName">Script
 								Name</span>
-							<h:inputText value="#{editServiceInstance.oldScriptName}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldScriptName}"
+								type="text" class="form-control"
 								p:placeholder="Name des Scripts (Feld für Single-Edit von Scriptpfaden leer lassen)"
 								aria-describedby="scriptName"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="startPath">Start
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.oldPathStart}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldPathStart}"
+								type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Start eines Services ausführt (inkl. Parameter wie start, etc.)"
 								aria-describedby="startPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="stopPath">Stopp
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.oldPathStop}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldPathStop}"
+								type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Stopp eines Services ausführt (inkl. Parameter wie stop, etc.)"
 								aria-describedby="stopPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="restartPath">Restart
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.oldPathRestart}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldPathRestart}"
+								type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Restart eines Services ausführt (inkl. Parameter wie restart, etc.)"
 								aria-describedby="restartPath"></h:inputText>
 						</div>
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor" id="statusPath">Status
 								Pfad</span>
-							<h:inputText value="#{editServiceInstance.oldPathStatus}" type="text" class="form-control"
+							<h:inputText value="#{editServiceInstance.oldPathStatus}"
+								type="text" class="form-control"
 								p:placeholder="Pfad zum Script, welches den Status eines Services zurück gibt (inkl. Parameter wie status, etc.)"
 								aria-describedby="statusPath"></h:inputText>
 						</div>
@@ -137,33 +144,55 @@
 					<div>
 						<!-- submit button -->
 						<h:commandButton type="submit" class="btn btn-primary float_right"
-							id="submit_input" value="Speichern" action="#{editServiceInstance.saveEditedServiceInstance}">
+							id="submit_input" value="Speichern"
+							action="#{editServiceInstance.saveEditedServiceInstance}">
 						</h:commandButton>
 					</div>
-
-					<h:inputText value="#{editServiceInstance.response.environmentName}" type="text" class="hideElem"></h:inputText>
-					<h:inputText value="#{editServiceInstance.response.hostName}" type="text" class="hideElem"></h:inputText>
-					<h:inputText value="#{editServiceInstance.response.serviceName}" type="text" class="hideElem"></h:inputText>
-					<h:inputText value="#{editServiceInstance.response.instanceName}" type="text" class="hideElem"></h:inputText>
-					<h:inputText value="#{editServiceInstance.version}" type="text" class="hideElem"></h:inputText>
+					<h:inputText
+						value="#{editServiceInstance.response.environmentName}"
+						type="text" class="hideElem"></h:inputText>
+					<h:inputText value="#{editServiceInstance.response.hostName}"
+						type="text" class="hideElem"></h:inputText>
+					<h:inputText value="#{editServiceInstance.response.serviceName}"
+						type="text" class="hideElem"></h:inputText>
+					<h:inputText value="#{editServiceInstance.response.instanceName}"
+						type="text" class="hideElem"></h:inputText>
+					<h:inputText value="#{editServiceInstance.version}" type="text"
+						class="hideElem"></h:inputText>
+				</div>
+			</div>
+			<div id="user-col" class="col-md-2 thirdcol">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Alexander Schiegl <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Ausloggen</a></li>
+					</ul>
+				</div>
 			</div>
 		</div>
-		<div id="user-col" class="col-md-2 thirdcol">
-			<div class="dropdown">
-				<button class="btn btn-default dropdown-toggle" type="button"
-					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="true">
-					Alexander Schiegl <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="#">Action</a></li>
-					<li><a href="#">Another action</a></li>
-					<li role="separator" class="divider"></li>
-					<li><a href="#">Ausloggen</a></li>
-				</ul>
-			</div>
-		</div>
-	</div>
-					</h:form>
-</h:body>
+		
+		<h:outputScript
+			rendered="#{editServiceInstance.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{editServiceInstance.errorCollection.headerInformation}',
+            message: '#{editServiceInstance.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		history.go(-1);
+            	}
+            }]
+        });
+		</h:outputScript>
+	</h:form>
+</body>
 </html>

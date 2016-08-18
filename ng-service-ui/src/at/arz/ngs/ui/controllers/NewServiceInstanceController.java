@@ -10,6 +10,8 @@ import javax.inject.Named;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
+import at.arz.ngs.ui.data_collections.Error;
+import at.arz.ngs.ui.data_collections.ErrorCollection;
 
 @RequestScoped
 @Named("newServiceInstance")
@@ -32,6 +34,7 @@ public class NewServiceInstanceController
 	private String pathRestart;
 	private String pathStatus;
 
+	private ErrorCollection errorCollection;
 
 	public String addNewServiceInstance() {
 		return "newServiceInstance";
@@ -55,7 +58,16 @@ public class NewServiceInstanceController
 		scriptData.setPathRestart(this.pathRestart);
 		scriptData.setPathStatus(this.pathStatus);
 		command.setScript(scriptData);
-		admin.createNewServiceInstance(command);
+
+		errorCollection = new ErrorCollection();
+		try {
+			admin.createNewServiceInstance(command);
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+			return null;
+		}
+
 		return "overview";
 	}
 
@@ -131,4 +143,11 @@ public class NewServiceInstanceController
 		this.pathStatus = pathStatus;
 	}
 
+	public ErrorCollection getErrorCollection() {
+		return errorCollection;
+	}
+
+	public void setErrorCollection(ErrorCollection errorCollection) {
+		this.errorCollection = errorCollection;
+	}
 }

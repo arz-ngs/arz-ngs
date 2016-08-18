@@ -11,6 +11,8 @@ import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
+import at.arz.ngs.ui.data_collections.Error;
+import at.arz.ngs.ui.data_collections.ErrorCollection;
 
 @RequestScoped
 @Named("editServiceInstance")
@@ -43,6 +45,8 @@ public class EditServiceInstanceController
 
 	@Inject
 	ServiceInstanceAdmin admin;
+
+	private ErrorCollection errorCollection;
 
 	@PostConstruct
 	public void init() {
@@ -98,14 +102,20 @@ public class EditServiceInstanceController
 		command.setScript(scriptData);
 		command.setVersion(this.version);
 
-		admin.updateServiceInstance(command,
-									this.response.getServiceName(),
-									this.response.getEnvironmentName(),
-									this.response.getHostName(),
-									this.response.getInstanceName());
+		errorCollection = new ErrorCollection();
+		try {
+			admin.updateServiceInstance(command,
+										this.response.getServiceName(),
+										this.response.getEnvironmentName(),
+										this.response.getHostName(),
+										this.response.getInstanceName());
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+			return null;
+		}
 		return "overview?faces-redirect=true";
 	}
-
 
 	public String getInstance() {
 		return instance;
@@ -225,6 +235,14 @@ public class EditServiceInstanceController
 
 	public void setVersion(long version) {
 		this.version = version;
+	}
+
+	public ErrorCollection getErrorCollection() {
+		return errorCollection;
+	}
+
+	public void setErrorCollection(ErrorCollection errorCollection) {
+		this.errorCollection = errorCollection;
 	}
 
 }

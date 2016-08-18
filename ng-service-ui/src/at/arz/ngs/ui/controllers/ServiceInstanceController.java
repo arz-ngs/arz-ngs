@@ -14,6 +14,7 @@ import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
+import at.arz.ngs.ui.data_collections.ErrorCollection;
 import at.arz.ngs.ui.data_collections.OrderImgCollection;
 import at.arz.ngs.ui.data_collections.OverviewCollection;
 import at.arz.ngs.ui.data_collections.PaginationCollection;
@@ -41,6 +42,8 @@ public class ServiceInstanceController
 
 	private OrderCondition order;
 	private OrderImgCollection orderCollection;
+
+	private ErrorCollection errorCollection;
 
 	@PostConstruct
 	public void init() {
@@ -381,4 +384,11 @@ public class ServiceInstanceController
 		this.instancesCollection = instancesCollection;
 	}
 
+	public ErrorCollection getErrorCollection() {
+		return errorCollection;
+	}
+
+	public void setErrorCollection(ErrorCollection errorCollection) {
+		this.errorCollection = errorCollection;
+	}
 }

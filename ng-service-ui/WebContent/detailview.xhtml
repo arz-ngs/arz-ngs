@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
 	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 	<meta http-equiv="Content-Type"
@@ -19,10 +20,9 @@
 	<link href="css/bootstrap-dialog.min.css" rel="stylesheet"
 		type="text/css" />
 	<script src="js/bootstrap-dialog.min.js"></script>
-	
 </h:head>
-<h:body>
-	<h:form id="overviewForm">
+<body jsf:id="body" onload="onWindowLoad()">
+	<h:form id="ngs-form">
 		<div class="row">
 			<div id="main_nav" class="col-md-2 navbar navbar-default">
 				<div>
@@ -44,22 +44,37 @@
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div class="row">
 					<div class="col-md-10 menutop1">
-						<button type="button" class="btn btn-primary" id="buttonStart">Start</button>
-						<button type="button" class="btn btn-primary" id="buttonStop">Stop</button>
-						<button type="button" class="btn btn-primary" id="buttonRestart">Restart</button>
-						<button type="button" class="btn btn-primary" id="buttonStatus">Status</button>
-						<!-- 						<button type="button" class="btn btn-primary" id="buttonSearch">Suchen</button> -->
+						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
+							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
+						</h:commandButton>
+						<h:commandButton value="Start" class="btn btn-primary"
+							id="buttonStart"
+							action="#{actionController.startSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
+						</h:commandButton>
+						<h:commandButton value="Stop" class="btn btn-primary"
+							id="buttonStop"
+							action="#{actionController.stopSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
+						</h:commandButton>
+						<h:commandButton value="Restart" class="btn btn-primary"
+							id="buttonRestart"
+							action="#{actionController.restartSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
+						</h:commandButton>
+						<h:commandButton value="Status" class="btn btn-primary"
+							id="buttonStatus"
+							action="#{actionController.statusSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
+<!-- 							<f:ajax execute="@form" render="@none" />  -->
+						</h:commandButton>
 					</div>
 				</div>
 				<div class="edit-new_mid">
 					<div>
 						<!-- general input/settings -->
-						<div>
-							<h2>
-								#{serviceInstanceDetail.completeName}<span style="float: right;"
-									class="label label-default">#{serviceInstanceDetail.status}</span>
-							</h2>
-						</div>
+<!-- 						<div> -->
+<!-- 							<h2> -->
+<!-- 								#{serviceInstanceDetail.completeName}<span style="float: right;" -->
+<!-- 									class="label label-default">#{serviceInstanceDetail.status}</span> -->
+<!-- 							</h2> -->
+<!-- 						</div> -->
 						<div class="input-group inner_input_seperator">
 							<span class="input-group-addon input_descriptor"
 								id="serviceInstanceName">Service Instanz</span>
@@ -90,6 +105,12 @@
 							<h:inputText value="#{serviceInstanceDetail.host}" type="text"
 								readonly="#{facesContext.renderResponse}" class="form-control"
 								p:placeholder="Host" aria-describedby="hostName"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="status">Status</span>
+							<h:inputText value="#{serviceInstanceDetail.status}" type="text"
+								readonly="#{facesContext.renderResponse}" class="form-control"
+								p:placeholder="status should never be empty!!" aria-describedby="status"></h:inputText>
 						</div>
 					</div>
 					<div class="outer_input_seperator">
@@ -201,6 +222,36 @@
             }]
         });
 		</h:outputScript>
+		<h:outputScript
+			rendered="#{actionController.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{actionController.errorCollection.headerInformation}',
+            message: '#{actionController.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		history.go(-1);
+            	}
+            }]
+        });
+		</h:outputScript>
+		<h:outputScript
+			rendered="#{deleteServiceInstance.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{deleteServiceInstance.errorCollection.headerInformation}',
+            message: '#{deleteServiceInstance.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		history.go(-1);
+            	}
+            }]
+        });
+		</h:outputScript>
 	</h:form>
-</h:body>
+</body>
 </html>
