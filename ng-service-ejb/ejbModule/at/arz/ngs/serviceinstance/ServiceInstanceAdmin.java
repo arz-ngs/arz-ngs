@@ -318,6 +318,14 @@ public class ServiceInstanceAdmin {
 																					oldService,
 																					oldHost,
 																					oldEnvironment);
+		if (serviceInstances.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment) != null) {
+			throw new ServiceInstanceAlreadyExist(newService+ "/"
+													+ newEnvironment
+													+ "/"
+													+ newHost
+													+ "/"
+													+ serviceInstanceName);
+		}
 		if (oldServiceInstance != null) {
 			if (version == oldServiceInstance.getVersion()) {
 				oldServiceInstance.setEnvironment(newEnvironment);
