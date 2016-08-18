@@ -36,7 +36,7 @@
 	vertical-align: middle;
 }
 
-#overviewForm\:delete_ServiceInstanceButton {
+#ngs-form\:delete_ServiceInstanceButton {
 	background-color: red;
 	border: none;
 	bottom: 20px;

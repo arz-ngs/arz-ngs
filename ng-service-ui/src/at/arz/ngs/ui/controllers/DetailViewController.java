@@ -30,6 +30,7 @@ implements Serializable {
 	private String status;
 	private String version;
 	private String completeName;
+	private String information;
 
 	private String scriptName;
 	private String pathStart;
@@ -69,6 +70,7 @@ implements Serializable {
 			errorCollection.setShowPopup(true);
 		}
 		if (!errorCollection.isShowPopup()) {
+			this.information = response.getInformation();
 			this.instance = response.getInstanceName();
 			this.service = response.getServiceName();
 			this.environment = response.getEnvironmentName();
@@ -189,6 +191,14 @@ implements Serializable {
 
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
 	}
 
 }

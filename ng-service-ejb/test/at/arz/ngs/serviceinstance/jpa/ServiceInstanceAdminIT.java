@@ -230,7 +230,6 @@ public class ServiceInstanceAdminIT
 																			instanceName);
 		assertTrue(serviceInstance.getScript().getPathStop().equals("stop"));
 		assertTrue(serviceInstance.getScript().getScriptName().contains("@@"));
-		System.err.println("\n" + serviceInstance.getScript().getScriptName() + "\n");
 		assertEquals(2, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
 
@@ -338,6 +337,51 @@ public class ServiceInstanceAdminIT
 		assertEquals("scriptName2", response.getScript().getScriptName());
 		assertEquals("status2", response.getScript().getPathStatus());
 		assertEquals("restart1", response.getScript().getPathRestart());
+
+		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
+	}
+
+	@Test
+	public void updateServiceInstanceTest3() {
+		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
+
+		String environmentName = "environment1";
+		String hostName = "host1";
+		String serviceName = "service1";
+		String instanceName = "instance1";
+
+		ScriptData scriptData = new ScriptData();
+		scriptData.setScriptName("scriptName1");
+		scriptData.setPathStart("start1");
+		scriptData.setPathStop("stop2");
+		scriptData.setPathRestart("restart1");
+		scriptData.setPathStatus("status1");
+		UpdateServiceInstance command = new UpdateServiceInstance();
+		command.setEnvironmentName(environmentName);
+		command.setHostName(hostName);
+		command.setInstanceName(instanceName);
+		command.setScript(scriptData);
+		command.setServiceName(serviceName);
+		command.setVersion(0);
+
+		String oldServiceName = "service1";
+		String oldEnvironmentName = "environment1";
+		String oldHostName = "host1";
+		String oldInstanceName = "instance1";
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
+																	environmentName,
+																	hostName,
+																	instanceName);
+		assertEquals("environment1", response.getEnvironmentName());
+		assertEquals("host1", response.getHostName());
+		assertEquals("service1", response.getServiceName());
+		assertEquals("instance1", response.getInstanceName());
+		assertEquals("scriptName1", response.getScript().getScriptName());
+		assertEquals("status1", response.getScript().getPathStatus());
+		assertEquals("restart1", response.getScript().getPathRestart());
+		assertEquals("stop2", response.getScript().getPathStop());
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
