@@ -26,6 +26,7 @@ public class EditServiceInstanceController
 	private String oldEnvironment;
 	private String oldHost;
 	private String oldStatus;
+	private String oldInformation;
 
 	private String oldScriptName;
 	private String oldPathStart;
@@ -88,6 +89,7 @@ public class EditServiceInstanceController
 		this.oldPathStop = oldScriptData.getPathStop();
 		this.oldPathRestart = oldScriptData.getPathRestart();
 		this.oldPathStatus = oldScriptData.getPathStatus();
+		this.oldInformation = response.getInformation();
 		this.completeName = service + "/" + environment + "/" + host + "/" + instance;
 		return "editServiceInstance";
 	}
@@ -102,6 +104,7 @@ public class EditServiceInstanceController
 		command.setEnvironmentName(this.oldEnvironment);
 		command.setHostName(this.oldHost);
 		command.setInstanceName(this.oldInstance);
+		command.setInformation(oldInformation);
 
 		ScriptData scriptData = new ScriptData();
 		scriptData.setScriptName(this.oldScriptName);
@@ -253,6 +256,14 @@ public class EditServiceInstanceController
 
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
+	}
+
+	public String getOldInformation() {
+		return oldInformation;
+	}
+
+	public void setOldInformation(String oldInformation) {
+		this.oldInformation = oldInformation;
 	}
 
 }

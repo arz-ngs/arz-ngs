@@ -187,13 +187,18 @@ public class ServiceInstanceAdmin {
 		PathStop pathStop = new PathStop(pathStopString);
 		PathRestart pathRestart = new PathRestart(pathRestartString);
 		PathStatus pathStatus = new PathStatus(pathStatusString);
+		Script sc;
 		try {
-			return scripts.getScript(scriptName);
+			sc = scripts.getScript(scriptName);
 		} catch (ScriptNotFound eScript) {
 			scripts.addScript(scriptName, pathStart, pathStop, pathRestart, pathStatus);
-			return scripts.getScript(scriptName);
+			sc = scripts.getScript(scriptName);
 		}
-
+		sc.setPathStart(pathStart);
+		sc.setPathStop(pathStop);
+		sc.setPathRestart(pathRestart);
+		sc.setPathStatus(pathStatus);
+		return sc;
 	}
 
 	private void createNewServiceInstance(	ServiceInstanceName serviceInstanceName,
