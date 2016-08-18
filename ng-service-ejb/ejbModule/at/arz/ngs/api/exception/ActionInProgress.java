@@ -14,7 +14,6 @@ public class ActionInProgress
 		extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-	private String serviceInstance;
 
 	public ActionInProgress(String serviceInstance) {
 		super(serviceInstance);

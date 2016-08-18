@@ -14,15 +14,8 @@ public class NoPermission
 
 	private static final long serialVersionUID = 1L;
 
-	private String reason;
-
 	public NoPermission(String reason) {
 		super(reason);
-		this.reason = reason;
-	}
-
-	public String getReason() {
-		return reason;
 	}
 
 }

@@ -16,12 +16,12 @@ public class AlreadyModified
 	private String object;
 
 	public AlreadyModified(String object) {
-		super(object + " wurde in der Zwischenzeit geändert!");
+		super(object);
 		this.object = object;
 	}
 
 	public String getReason() {
-		return object + " wurde in der Zwischenzeit geändert!";
+		return object;
 	}
 
 }

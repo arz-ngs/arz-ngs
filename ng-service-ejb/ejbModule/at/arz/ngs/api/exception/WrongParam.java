@@ -13,15 +13,9 @@ public class WrongParam
 		extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
-	private String param;
 
 	public WrongParam(String param) {
 		super(param);
-		this.param = param;
-	}
-
-	public String getReason() {
-		return this.param;
 	}
 
 }
