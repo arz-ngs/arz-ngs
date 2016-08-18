@@ -206,7 +206,7 @@ public class ServiceInstanceController
 
 		int numPages = lastPage;
 
-		if (numPages == 1) {
+		if (numPages == 1 || numPages == 0) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
 			paginationCollection.setShowFourthElem(false);
@@ -215,6 +215,7 @@ public class ServiceInstanceController
 			paginationCollection.setSecondElement("-1"); // not shown here
 			paginationCollection.setThirdElement("-1");
 			paginationCollection.setFourthElement("-1");
+			paginationCollection.setFithElement("-1");
 		} else if (numPages == 2) {
 			paginationCollection.setShowSecondElem(false);
 			paginationCollection.setShowThirdElem(false);
