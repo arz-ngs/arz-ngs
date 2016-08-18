@@ -3,129 +3,148 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	>
+	xmlns:jsf="http://xmlns.jcp.org/jsf">
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
 	<title>Service Instance Overview</title>
-	<link rel="stylesheet" type="text/css"
-		href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"></link>
-	<link href="main_style-AS.css" rel="stylesheet"></link>
-	<link href="main_style-DT.css" rel="stylesheet"></link>
-	<script src="main_js-DT.js"></script>
-	<script src="main_js-AS.js"></script>
-	<script
-		src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-	<script
-		src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+	
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
+	<link href="css/main_style-AS.css" rel="stylesheet"></link>
+	<link href="css/main_style-DT.css" rel="stylesheet"></link>
+	<script src="js/main_js-AS.js"></script>
+	<script src="js/main_js-DT.js"></script>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
 </h:head>
-<body jsf:id="body" onload="onWindowLoad()" onresize="adjustCollumnSizes()" >
+<body jsf:id="body" onload="onWindowLoad()"
+	onresize="adjustCollumnSizes()">
 	<h:form id="overviewForm">
-	<div class="row">
-		<div id="main_nav" class="col-md-2 navbar navbar-default">
-			<div>
-				<h1>
-					<a id="ebk-title" href="#">ebk</a>
-				</h1>
+		<div class="row">
+			<div id="main_nav" class="col-md-2 navbar navbar-default">
+				<div>
+					<h1>
+						<a id="ebk-title" href="#">ebk</a>
+					</h1>
+				</div>
+				<div class="navigation navbar-collapse full-width "
+					id="nav-container">
+					<ul class="nav navbar-nav full-width">
+						<li class="active nav-list full-width"><a href="#">Service
+								Übersicht</a></li>
+						<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+						</li>
+						<li class="nav-list full-width"><a href="#">Statistiken</a></li>
+					</ul>
+				</div>
 			</div>
-			<div class="navigation navbar-collapse full-width "
-				id="nav-container">
-				<ul class="nav navbar-nav full-width">
-					<li class="active nav-list full-width"><a href="#">Service
-							Übersicht</a></li>
-					<li class="nav-list full-width"><a href="#">Berechtigungen</a>
-					</li>
-					<li class="nav-list full-width"><a href="#">Statistiken</a></li>
-				</ul>
-			</div>
-		</div>
-		<div id="mid-col" class="col-md-8 secondcol">
-			<div class="row">
-				<div class="col-md-10 menutop1">
+			<div id="mid-col" class="col-md-8 secondcol">
+				<div class="row">
+					<div class="col-md-10 menutop1">
 						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
 							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
 						</h:commandButton>
 						<h:commandButton value="Start" class="btn btn-primary"
-							id="buttonStart" action="#{actionController.start(serviceinstance.instancesCollection)}">
+							id="buttonStart"
+							action="#{actionController.start(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Stop" class="btn btn-primary"
-							id="buttonStop" action="#{actionController.stop(serviceinstance.instancesCollection)}">
+							id="buttonStop"
+							action="#{actionController.stop(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Restart" class="btn btn-primary"
-							id="buttonRestart" action="#{actionController.restart(serviceinstance.instancesCollection)}">
+							id="buttonRestart"
+							action="#{actionController.restart(serviceinstance.instancesCollection)}">
 						</h:commandButton>
 						<h:commandButton value="Status" class="btn btn-primary"
-							id="buttonStatus" action="#{actionController.status(serviceinstance.instancesCollection)}">
+							id="buttonStatus"
+							action="#{actionController.status(serviceinstance.instancesCollection)}">
 						</h:commandButton>
-					
+					</div>
 				</div>
-			</div>
 				<h:dataTable id="overviewTable"
 					columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
-					headerClass="columnCenter" value="#{serviceinstance.instancesCollection}"
+					headerClass="columnCenter"
+					value="#{serviceinstance.instancesCollection}"
 					var="instanceCollection"
 					class="tbl table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">
-								<input type="checkbox" onclick="check_all(this)"></input>
+							<input type="checkbox" onclick="check_all(this)"></input>
 						</f:facet>
 						<h:selectBooleanCheckbox value="#{instanceCollection.checked}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Service-Name     
-								<h:commandLink action="#{serviceinstance.sortAction('service')}" > 
-   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.serviceOrderSRC}" alt="asc_disabled" />
-								</h:commandLink>
-							<input type="search" jsf:id="serviceRegex" class="searchService" 
-								placeholder="Suche nach Services..." value="#{serviceinstance.serviceRegex}"/>
+								<h:commandLink action="#{serviceinstance.sortAction('service')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.serviceOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="serviceRegex" class="searchService"
+								placeholder="Suche nach Services..."
+								value="#{serviceinstance.serviceRegex}" />
 						</f:facet>
-						<h:outputText value="#{instanceCollection.serviceInstance.serviceName}" /> 
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.serviceName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">EnvId     
-								<h:commandLink action="#{serviceinstance.sortAction('envId')}" > 
-   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.envOrderSRC}" alt="asc_disabled" />
-								</h:commandLink>
-					<input type="search" jsf:id="envIdRegex" class="searchEnvironment"
-								placeholder="Suche nach EnvIds..." value="#{serviceinstance.envIdRegex}"/>
+								<h:commandLink action="#{serviceinstance.sortAction('envId')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.envOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="envIdRegex"
+								class="searchEnvironment" placeholder="Suche nach EnvIds..."
+								value="#{serviceinstance.envIdRegex}" />
 						</f:facet>
-						<h:outputText value="#{instanceCollection.serviceInstance.environmentName}" />
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.environmentName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Host-Name     
-								<h:commandLink action="#{serviceinstance.sortAction('host')}" > 
-   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.hostOrderSRC}" alt="asc_disabled" />
-								</h:commandLink>
-								<input type="search" jsf:id="hostRegex" class="searchHost"
-								placeholder="Suche nach Hosts..." value="#{serviceinstance.hostRegex}"/>
+								<h:commandLink action="#{serviceinstance.sortAction('host')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.hostOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="hostRegex" class="searchHost"
+								placeholder="Suche nach Hosts..."
+								value="#{serviceinstance.hostRegex}" />
 						</f:facet>
-						<h:outputText value="#{instanceCollection.serviceInstance.hostName}" />
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.hostName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Instance-Name     
-								<h:commandLink action="#{serviceinstance.sortAction('instance')}" > 
-   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.instanceOrderSRC}" alt="asc_disabled" />
-								</h:commandLink>
-					<input type="search" jsf:id="instanceRegex" class="searchInstance"
-								placeholder="Suche nach Instanzen..." value="#{serviceinstance.instanceRegex}"/>
+								<h:commandLink
+								action="#{serviceinstance.sortAction('instance')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.instanceOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="instanceRegex"
+								class="searchInstance" placeholder="Suche nach Instanzen..."
+								value="#{serviceinstance.instanceRegex}" />
 						</f:facet>
-							<h:commandLink
-								action="#{serviceInstanceDetail.showDetail(instanceCollection.serviceInstance.instanceName, instanceCollection.serviceInstance.serviceName, instanceCollection.serviceInstance.environmentName, instanceCollection.serviceInstance.hostName)}"
-								value="#{instanceCollection.serviceInstance.instanceName}" />
+						<h:commandLink
+							action="#{serviceInstanceDetail.showDetail(instanceCollection.serviceInstance.instanceName, instanceCollection.serviceInstance.serviceName, instanceCollection.serviceInstance.environmentName, instanceCollection.serviceInstance.hostName)}"
+							value="#{instanceCollection.serviceInstance.instanceName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Status     
-								<h:commandLink action="#{serviceinstance.sortAction('status')}" > 
-   									 <h:graphicImage class="sortBy" value="#{serviceinstance.orderCollection.statusOrderSRC}" alt="asc_disabled" />
-								</h:commandLink>
-								</f:facet>
+								<h:commandLink action="#{serviceinstance.sortAction('status')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.statusOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+						</f:facet>
 						<h:outputText value="#{instanceCollection.serviceInstance.status}" />
 					</h:column>
 				</h:dataTable>
-			
-		</div>
-		<div id="user-col" class="col-md-2">
+			</div>
+			<div id="user-col" class="col-md-2">
 				<div class="dropdown">
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
@@ -139,8 +158,8 @@
 						<li><a href="#">Ausloggen</a></li>
 					</ul>
 				</div>
-		</div>
-		<div id="settings_col" class="col-md-2">
+			</div>
+			<div id="settings_col" class="col-md-2">
 				<!-- bottom settings: new instance, pagination, elements per page -->
 				<h:commandLink type="button"
 					styleClass="btn btn-primary btn-lg float_right"
@@ -152,49 +171,58 @@
 					<span class="input-group-addon" id="basic-addon1">Inst. pro
 						Seite</span>
 					<h:inputText id="elemPerPage" type="text" class="form-control"
-						placeholder="Username" value="#{serviceinstance.pagination.elementsPerPage}" aria-describedby="basic-addon1" />
+						placeholder="Username"
+						value="#{serviceinstance.pagination.elementsPerPage}"
+						aria-describedby="basic-addon1" />
 				</div>
 				<nav aria-label="Page navigation">
 					<!-- max 5 elements (without the arrows), last element before the arrow should be the last page -->
 					<ul id="pagination" class="pagination float_right">
 						<li class="#{serviceinstance.paginationCollection.leftCaretClass}"><h:commandLink
-								rendered="true" value="&lt;" action="#{serviceinstance.performPagination('_lt')}"
+								rendered="true" value="&lt;"
+								action="#{serviceinstance.performPagination('_lt')}"
 								disabled="#{serviceinstance.paginationCollection.leftCaretDisabled}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.firstElementClass}"><h:commandLink
 								rendered="true"
-								value="#{serviceinstance.paginationCollection.firstElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.firstElement)}">
+								value="#{serviceinstance.paginationCollection.firstElement}"
+								action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.firstElement)}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.secondElementClass}"><h:commandLink
 								rendered="#{serviceinstance.paginationCollection.showSecondElem}"
-								value="#{serviceinstance.paginationCollection.secondElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.secondElement)}">
+								value="#{serviceinstance.paginationCollection.secondElement}"
+								action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.secondElement)}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.thirdElementClass}"><h:commandLink
 								rendered="#{serviceinstance.paginationCollection.showThirdElem}"
-								value="#{serviceinstance.paginationCollection.thirdElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.thirdElement)}">
+								value="#{serviceinstance.paginationCollection.thirdElement}"
+								action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.thirdElement)}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.fourthElementClass}"><h:commandLink
 								rendered="#{serviceinstance.paginationCollection.showFourthElem}"
-								value="#{serviceinstance.paginationCollection.fourthElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fourthElement)}">
+								value="#{serviceinstance.paginationCollection.fourthElement}"
+								action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fourthElement)}">
 							</h:commandLink></li>
 						<li
 							class="#{serviceinstance.paginationCollection.fifthElementClass}"><h:commandLink
 								rendered="#{serviceinstance.paginationCollection.showFifthElem}"
-								value="#{serviceinstance.paginationCollection.fithElement}" action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fithElement)}">
+								value="#{serviceinstance.paginationCollection.fithElement}"
+								action="#{serviceinstance.performPagination(serviceinstance.paginationCollection.fithElement)}">
 							</h:commandLink></li>
-						<li 
+						<li
 							class="#{serviceinstance.paginationCollection.rightCaretClass}"><h:commandLink
-								rendered="true" value="&gt;" action="#{serviceinstance.performPagination('_gt')}" 
+								rendered="true" value="&gt;"
+								action="#{serviceinstance.performPagination('_gt')}"
 								disabled="#{serviceinstance.paginationCollection.rightCaretDisabled}">
 							</h:commandLink></li>
 					</ul>
 				</nav>
+			</div>
 		</div>
-	</div>
 	</h:form>
 </body>
 </html>
