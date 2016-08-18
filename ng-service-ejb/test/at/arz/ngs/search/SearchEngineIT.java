@@ -34,9 +34,6 @@ import at.arz.ngs.api.Status;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
-import at.arz.ngs.search.OrderCondition;
-import at.arz.ngs.search.PaginationCondition;
-import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
@@ -399,9 +396,9 @@ public class SearchEngineIT
 		environment3 = environmentRepository.getEnvironment(environmentName3);
 		script3 = scriptRepository.getScript(scriptName3);
 
-		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1);
-		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2);
-		repository.addServiceInstance(host3, service3, environment3, script3, serviceInstanceName3, status3);
+		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1, "");
+		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2, "");
+		repository.addServiceInstance(host3, service3, environment3, script3, serviceInstanceName3, status3, "");
 	}
 
 	/**

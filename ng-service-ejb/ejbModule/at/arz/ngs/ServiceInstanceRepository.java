@@ -34,7 +34,8 @@ public interface ServiceInstanceRepository {
 							Environment newEnvironment,
 							Script newScript,
 							ServiceInstanceName newServiceInstanceName,
-							Status newStatus);
+							Status newStatus,
+							String information);
 
 	void removeServiceInstance(ServiceInstance serviceInstance);
 

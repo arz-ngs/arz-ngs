@@ -26,6 +26,9 @@ public class UpdateServiceInstance {
 	@XmlElement(required = true)
 	private ScriptData script;
 
+	@XmlElement(required = false)
+	private String information;
+
 	/**
 	 * Has to be set to edit a ServiceInstance. If not set default is -1.
 	 */
@@ -78,6 +81,14 @@ public class UpdateServiceInstance {
 
 	public void setVersion(long version) {
 		this.version = version;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
 	}
 
 }

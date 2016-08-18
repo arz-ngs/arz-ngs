@@ -105,7 +105,8 @@ public class JPAServiceInstanceRepository
 									Environment environment,
 									Script script,
 									ServiceInstanceName serviceInstanceName,
-									Status status) {
+									Status status,
+									String information) {
 
 			ServiceInstance instance = new ServiceInstance(	serviceInstanceName,
 															service,
@@ -113,7 +114,7 @@ public class JPAServiceInstanceRepository
 															environment,
 															script,
 															status);
-
+		instance.setInformation(information);
 			entityManager.persist(instance);
 	}
 

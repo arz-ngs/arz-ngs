@@ -90,6 +90,9 @@ public class ServiceInstance {
 	@Column(name = "VERSION")
 	private long version = 0;
 
+	@Column(name = "INFORMATION")
+	private String information = "";
+
 	protected ServiceInstance() {
 		// jpa constructor
 	}
@@ -166,6 +169,14 @@ public class ServiceInstance {
 
 	public void incrementVersion() {
 		this.version++;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
 	}
 
 	@Override

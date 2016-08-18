@@ -33,6 +33,9 @@ public class ServiceInstanceResponse {
 	@XmlElement(required = true)
 	private long version;
 
+	@XmlElement(required = false)
+	private String information;
+
 	public String getEnvironmentName() {
 		return environmentName;
 	}
@@ -88,4 +91,13 @@ public class ServiceInstanceResponse {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
 }

@@ -110,6 +110,7 @@ public class ServiceInstanceAdmin {
 		String environmentNameString = command.getEnvironmentName();
 		String serviceInstanceNameString = command.getInstanceName();
 		ScriptData scriptData = command.getScript();
+		String information = command.getInformation();
 
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
@@ -133,7 +134,7 @@ public class ServiceInstanceAdmin {
 												pathStopString,
 												pathRestartString,
 												pathStatusString);
-		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript);
+		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript, information);
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) { // TODO exchange for multithreading: start with adding host,
@@ -199,10 +200,15 @@ public class ServiceInstanceAdmin {
 											Service service,
 											Host host,
 											Environment environment,
-											Script script) {
+											Script script,
+											String information) {
 		if (serviceInstanceName == null|| serviceInstanceName.getName() == null
 			|| serviceInstanceName.getName().equals("")) {
 			throw new EmptyField("ServiceInstanceName");
+		}
+		
+		if (information == null) {
+			information = "";
 		}
 
 		try {
@@ -216,7 +222,13 @@ public class ServiceInstanceAdmin {
 		} catch (ServiceInstanceNotFound e) {
 			// wanted
 		}
-		serviceInstances.addServiceInstance(host, service, environment, script, serviceInstanceName, Status.not_active);
+		serviceInstances.addServiceInstance(host,
+											service,
+											environment,
+											script,
+											serviceInstanceName,
+											Status.not_active,
+											information);
 	}
 
 	/**
@@ -244,6 +256,7 @@ public class ServiceInstanceAdmin {
 		String environmentNameString = command.getEnvironmentName();
 		String serviceInstanceNameString = command.getInstanceName();
 		ScriptData scriptData = command.getScript();
+		String information = command.getInformation();
 		long version = command.getVersion();
 
 		HostName hostName = new HostName(hostNameString);
@@ -263,6 +276,9 @@ public class ServiceInstanceAdmin {
 		if (scriptNameString == null || scriptNameString.equals("")) {
 			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
 		}
+		if (information == null) {
+			information = "";
+		}
 		Script newScript = getOrCreateNewScript(scriptNameString,
 												pathStartString,
 												pathStopString,
@@ -277,7 +293,8 @@ public class ServiceInstanceAdmin {
 								newEnvironment,
 								newScript,
 								serviceInstanceName,
-								version);
+								version,
+								information);
 
 		removeAllUnusedElements();
 	}
@@ -291,7 +308,8 @@ public class ServiceInstanceAdmin {
 										Environment newEnvironment,
 										Script newScript,
 										ServiceInstanceName serviceInstanceName,
-										long version) {
+										long version,
+										String information) {
 		Service oldService = services.getService(oldServiceName);
 		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
 		// exist
@@ -307,6 +325,7 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.setScript(newScript);
 				oldServiceInstance.setService(newService);
 				oldServiceInstance.renameServiceInstance(serviceInstanceName);
+				oldServiceInstance.setInformation(information);
 				oldServiceInstance.incrementVersion();
 				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
 			} else {
@@ -369,6 +388,7 @@ public class ServiceInstanceAdmin {
 			response.setInstanceName(serviceInstance.getServiceInstanceName().toString());
 			response.setStatus(serviceInstance.getStatus());
 			response.setVersion(serviceInstance.getVersion());
+			response.setInformation(serviceInstance.getInformation());
 
 			Script script = serviceInstance.getScript();
 			if (script != null) {

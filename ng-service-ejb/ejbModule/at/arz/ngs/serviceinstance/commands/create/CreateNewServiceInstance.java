@@ -26,6 +26,9 @@ public class CreateNewServiceInstance {
 	@XmlElement(required = true)
 	private ScriptData script;
 
+	@XmlElement(required = false)
+	private String information;
+
 	public String getEnvironmentName() {
 		return environmentName;
 	}
@@ -64,6 +67,14 @@ public class CreateNewServiceInstance {
 
 	public void setScript(ScriptData script) {
 		this.script = script;
+	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
 	}
 
 }
