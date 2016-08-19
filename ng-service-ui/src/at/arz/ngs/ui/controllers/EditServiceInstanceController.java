@@ -1,9 +1,11 @@
 package at.arz.ngs.ui.controllers;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -55,6 +57,10 @@ public class EditServiceInstanceController
 	@PostConstruct
 	public void init() {
 		response = new ServiceInstanceResponse();
+
+		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
+
+		editServiceInstance(params.get("instance"), params.get("service"), params.get("env"), params.get("host"));
 	}
 
 	public ServiceInstanceResponse getResponse() {
@@ -65,7 +71,7 @@ public class EditServiceInstanceController
 		this.response = response;
 	}
 
-	public String editServiceInstance(String instance, String service, String environment, String host) {
+	private String editServiceInstance(String instance, String service, String environment, String host) {
 		this.instance = instance;
 		this.service = service;
 		this.environment = environment;
@@ -75,7 +81,6 @@ public class EditServiceInstanceController
 		try {
 			this.response = admin.getServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
-			System.err.println("\n\n\n\n\n" + "ERROR");
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return null;

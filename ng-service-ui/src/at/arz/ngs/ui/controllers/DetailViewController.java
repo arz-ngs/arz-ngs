@@ -50,14 +50,13 @@ public class DetailViewController
 		showDetail(params.get("instance"), params.get("service"), params.get("env"), params.get("host"));
 	}
 
-	public String showDetail(String instance, String service, String environment, String host) {
+	private String showDetail(String instance, String service, String environment, String host) {
 		ServiceInstanceResponse response = null;
 
 		errorCollection = new ErrorCollection();
 		try {
 			response = admin.getServiceInstance(service, environment, host, instance);
 		} catch (RuntimeException e) {
-			System.err.println("\n\n\n\n\n" + "ERROR");
 			errorCollection.addError(new Error(e.getClass().getSimpleName(), e.getMessage(), e.getStackTrace()));
 			errorCollection.setShowPopup(true);
 		}

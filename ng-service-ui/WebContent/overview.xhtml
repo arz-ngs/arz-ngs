@@ -4,7 +4,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
@@ -43,7 +44,7 @@
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div class="row">
 					<div class="col-md-10 menutop1">
-						<h:commandButton value="enterFormSubmit" class="btn btn-primary"  
+						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
 							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
 						</h:commandButton>
 						<h:commandButton value="Start" class="btn btn-primary"
@@ -83,9 +84,11 @@
 									value="#{serviceinstance.orderCollection.serviceOrderSRC}"
 									alt="asc_disabled" />
 							</h:commandLink>
-							<input type="search" jsf:id="serviceRegex" class="searchService"
-								placeholder="Suche nach Services..."
-								value="#{serviceinstance.serviceRegex}" />
+							<h:inputText id="serviceRegex" class="searchService"
+								a:placeholder="Suche nach Services..."
+								value="#{serviceinstance.serviceRegex}">
+<!-- 								<f:ajax event="keyup" onevent="typeServiceInput()" render="overviewTable" execute="#{serviceinstance.formSubmit()}"/> -->
+							</h:inputText>
 						</f:facet>
 						<h:outputText
 							value="#{instanceCollection.serviceInstance.serviceName}" />
@@ -120,8 +123,7 @@
 					</h:column>
 					<h:column>
 						<f:facet name="header">Instance-Name     
-							<h:commandLink
-								action="#{serviceinstance.sortAction('instance')}">
+							<h:commandLink action="#{serviceinstance.sortAction('instance')}">
 								<h:graphicImage class="sortBy"
 									value="#{serviceinstance.orderCollection.instanceOrderSRC}"
 									alt="asc_disabled" />
@@ -131,11 +133,16 @@
 								value="#{serviceinstance.instanceRegex}" />
 						</f:facet>
 						<h:outputLink value="detailview.xhtml">
-							<f:param name="instance" value="#{instanceCollection.serviceInstance.instanceName}"/>
-							<f:param name="service" value="#{instanceCollection.serviceInstance.serviceName}"/>
-							<f:param name="env" value="#{instanceCollection.serviceInstance.environmentName}"/>
-							<f:param name="host" value="#{instanceCollection.serviceInstance.hostName}"/>
-							<h:outputText value="#{instanceCollection.serviceInstance.instanceName}" />
+							<f:param name="instance"
+								value="#{instanceCollection.serviceInstance.instanceName}" />
+							<f:param name="service"
+								value="#{instanceCollection.serviceInstance.serviceName}" />
+							<f:param name="env"
+								value="#{instanceCollection.serviceInstance.environmentName}" />
+							<f:param name="host"
+								value="#{instanceCollection.serviceInstance.hostName}" />
+							<h:outputText
+								value="#{instanceCollection.serviceInstance.instanceName}" />
 						</h:outputLink>
 					</h:column>
 					<h:column>

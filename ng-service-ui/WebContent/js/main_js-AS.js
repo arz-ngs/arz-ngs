@@ -16,3 +16,8 @@ function adjustCollumnSizes() {
 	
 	leftC.style.height = max_height + "px";
 }
+
+function typeServiceInput() {
+		console.log("input");
+		document.getElementById("ngs-form:overviewTable:serviceRegex").focus();
+}

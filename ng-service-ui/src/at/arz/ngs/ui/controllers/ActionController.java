@@ -100,7 +100,9 @@ public class ActionController {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("start");
 
-		performSingleAction(action, service, environment, host, instance);
+		if (!performSingleAction(action, service, environment, host, instance)) {
+			return;
+		}
 
 		try {
 			FacesContext.getCurrentInstance()
@@ -121,7 +123,9 @@ public class ActionController {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("stop");
 
-		performSingleAction(action, service, environment, host, instance);
+		if (!performSingleAction(action, service, environment, host, instance)) {
+			return;
+		}
 
 		try {
 			FacesContext.getCurrentInstance()
@@ -142,7 +146,9 @@ public class ActionController {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("restart");
 
-		performSingleAction(action, service, environment, host, instance);
+		if (!performSingleAction(action, service, environment, host, instance)) {
+			return;
+		}
 
 		try {
 			FacesContext.getCurrentInstance()
@@ -163,7 +169,9 @@ public class ActionController {
 		PerformAction action = new PerformAction();
 		action.setPerformAction("status");
 
-		performSingleAction(action, service, environment, host, instance);
+		if (!performSingleAction(action, service, environment, host, instance)) {
+			return;
+		}
 
 		try {
 			FacesContext.getCurrentInstance()
@@ -188,7 +196,7 @@ public class ActionController {
 		this.errorCollection = errorCollection;
 	}
 
-	private void performSingleAction(	PerformAction action,
+	private boolean performSingleAction(PerformAction action,
 										String service,
 										String environment,
 										String host,
@@ -200,7 +208,7 @@ public class ActionController {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			e.printStackTrace();
-			return;
+			return false;
 		}
 		System.out.println(action.getPerformAction()+ ": "
 							+ instance
@@ -210,5 +218,6 @@ public class ActionController {
 							+ environment
 							+ "/"
 							+ host);
+		return true;
 	}
 }
