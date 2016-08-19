@@ -1,0 +1,174 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<head>
+<title>Rollenübersicht</title>
+<link href="css/main_style-AS.css" rel="stylesheet"></link>
+<link href="css/main_style-DT.css" rel="stylesheet"></link>
+<script src="js/main_js-AS.js"></script>
+<script src="js/main_js-DT.js"></script>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+</head>
+<body jsf:id="body" onload="onWindowLoad()"
+	onresize="adjustCollumnSizes()">
+	<h:form id="ngs-form">
+		<div class="row">
+			<div id="main_nav" class="col-md-2 navbar navbar-default">
+				<div>
+					<h1>
+						<h:commandLink id="ebk-title"
+								action="#{serviceinstance.goToOverview()}"
+								value="ebk" />	
+					</h1>
+				</div>
+				<div class="navigation navbar-collapse full-width "
+					id="nav-container">
+					<ul class="nav navbar-nav full-width">
+						<li class="active nav-list full-width"><h:commandLink
+								action="#{serviceinstance.goToOverview()}"
+								value="Service Übersicht" />	
+						</li>
+						<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div id="mid-col" class="col-md-8 secondcol">
+				<div class="row">
+					<div class="col-md-10 menutop1">
+						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
+							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
+						</h:commandButton>
+						<h:commandButton value="Start" class="btn btn-primary"
+							id="buttonStart"
+							action="#{actionController.start(serviceinstance.instancesCollection)}">
+						</h:commandButton>
+						<h:commandButton value="Stop" class="btn btn-primary"
+							id="buttonStop"
+							action="#{actionController.stop(serviceinstance.instancesCollection)}">
+						</h:commandButton>
+						<h:commandButton value="Restart" class="btn btn-primary"
+							id="buttonRestart"
+							action="#{actionController.restart(serviceinstance.instancesCollection)}">
+						</h:commandButton>
+						<h:commandButton value="Status" class="btn btn-primary"
+							id="buttonStatus"
+							action="#{actionController.status(serviceinstance.instancesCollection)}">
+						</h:commandButton>
+					</div>
+				</div>
+				<h:dataTable id="overviewTable"
+					columnClasses="colCheckbox,colService,colEnvironment,colHost,colInstanceName,colStatus"
+					headerClass="columnCenter"
+					value="#{serviceinstance.instancesCollection}"
+					var="instanceCollection"
+					class="tbl table-responsive table-bordered table-hover">
+					<h:column>
+						<f:facet name="header">
+							<input type="checkbox" onclick="check_all(this)"></input>
+						</f:facet>
+						<h:selectBooleanCheckbox value="#{instanceCollection.checked}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Service-Name     
+								<h:commandLink action="#{serviceinstance.sortAction('service')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.serviceOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<h:inputText id="serviceRegex" class="searchService"
+								a:placeholder="Suche nach Services..."
+								value="#{serviceinstance.serviceRegex}">
+<!-- 								<f:ajax event="keyup" onevent="typeServiceInput()" render="overviewTable" execute="#{serviceinstance.formSubmit()}"/> -->
+							</h:inputText>
+						</f:facet>
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.serviceName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">EnvId     
+								<h:commandLink action="#{serviceinstance.sortAction('envId')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.envOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="envIdRegex"
+								class="searchEnvironment" placeholder="Suche nach EnvIds..."
+								value="#{serviceinstance.envIdRegex}" />
+						</f:facet>
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.environmentName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Host-Name     
+								<h:commandLink action="#{serviceinstance.sortAction('host')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.hostOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="hostRegex" class="searchHost"
+								placeholder="Suche nach Hosts..."
+								value="#{serviceinstance.hostRegex}" />
+						</f:facet>
+						<h:outputText
+							value="#{instanceCollection.serviceInstance.hostName}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Instance-Name     
+							<h:commandLink action="#{serviceinstance.sortAction('instance')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.instanceOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+							<input type="search" jsf:id="instanceRegex"
+								class="searchInstance" placeholder="Suche nach Instanzen..."
+								value="#{serviceinstance.instanceRegex}" />
+						</f:facet>
+						<h:outputLink value="detailview.xhtml">
+							<f:param name="instance"
+								value="#{instanceCollection.serviceInstance.instanceName}" />
+							<f:param name="service"
+								value="#{instanceCollection.serviceInstance.serviceName}" />
+							<f:param name="env"
+								value="#{instanceCollection.serviceInstance.environmentName}" />
+							<f:param name="host"
+								value="#{instanceCollection.serviceInstance.hostName}" />
+							<h:outputText
+								value="#{instanceCollection.serviceInstance.instanceName}" />
+						</h:outputLink>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Status     
+								<h:commandLink action="#{serviceinstance.sortAction('status')}">
+								<h:graphicImage class="sortBy"
+									value="#{serviceinstance.orderCollection.statusOrderSRC}"
+									alt="asc_disabled" />
+							</h:commandLink>
+						</f:facet>
+						<h:outputText value="#{instanceCollection.serviceInstance.status}" />
+					</h:column>
+				</h:dataTable>
+			</div>
+			<div id="user-col" class="col-md-2">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Alexander Schiegl <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Ausloggen</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</h:form>
+</body>
+</html>
