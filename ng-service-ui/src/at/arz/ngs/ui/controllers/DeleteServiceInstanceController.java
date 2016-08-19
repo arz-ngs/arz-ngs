@@ -20,6 +20,9 @@ public class DeleteServiceInstanceController
 	@Inject
 	ServiceInstanceAdmin admin;
 
+	@Inject
+	private ServiceInstanceController serviceInstanceController;
+
 	private String service;
 	private String environment;
 	private String host;
@@ -36,7 +39,9 @@ public class DeleteServiceInstanceController
 			errorCollection.setShowPopup(true);
 			return null;
 		}
-		return "overview?faces-redirect=true";
+
+		serviceInstanceController.formSubmit();
+		return "overview";
 	}
 
 	public String getService() {

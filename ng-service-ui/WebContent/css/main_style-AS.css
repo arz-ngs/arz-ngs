@@ -85,7 +85,7 @@ html, body {
 	color: black !important; /*override bootstrap color scheme*/
 }
 
-#ebk-title {
+#ngs-form\:ebk-title {
 	position: fixed; /*stay in position while scrolling*/
 	font-size: 250%;
 	padding-left: 30px;
@@ -94,7 +94,7 @@ html, body {
 	text-decoration: none;
 }
 
-#ebk-title:hover {
+#ngs-form\:ebk-title:hover {
 	position: fixed;
 	font-size: 250%;
 	padding-left: 30px;

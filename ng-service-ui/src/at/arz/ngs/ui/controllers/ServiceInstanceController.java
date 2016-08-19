@@ -75,6 +75,11 @@ public class ServiceInstanceController
 		}
 	}
 
+	public String goToOverview() {
+		formSubmit();
+		return "overview";
+	}
+
 	public void formSubmit() {
 		errorCollection = new ErrorCollection();
 		pagination.setCurrentPage(1);

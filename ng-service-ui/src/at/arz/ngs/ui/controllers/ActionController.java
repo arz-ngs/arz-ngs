@@ -86,7 +86,6 @@ public class ActionController {
 										action);
 				} catch (RuntimeException e) {
 					errorCollection.addError(new Error(e));
-					e.printStackTrace();
 				}
 			}
 			oc.setChecked(false); // set default, no checkbox checked
@@ -207,7 +206,6 @@ public class ActionController {
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
-			e.printStackTrace();
 			return false;
 		}
 		System.out.println(action.getPerformAction()+ ": "
