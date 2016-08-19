@@ -57,6 +57,23 @@
 	right: 45%;
 }
 
+.colPermission {
+	width: 400px;
+}
+
+.tblPermission {
+	top: 50px;
+	position: relative;
+	overflow-y: scroll;
+}
+
+.addButton {
+	position: relative;
+	top: 30px;
+	left: 40px;
+}
+
+
 
 #errorMessage {
 	background: grey;
