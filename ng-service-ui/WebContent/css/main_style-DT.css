@@ -84,7 +84,8 @@
 .addButton {
 	position: relative;
 	top: 30px;
-	left: 40px;
+	left: 10px;
+	margin-left: 30px;
 }
 
 .addPermission {

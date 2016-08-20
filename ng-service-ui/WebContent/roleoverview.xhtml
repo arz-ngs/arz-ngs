@@ -44,6 +44,9 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-4 secondcol">
+				<h:inputText type="text"
+								class="addButton" p:placeholder="Neue Rolle eintragen..."
+								aria-describedby="Rolle"></h:inputText>
 				<h:commandButton value="Hinzufügen"
 					class="btn btn-primary addButton">
 				</h:commandButton>
@@ -52,11 +55,12 @@
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Rolle<br />
-							<h:inputText id="roleRegex" class="searchRoles"
-								a:placeholder="Suche nach Rollen..." value="">
-							</h:inputText>
+<!-- 							<h:inputText id="roleRegex" class="searchRoles" -->
+<!-- 								a:placeholder="Suche nach Rollen..." value=""> -->
+<!-- 							</h:inputText> -->
 						</f:facet>
-						<h:outputText value="Java-Entwickler"/>
+						<h:link
+							outcome="permission" value="Java-Entwickler" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">
@@ -75,11 +79,11 @@
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Benutzer<br />
-							<h:inputText id="userRegex" class="searchUsers"
-								a:placeholder="Suche nach Benutzer..." value="">
-							</h:inputText>
+<!-- 							<h:inputText id="userRegex" class="searchUsers" -->
+<!-- 								a:placeholder="Suche nach Benutzer..." value=""> -->
+<!-- 							</h:inputText> -->
 						</f:facet>
-						<h:outputText value="Daniel Testor"/>
+						<h:link outcome="userdetail" value="Daniel Testor" />
 					</h:column>
 				</h:dataTable>
 			</div>
