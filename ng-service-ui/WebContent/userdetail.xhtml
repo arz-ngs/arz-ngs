@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough">
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=UTF-8" />
+	<title>Userdetailansicht</title>
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
+	<link href="css/main_style-AS.css" rel="stylesheet"></link>
+	<link href="css/main_style-DT.css" rel="stylesheet"></link>
+	<script src="js/main_js-AS.js"></script>
+	<script src="js/main_js-DT.js"></script>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap-dialog.min.css" rel="stylesheet"
+		type="text/css" />
+	<script src="js/bootstrap-dialog.min.js"></script>
+</h:head>
+<body jsf:id="body" onload="onWindowLoad()"
+	onresize="adjustCollumnSizes()">
+	<h:form id="ngs-form">
+		<div class="row">
+			<div id="main_nav" class="col-md-2 navbar navbar-default">
+				<div>
+					<h1>
+						<h:commandLink id="ebk-title"
+							action="#{serviceinstance.goToOverview()}" value="ebk" />
+					</h1>
+				</div>
+				<div class="navigation navbar-collapse full-width "
+					id="nav-container">
+					<ul class="nav navbar-nav full-width">
+						<li class="nav-list full-width"><h:commandLink
+								action="#{serviceinstance.goToOverview()}"
+								value="Service Übersicht" /></li>
+						<li class="active nav-list full-width"><h:commandLink
+								action="#{role.goToRoleOverview}" value="Berechtigungen" /></li>
+					</ul>
+				</div>
+			</div>
+			<div id="mid-col" class="col-md-8 secondcol">
+				<h:selectOneMenu value="Role" class="addPermission">
+   						<f:selectItem itemLabel="Rolle" />
+   						<f:selectItem itemLabel="Admin" />
+   						<f:selectItem itemLabel="Java-Entwickler" />
+   						<f:selectItem itemLabel="Rolle1" />
+   						<f:selectItem itemLabel="Rolle2" />
+   						<f:selectItem itemLabel="Rolle3" />
+   						<f:selectItem itemLabel="Rolle4" />
+   						<f:selectItem itemLabel="Rolle5" />
+   				</h:selectOneMenu>
+   				<label class="addPermission">Weitergaberecht</label>
+   				<input type="checkbox" class="addPermission"></input>
+				<h:commandButton value="Hinzufügen"
+					class="btn btn-primary addPermission">
+				</h:commandButton>
+				<br/>
+				<br/>
+				<h:outputText id="roleName" value="User: Daniel Testor" styleClass="h1"></h:outputText>
+				<h:dataTable id="roleDetailTable" columnClasses="colRole, colRight"
+					headerClass="columnCenter" value="" var=""
+					class="tblPermission table-responsive table-bordered table-hover">
+					<h:column>
+						<f:facet name="header">Rolle<br />
+						</f:facet>
+						<h:outputText value="Java-Entwickler"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header">Recht<br />
+						</f:facet>
+						<h:outputText value="Nutzungsrecht/Weitergaberecht"/>
+					</h:column>
+					<h:column>
+						<f:facet name="header"><br />
+						</f:facet>
+						<h:commandLink type="button"
+						styleClass="btn deletePermission ">
+						<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
+				</h:commandLink>
+					</h:column>
+				</h:dataTable>
+			</div>
+			<div id="user-col" class="col-md-2">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Alexander Schiegl <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Ausloggen</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+
+	</h:form>
+</body>
+</html>

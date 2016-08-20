@@ -57,14 +57,28 @@
 	right: 45%;
 }
 
-.colPermission {
+.colRoleUser {
+	width: 450px;
+}
+
+.colPermissionEnv, .colPermissionService, .colPermissionAction, .colRole, .colRight {
 	width: 400px;
 }
 
-.tblPermission {
-	top: 50px;
-	position: relative;
+.tblRoleUser {
+	top: 80px;
+	position: absolute;
 	overflow-y: scroll;
+}
+
+.tblPermission {
+	position: relative;
+	top: 50px;
+}
+
+#ngs-form\:roleName {
+	position: relative;
+	top:40px;
 }
 
 .addButton {
@@ -73,7 +87,26 @@
 	left: 40px;
 }
 
+.addPermission {
+	position: relative;
+	top:30px;
+	left: 40px;
+	margin-left: 30px;
+}
 
+.deletePermission{
+	height: 70%;
+}
+
+.deletePermission {
+    padding: 4px 8px;
+    font-size: 10px;
+    line-height: 1.3333333;
+    border-radius: 6px;
+    background-color: red;
+    border-color: red;
+    color: white;
+}
 
 #errorMessage {
 	background: grey;
@@ -82,3 +115,4 @@
 	width: 100%;
 	height: 300px;
 }
+

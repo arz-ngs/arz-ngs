@@ -9,7 +9,7 @@
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
-	<title>Service Instance Overview</title>
+	<title>Service Instanz Übersicht</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
 	<link href="css/main_style-AS.css" rel="stylesheet"></link>
 	<link href="css/main_style-DT.css" rel="stylesheet"></link>
@@ -40,7 +40,9 @@
 								action="#{serviceinstance.goToOverview()}"
 								value="Service Übersicht" />	
 						</li>
-						<li class="nav-list full-width"><a href="#">Berechtigungen</a>
+						<li class="nav-list full-width"><h:commandLink
+								action="#{role.goToRoleOverview()}"
+								value="Berechtigungen" />	
 						</li>
 					</ul>
 				</div>
