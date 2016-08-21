@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
-import at.arz.ngs.Role;
-import at.arz.ngs.RoleRepository;
 import at.arz.ngs.api.RoleName;
-import at.arz.ngs.role.jpa.JPARoleRepository;
+import at.arz.ngs.security.Role;
+import at.arz.ngs.security.RoleRepository;
+import at.arz.ngs.security.role.jpa.JPARoleRepository;
 
 public class JPARoleRepositoryIT extends AbstractJpaIT{
 

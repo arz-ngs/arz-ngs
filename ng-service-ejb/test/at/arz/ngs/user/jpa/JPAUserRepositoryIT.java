@@ -6,10 +6,10 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
-import at.arz.ngs.User;
-import at.arz.ngs.UserRepository;
 import at.arz.ngs.api.UserName;
-import at.arz.ngs.user.JPAUserRepository;
+import at.arz.ngs.security.User;
+import at.arz.ngs.security.UserRepository;
+import at.arz.ngs.security.user.jpa.JPAUserRepository;
 
 public class JPAUserRepositoryIT extends AbstractJpaIT{
 
