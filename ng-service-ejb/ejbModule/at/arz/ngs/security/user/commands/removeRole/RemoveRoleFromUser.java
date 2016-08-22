@@ -1,4 +1,4 @@
-package at.arz.ngs.security.user.commands.remove;
+package at.arz.ngs.security.user.commands.removeRole;
 
 
 public class RemoveRoleFromUser {

@@ -1,4 +1,4 @@
-package at.arz.ngs.security.user.commands.add;
+package at.arz.ngs.security.user.commands.addRole;
 
 
 public class AddRoleToUser {

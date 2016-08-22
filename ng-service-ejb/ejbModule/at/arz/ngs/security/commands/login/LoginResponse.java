@@ -1,4 +1,4 @@
-package at.arz.ngs.security.login;
+package at.arz.ngs.security.commands.login;
 
 import at.arz.ngs.security.user.commands.UserData;
 
