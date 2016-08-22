@@ -6,7 +6,7 @@ import javax.ejb.ApplicationException;
  * This exception will be thrown, if somebody want to perform an action of a serviceInstance,
  * which is already starting or stopping
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException

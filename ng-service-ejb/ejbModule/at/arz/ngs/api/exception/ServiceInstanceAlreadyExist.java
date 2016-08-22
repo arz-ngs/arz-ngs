@@ -5,7 +5,7 @@ import javax.ejb.ApplicationException;
 /**
  * This exception will be thrown, if the ServiceInstance object already exist.
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException(rollback = true)

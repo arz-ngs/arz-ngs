@@ -7,7 +7,7 @@ import at.arz.ngs.api.ScriptName;
 /**
  * This exception will be thrown, if an expected Script wasn't found in the database.
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException(rollback = true)

@@ -5,7 +5,7 @@ import javax.ejb.ApplicationException;
 /**
  * This exception will be thrown, if the user has no permission to do this action.
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException(rollback = true)

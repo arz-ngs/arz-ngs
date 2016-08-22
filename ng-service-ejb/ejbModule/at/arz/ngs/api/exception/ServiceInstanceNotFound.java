@@ -10,7 +10,7 @@ import at.arz.ngs.api.ServiceName;
 /**
  * This exception will be thrown, if an expected ServiceInstance wasn't found in the database.
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException(rollback = true)

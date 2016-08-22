@@ -4,7 +4,7 @@ import javax.ejb.ApplicationException;
 
 /**
  * This Exception will be thrown, if an required field is empty.
- * @author rpci334
+ * @author dani 
  *
  */
 

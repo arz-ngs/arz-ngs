@@ -5,7 +5,7 @@ import javax.ejb.ApplicationException;
 /**
  * If correct business logic implemented, this exception should not be thrown.
  * 
- * @author rpri333
+ * @author alex 
  *
  */
 @ApplicationException(rollback = true)

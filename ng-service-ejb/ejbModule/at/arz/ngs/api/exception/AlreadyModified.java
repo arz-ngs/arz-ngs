@@ -5,7 +5,7 @@ import javax.ejb.ApplicationException;
 /**
  * This exception will be thrown, if the version of an entity changed during the GET and PUT process
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException(rollback = true)

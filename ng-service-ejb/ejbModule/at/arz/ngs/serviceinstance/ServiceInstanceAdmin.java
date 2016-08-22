@@ -51,7 +51,7 @@ import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 /**
  * Manages the logic and the methods of the repositores methods
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @Stateless
@@ -91,7 +91,6 @@ public class ServiceInstanceAdmin {
 								ServiceInstanceRepository serviceInstances,
 								ScriptRepository scripts,
 								SearchEngine engine) {
-		super();
 		this.services = services;
 		this.hosts = hosts;
 		this.environments = environments;

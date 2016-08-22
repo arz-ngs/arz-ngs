@@ -5,7 +5,7 @@ import javax.ejb.ApplicationException;
 /**
  * This exception will be thrown, if a wrong parameter is entered.
  * 
- * @author rpci334
+ * @author dani 
  *
  */
 @ApplicationException

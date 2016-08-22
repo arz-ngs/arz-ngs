@@ -5,7 +5,7 @@ import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 /**
  * Have to wrapped by a list to be displayed in UI. Contains mapping between chechboxes and ServiceInstance-values.
  * 
- * @author rpri333
+ * @author alex 
  *
  */
 public class OverviewCollection {
