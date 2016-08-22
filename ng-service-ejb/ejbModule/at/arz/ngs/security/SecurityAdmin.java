@@ -20,6 +20,8 @@ import at.arz.ngs.api.exception.User_RoleNotFound;
 import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.permission.commands.PermissionData;
 import at.arz.ngs.security.permission.commands.addToRole.AddPermissionToRole;
+import at.arz.ngs.security.permission.commands.get.PermissionResponse;
+import at.arz.ngs.security.permission.commands.removeFromRole.RemovePermissionFromRole;
 import at.arz.ngs.security.role.commands.UserRole;
 import at.arz.ngs.security.role.commands.create.CreateRole;
 import at.arz.ngs.security.role.commands.get.AllRolesResponse;
@@ -223,6 +225,57 @@ public class SecurityAdmin {
 				return Action.status;
 			default:
 				throw new IllegalArgumentException("Actionparam must be an valid action.");
+		}
+	}
+
+	public PermissionResponse getPermissions(String roleName) {
+		if (roleName == null || roleName.equals("")) {
+			throw new EmptyField("A rolename must be set.");
+		}
+
+		PermissionResponse res = new PermissionResponse(roleName);
+
+		Role role = roleRepository.getRole(new RoleName(roleName));
+
+		for (Permission p : role.getPermissions()) {
+			res.addPermission(new PermissionData(	p.getEnvironmentName().getName(),
+													p.getServiceName().getName(),
+													p.getAction().name()));
+		}
+
+		return res;
+	}
+
+	public void removePermissionFromRole(Actor actor, RemovePermissionFromRole command) {
+		isActorAllowedToChangeSecurity(actor);
+
+		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
+			throw new EmptyField("Could not remove permission from role in order to empty fields.");
+		}
+
+		PermissionData permissionData = command.getPermissionData();
+
+		if (permissionData == null|| permissionData.getAction() == null
+			|| permissionData.getAction().equals("")
+			|| permissionData.getEnvironmentName() == null
+			|| permissionData.getEnvironmentName().equals("")
+			|| permissionData.getServiceName() == null
+			|| permissionData.getServiceName().equals("")) {
+			throw new EmptyField("Could not remove permission from role in order to empty fields.");
+		}
+		
+		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
+		
+		Permission permission = permissionRepository.getPermission(	new EnvironmentName(permissionData.getEnvironmentName()),
+																	new ServiceName(permissionData.getServiceName()),
+																	convert(permissionData.getAction()));
+		role.removePermission(permission);
+
+		// try to remove permission if not used anymore, if exception this permission is used
+		try {
+			permissionRepository.removePermission(permission);
+		} catch (RuntimeException e) {
+			// ok if not working due to referenced objects
 		}
 	}
 
