@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -16,7 +18,11 @@ import at.arz.ngs.converter.jpa.BooleanTFConverter;
 
 @Entity
 @Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_", "ROLE" }) })
+@NamedQueries({ @NamedQuery(name = User_Role.QUERY_BY_USER_ROLE,
+							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole") })
 public class User_Role {
+
+	public static final String QUERY_BY_USER_ROLE = "User_Role.findbyUniqueKey";
 
 	@Id
 	@GeneratedValue(generator = "ngs.user_role", strategy = GenerationType.TABLE)

@@ -12,6 +12,7 @@ import at.arz.ngs.service.jpa.JPAServiceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.ServiceInstanceAdminIT;
 import at.arz.ngs.user.jpa.JPAUserRepositoryIT;
+import at.arz.ngs.userrole.JPAUser__RoleRepositoryIT;
 
 @RunWith(Suite.class)
 @SuiteClasses({	JPAHostRepositoryIT.class,
@@ -21,7 +22,8 @@ import at.arz.ngs.user.jpa.JPAUserRepositoryIT;
 				ServiceInstanceAdminIT.class,
 				JPAPermissionRepositoryIT.class,
 				JPARoleRepositoryIT.class,
-				JPAUserRepositoryIT.class })
+				JPAUserRepositoryIT.class,
+				JPAUser__RoleRepositoryIT.class })
 public class AllTestsSuite {
 
 }
