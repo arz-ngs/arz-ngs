@@ -100,7 +100,7 @@
 }
 
 .deletePermission {
-    padding: 4px 8px;
+    padding: 2px 8px;
     font-size: 10px;
     line-height: 1.3333333;
     border-radius: 6px;
@@ -115,5 +115,15 @@
 	position: fixed;
 	width: 100%;
 	height: 300px;
+}
+
+.dropdownItem {
+	background-color: #00ae57;
+	width: 500px;
+	left: 30px;
+}
+
+.dpList {
+	font-size: 16px;
 }
 

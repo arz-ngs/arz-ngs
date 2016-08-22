@@ -9,7 +9,7 @@
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
-	<title>Rollenübersicht</title>
+	<title>Userübersicht</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
 	<link href="css/main_style-AS.css" rel="stylesheet"></link>
 	<link href="css/main_style-DT.css" rel="stylesheet"></link>
@@ -51,37 +51,36 @@
 					</ul>
 				</div>
 			</div>
-			<div id="mid-col" class="col-md-8 secondcol">
-				<h:inputText type="text"
-								class="addButton" p:placeholder="Neue Rolle eintragen..."
-								aria-describedby="Rolle"></h:inputText>
-				<h:commandButton value="Hinzufügen"
-					class="btn btn-primary addButton">
-				</h:commandButton>
-				<h:dataTable id="roleOverviewTable" columnClasses="colRoleUser"
+			<div id="mid-col" class="col-md-8 usercol">
+				<h:dataTable id="userOverviewTable" columnClasses="colRoleUser"
 					headerClass="columnCenter" value="" var=""
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
-						<f:facet name="header">Rolle<br />
-<!-- 							<h:inputText id="roleRegex" class="searchRoles" -->
-<!-- 								a:placeholder="Suche nach Rollen..." value=""> -->
-<!-- 							</h:inputText> -->
+						<f:facet name="header">Benutzer<br />
+							<!-- 							<h:inputText id="userRegex" class="searchUsers" -->
+							<!-- 								a:placeholder="Suche nach Benutzer..." value=""> -->
+							<!-- 							</h:inputText> -->
 						</f:facet>
-						<h:link
-							outcome="permission" value="Java-Entwickler" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">
-							<br />
-						</f:facet>
-						<h:commandLink type="button" styleClass="btn deletePermission ">
-							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-						</h:commandLink>
+						<h:link outcome="userdetail" value="Daniel Testor" />
 					</h:column>
 				</h:dataTable>
 			</div>
+			<div id="user-col" class="col-md-2">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						Alexander Schiegl <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><a href="#">Action</a></li>
+						<li><a href="#">Another action</a></li>
+						<li role="separator" class="divider"></li>
+						<li><a href="#">Ausloggen</a></li>
+					</ul>
+				</div>
+			</div>
 		</div>
-
 	</h:form>
 </body>
 </html>

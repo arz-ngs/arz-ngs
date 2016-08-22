@@ -38,8 +38,15 @@
 						<li class="nav-list full-width"><h:commandLink
 								action="#{serviceinstance.goToOverview()}"
 								value="Service Übersicht" /></li>
-						<li class="active nav-list full-width"><h:commandLink
-								action="#{role.goToRoleOverview}" value="Berechtigungen" /></li>
+						<li class="active nav-list full-width dropdown"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
+								class="caret"></b></a>
+							<ul class="dropdown-menu dropdownItem">
+								<li class="nav-list"><h:commandLink
+										action="#{users.goToUserOverview()}" value="Benutzer" /></li>
+								<li class="nav-list full-width"><h:commandLink
+										action="#{role.goToRoleOverview()}" value="Rollen" /></li>
+							</ul></li>
 					</ul>
 				</div>
 			</div>
@@ -122,9 +129,7 @@
 					</ul>
 				</div>
 			</div>
-
 		</div>
-
 	</h:form>
 </body>
 </html>
