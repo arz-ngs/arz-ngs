@@ -45,6 +45,8 @@ public class SecurityAdmin {
 
 	@Inject
 	private User_RoleRepository repository;
+	
+	public static final String ADMIN = "Administrator";
 
 	protected SecurityAdmin() {
 		// ejb constructor
@@ -71,11 +73,37 @@ public class SecurityAdmin {
 
 	/**
 	 * Must be invoked to edit user, roles or permission.
+	 * Only Administrators have access to perfom changes.
 	 */
-	private void isActorAllowedToChangeSecurity(Actor actor) {
-		// TODO check if actor is allowed to edit
+	private void proofActorAdminAccess(Actor actor) {
+		if (actor == null || actor.getUserName() == null || actor.getUserName().equals("")) {
+			throw new EmptyField("actor was null or empty");
+		}
+
+		User user = userRepository.getUser(new UserName(actor.getUserName()));
+		
+		for(User_Role ur : user.getUser_roles()) {
+			if (ur.getRole().getRoleName().getName().equals(ADMIN)) {
+				return; // ok, access is granted
+			}
+		}
+		
 		throw new NoPermission("The actor "+ actor.getUserName()
-								+ " does not have the permission to edit security settings. To change one must have to role 'Admin'!");
+								+ " does not have the permission to edit security settings. To change one must have to role '"
+								+ ADMIN
+								+ "'!");
+	}
+
+	private void proofActorHasSameRoleAndHandoverRights(Actor actor, Role role) {
+		User userActor = userRepository.getUser(new UserName(actor.getUserName()));
+		for (User_Role actorUR : userActor.getUser_roles()) {
+			if (actorUR.getRole().equals(role) && actorUR.isHandover()) {
+				return; // ok user can perform further
+			}
+		}
+
+		throw new NoPermission("The actor "+ actor.getUserName()
+								+ " does not have the permission to edit the targeted role. To do so one must have the same role as the person with the targeted role and the handvoer right!");
 	}
 
 	/**
@@ -85,7 +113,12 @@ public class SecurityAdmin {
 	 * @param command
 	 */
 	public void addRoleToUser(Actor actor, AddRoleToUser command) {
-		isActorAllowedToChangeSecurity(actor);
+		boolean checkIfUserhasSameRole = false; // admin do not need the same role
+		try {
+			proofActorAdminAccess(actor);
+		} catch (NoPermission e) { // user is not an Admin -> check if he can handover his own role to other people
+			checkIfUserhasSameRole = true;
+		}
 
 		if (command == null|| command.getUserName() == null
 			|| command.getUserName().equals("")
@@ -93,15 +126,24 @@ public class SecurityAdmin {
 			|| command.getRoleName().equals("")) {
 			throw new EmptyField("Could not add role to user in order to empty fields.");
 		}
-		User user = getOrCreateUser(new UserName(command.getUserName()));
+		User userToAddTo = getOrCreateUser(new UserName(command.getUserName()));
 
-		Role role = roleRepository.getRole(new RoleName(command.getRoleName())); // if role not found -> rollback
+		Role roleToAdd = roleRepository.getRole(new RoleName(command.getRoleName())); // if role not found -> rollback
 
-		repository.addUser_Role(user, role, command.isHandover());
+		if (checkIfUserhasSameRole) {
+			proofActorHasSameRoleAndHandoverRights(actor, roleToAdd);
+		}
+
+		repository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
 	}
 
 	public void removeRoleFromUser(Actor actor, RemoveRoleFromUser command) {
-		isActorAllowedToChangeSecurity(actor);
+		boolean checkIfUserhasSameRole = false; // admin do not need the same role
+		try {
+			proofActorAdminAccess(actor);
+		} catch (NoPermission e) { // user is not an Admin -> check if he can handover his own role to other people
+			checkIfUserhasSameRole = true;
+		}
 
 		if (command == null|| command.getUserName() == null
 			|| command.getUserName().equals("")
@@ -113,16 +155,27 @@ public class SecurityAdmin {
 		User user = userRepository.getUser(new UserName(command.getUserName()));
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
 
+		if (checkIfUserhasSameRole) {
+			proofActorHasSameRoleAndHandoverRights(actor, role);
+		}
+
 		removeRoleFromUser(role, user);
 	}
 
 	private void removeRoleFromUser(Role role, User user) {
 		User_Role user_Role = repository.getUser_Role(user, role);
-		repository.removeUser_Role(user_Role); // TODO if no role is referenced to a user, delete this user
+		repository.removeUser_Role(user_Role);
+
+		// remove user if no role is set. If removal did not succeed, because of references go further
+		try {
+			userRepository.removeUser(user);
+		} catch (RuntimeException e) {
+			// also ok, then go further
+		}
 	}
 
 	public void createRole(Actor actor, CreateRole command) {
-		isActorAllowedToChangeSecurity(actor);
+		proofActorAdminAccess(actor);
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not create role in order to empty fields.");
@@ -138,13 +191,17 @@ public class SecurityAdmin {
 	}
 
 	public void removeRole(Actor actor, RemoveRole command) {
-		isActorAllowedToChangeSecurity(actor);
+		proofActorAdminAccess(actor);
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not remove role in order to empty fields.");
 		}
 
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
+
+		if (role.getRoleName().getName().equals(ADMIN)) {
+			throw new IllegalArgumentException("The administrator cannot be removed!");
+		}
 
 		for (User user : userRepository.getAllUsers()) {
 			try {
@@ -184,7 +241,7 @@ public class SecurityAdmin {
 	}
 
 	public void addPermissionToRole(Actor actor, AddPermissionToRole command) {
-		isActorAllowedToChangeSecurity(actor);
+		proofActorAdminAccess(actor);
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not add permission to role in order to empty fields.");
@@ -247,7 +304,7 @@ public class SecurityAdmin {
 	}
 
 	public void removePermissionFromRole(Actor actor, RemovePermissionFromRole command) {
-		isActorAllowedToChangeSecurity(actor);
+		proofActorAdminAccess(actor);
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not remove permission from role in order to empty fields.");
