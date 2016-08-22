@@ -45,7 +45,7 @@
 								action="#{users.goToUserOverview()}"
 								value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{role.goToRoleOverview()}"
+								action="#{roles.goToRoleOverview()}"
 								value="Rollenübersicht" /></li>
 							</ul></li>
 					</ul>
@@ -64,11 +64,11 @@
 					<h:column>
 						<f:facet name="header">Rolle<br />
 						</f:facet>
-						<h:outputText
-							value="#{role}" />
+						<h:commandLink
+							value="#{role}" action="#{roleDetail.goToRoleDetail(role)}"></h:commandLink>
 					</h:column>
 					<h:column>
-						<f:facet name="header">Löschen
+						<f:facet name="header">
 						</f:facet>
 						<h:commandLink type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>

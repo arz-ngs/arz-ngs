@@ -23,18 +23,28 @@ public class UserDetailController
 	SecurityAdmin admin;
 
 	private UserData user;
-	private String completeName;
+	private String name;
+	private String firstLastName;
+
+	private boolean handover;
 
 	private List<UserRole> userRoles;
 
 	@PostConstruct
 	public void init() {
-		// userRoles = admin.getRoles();
+
 	}
 
 	public String goToUserDetail(String name, String firstName, String lastName) {
-		this.completeName = name + " - " + firstName + " " + lastName;
+		// userRoles = admin.getRoles();
+		this.name = name;
+		this.firstLastName = firstName + " " + lastName;
 		return "userdetail";
+	}
+
+	public String addRoleToUser(String role, String user) {
+		// admin.addRoleToUser(role, user, handover);
+		return "";
 	}
 
 	public UserData getUser() {
@@ -45,20 +55,36 @@ public class UserDetailController
 		this.user = user;
 	}
 
-	public String getCompleteName() {
-		return completeName;
-	}
-
-	public void setCompleteName(String completeName) {
-		this.completeName = completeName;
-	}
-
 	public List<UserRole> getUserRoles() {
 		return userRoles;
 	}
 
 	public void setUserRoles(List<UserRole> userRoles) {
 		this.userRoles = userRoles;
+	}
+
+	public boolean isHandover() {
+		return handover;
+	}
+
+	public void setHandover(boolean handover) {
+		this.handover = handover;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getFirstLastName() {
+		return firstLastName;
+	}
+
+	public void setFirstLastName(String firstLastName) {
+		this.firstLastName = firstLastName;
 	}
 
 }
