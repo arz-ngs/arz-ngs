@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.security.SecurityAdmin;
-import at.arz.ngs.security.role.commands.get.UserRole;
+import at.arz.ngs.security.role.commands.UserRole;
 import at.arz.ngs.security.user.commands.UserData;
 
 @RequestScoped

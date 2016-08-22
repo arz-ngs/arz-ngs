@@ -1,4 +1,4 @@
-package at.arz.ngs.userrole;
+package at.arz.ngs.user_role;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -24,7 +24,7 @@ import at.arz.ngs.security.user.jpa.JPAUserRepository;
 import at.arz.ngs.security.userrole.jpa.JPAUser_RoleRepository;
 
 
-public class JPAUser__RoleRepositoryIT
+public class JPAUser_RoleRepositoryIT
 		extends AbstractJpaIT {
 
 	private User_RoleRepository userRoleRepository;
