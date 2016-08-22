@@ -53,14 +53,7 @@
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
 				<h:selectOneMenu value="EnvId" class="addPermission">
-					<f:selectItem itemLabel="EnvId" />
-					<f:selectItem itemLabel="Alle" />
-					<f:selectItem itemLabel="env1" />
-					<f:selectItem itemLabel="env2" />
-					<f:selectItem itemLabel="env3" />
-					<f:selectItem itemLabel="env4" />
-					<f:selectItem itemLabel="env5" />
-					<f:selectItem itemLabel="env6" />
+					<f:selectItem value="#{serviceinstance.instancesCollection.}" var="role"/>
 				</h:selectOneMenu>
 				<h:selectOneMenu value="Service" class="addPermission">
 					<f:selectItem itemLabel="Service" />

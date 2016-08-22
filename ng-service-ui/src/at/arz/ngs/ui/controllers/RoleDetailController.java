@@ -23,7 +23,7 @@ public class RoleDetailController
 	List<PermissionData> permissions;
 
 	public String goToRoleDetail(String role) {
-		// permissions = admin.getPermissions(role)
+		permissions = admin.getPermissions(role).getPermissions();
 		return "userdetail";
 	}
 }

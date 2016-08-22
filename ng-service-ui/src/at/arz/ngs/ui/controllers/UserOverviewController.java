@@ -24,7 +24,7 @@ public class UserOverviewController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		// users = admin.getAllUsers().getUsers();
+		userOverview = admin.getUserOverview().getUsers();
 	}
 
 	public String goToUserOverview() {

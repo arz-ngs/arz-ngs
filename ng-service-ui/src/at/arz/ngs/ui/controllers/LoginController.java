@@ -25,7 +25,6 @@ public class LoginController
 
 	public String sendUserData() {
 		if ((userName != null) && (!userName.equals("")) && (password != null) && (!password.equals(""))) {
-			// TODO send data to admin
 			Login loginData = new Login(userName, password);
 			if (userName.equals("admin") && password.equals("admin")) {
 				return "overview";

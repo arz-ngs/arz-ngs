@@ -27,7 +27,7 @@ public class RoleOverviewController implements Serializable{
 	}
 
 	public String goToRoleOverview() {
-		// roleOverview = admin.getRoles().getRoles();
+		roleOverview = admin.getAllRoles().getRoles();
 		return "roleoverview";
 	}
 

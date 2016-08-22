@@ -36,7 +36,7 @@ public class UserDetailController
 	}
 
 	public String goToUserDetail(String name, String firstName, String lastName) {
-		// userRoles = admin.getRoles();
+		userRoles = admin.getRolesForUser(name).getUserRoles();
 		this.name = name;
 		this.firstLastName = firstName + " " + lastName;
 		return "userdetail";
