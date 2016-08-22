@@ -1,4 +1,4 @@
-package at.arz.ngs.security.role.commands.get;
+package at.arz.ngs.security.role.commands;
 
 
 public class UserRole {

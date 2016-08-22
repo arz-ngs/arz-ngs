@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import at.arz.ngs.security.role.commands.UserRole;
+
 /**
  * Response-object for getting all roles for a single user.
  * 

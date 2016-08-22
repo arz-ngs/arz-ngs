@@ -1,5 +1,6 @@
 package at.arz.ngs.security;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -55,6 +56,18 @@ public class Role {
 
 	public RoleName getRoleName() {
 		return roleName;
+	}
+
+	public List<Permission> getPermissions() {
+		return Collections.unmodifiableList(permissions);
+	}
+
+	public void addPermission(Permission permission) {
+		permissions.add(permission);
+	}
+
+	public void removePermission(Permission permission) {
+		permissions.remove(permission);
 	}
 
 	@Override

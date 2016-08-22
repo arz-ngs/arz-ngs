@@ -1,11 +1,11 @@
-package at.arz.ngs.security.role.commands.add;
+package at.arz.ngs.security.role.commands.create;
 
 
-public class AddRole {
+public class CreateRole {
 
 	private String roleName;
 
-	public AddRole(String roleName) {
+	public CreateRole(String roleName) {
 		this.roleName = roleName;
 	}
 
