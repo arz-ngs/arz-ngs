@@ -2,6 +2,7 @@ package at.arz.ngs.security.user.jpa;
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -12,26 +13,33 @@ import at.arz.ngs.api.exception.UserNotFound;
 import at.arz.ngs.security.User;
 import at.arz.ngs.security.UserRepository;
 
-public class JPAUserRepository implements UserRepository{
-	
+@Dependent
+public class JPAUserRepository
+		implements UserRepository {
+
 	@PersistenceContext(unitName = "ng-service-model")
 	private EntityManager entityManager;
 
 	public JPAUserRepository() {
-		
+
 	}
-	
+
+	/**
+	 * Only for JUnit-Tests to use!!
+	 * 
+	 * @param entityManager
+	 */
 	public JPAUserRepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
-	
+
 	@Override
 	public User getUser(UserName userName) {
 		try {
 			TypedQuery<User> getUser = entityManager.createNamedQuery(User.QUERY_BY_USERNAME, User.class);
-			
+
 			getUser.setParameter("uname", userName);
-			
+
 			return getUser.getSingleResult();
 		} catch (NoResultException e) {
 			throw new UserNotFound(userName);
@@ -50,4 +58,8 @@ public class JPAUserRepository implements UserRepository{
 		entityManager.persist(user);
 	}
 
+	@Override
+	public void removeUser(User user) {
+		entityManager.remove(user);
+	}
 }

@@ -10,4 +10,6 @@ public interface UserRepository {
 	List<User> getAllUsers();
 	
 	void addUser(UserName user);
+
+	void removeUser(User user);
 }

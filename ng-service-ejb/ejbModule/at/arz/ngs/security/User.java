@@ -1,5 +1,6 @@
 package at.arz.ngs.security;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -19,7 +20,7 @@ import at.arz.ngs.api.UserName;
 import at.arz.ngs.converter.jpa.UserNameConverter;
 
 @Entity
-@Table(name = "USER")
+@Table(name = "USER_")
 @NamedQueries({@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u"),
 		@NamedQuery(name = User.QUERY_BY_USERNAME, query = "SELECT u FROM User u WHERE u.userName = :uname")})
 public class User {
@@ -53,6 +54,18 @@ public class User {
 
 	public UserName getUserName() {
 		return userName;
+	}
+
+	public void addUser_Role(User_Role user_role) {
+		user_roles.add(user_role);
+	}
+
+	public void removeUser_Role(User_Role user_role) {
+		user_roles.remove(user_role);
+	}
+
+	public List<User_Role> getUser_roles() {
+		return Collections.unmodifiableList(user_roles);
 	}
 
 	@Override

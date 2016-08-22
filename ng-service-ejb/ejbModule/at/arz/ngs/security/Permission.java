@@ -59,9 +59,9 @@ public class Permission {
 		//jpa constructor
 	}
 
-	public Permission(EnvironmentName environment, ServiceName service, Action action) {
-		this.environmentName = environment;
-		this.serviceName = service;
+	public Permission(EnvironmentName environmentName, ServiceName serviceName, Action action) {
+		this.environmentName = environmentName;
+		this.serviceName = serviceName;
 		this.action = action;
 		roles = new LinkedList<>();
 	}
@@ -118,16 +118,15 @@ public class Permission {
 		if (environmentName == null) {
 			if (other.environmentName != null)
 				return false;
-		}
-		else if (!environmentName.equals(other.environmentName))
+		} else if (!environmentName.equals(other.environmentName))
 			return false;
 		if (serviceName == null) {
 			if (other.serviceName != null)
 				return false;
-		}
-		else if (!serviceName.equals(other.serviceName))
+		} else if (!serviceName.equals(other.serviceName))
 			return false;
 		return true;
 	}
+
 
 }

@@ -15,14 +15,14 @@ import javax.persistence.UniqueConstraint;
 import at.arz.ngs.converter.jpa.BooleanTFConverter;
 
 @Entity
-@Table(name = "USER_ROLE", uniqueConstraints = {@UniqueConstraint(columnNames = {"USER", "ROLE"})})
+@Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_", "ROLE" }) })
 public class User_Role {
 
 	@Id
 	@GeneratedValue(generator = "ngs.user_role", strategy = GenerationType.TABLE)
 	private long oid;
 
-	@JoinColumn(name = "USER")
+	@JoinColumn(name = "USER_")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 

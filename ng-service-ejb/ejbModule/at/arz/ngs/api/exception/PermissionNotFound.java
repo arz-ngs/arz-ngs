@@ -2,6 +2,7 @@ package at.arz.ngs.api.exception;
 
 import javax.ejb.ApplicationException;
 
+import at.arz.ngs.api.Action;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.ServiceName;
 
@@ -11,7 +12,7 @@ public class PermissionNotFound
 
 	private static final long serialVersionUID = 1L;
 
-	public PermissionNotFound(EnvironmentName env, ServiceName service) {
-		super(env + "/" + service);
+	public PermissionNotFound(EnvironmentName env, ServiceName service, Action action) {
+		super(env + "/" + service + "/" + action.name());
 	}
 }

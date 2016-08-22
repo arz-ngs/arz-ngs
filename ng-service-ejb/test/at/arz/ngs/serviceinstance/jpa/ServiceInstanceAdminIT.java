@@ -629,6 +629,15 @@ public class ServiceInstanceAdminIT
 		d4.executeUpdate();
 		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
 		d5.executeUpdate();
-
+		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
+		d7.executeUpdate();
+		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
+		d8.executeUpdate();
+		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
+		d10.executeUpdate();
+		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
+		d9.executeUpdate();
+		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
+		d6.executeUpdate();
 	}
 }

@@ -10,15 +10,22 @@
 		<class>at.arz.ngs.Script</class>
 		<class>at.arz.ngs.Service</class>
 		<class>at.arz.ngs.ServiceInstance</class>
+		<class>at.arz.ngs.converter.jpa.BooleanTFConverter</class>
 		<class>at.arz.ngs.converter.jpa.EnvironmentNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.HostNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.PathRestartConverter</class>
 		<class>at.arz.ngs.converter.jpa.PathStartConverter</class>
 		<class>at.arz.ngs.converter.jpa.PathStatusConverter</class>
 		<class>at.arz.ngs.converter.jpa.PathStopConverter</class>
+		<class>at.arz.ngs.converter.jpa.RoleNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.ScriptNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.ServiceInstanceNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.ServiceNameConverter</class>
+		<class>at.arz.ngs.converter.jpa.UserNameConverter</class>
+		<class>at.arz.ngs.security.Permission</class>
+		<class>at.arz.ngs.security.Role</class>
+		<class>at.arz.ngs.security.User</class>
+		<class>at.arz.ngs.security.User_Role</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
 <!-- 			  <property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->

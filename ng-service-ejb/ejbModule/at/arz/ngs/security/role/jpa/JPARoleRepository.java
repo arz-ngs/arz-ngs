@@ -2,6 +2,7 @@ package at.arz.ngs.security.role.jpa;
 
 import java.util.List;
 
+import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -12,6 +13,7 @@ import at.arz.ngs.api.exception.RoleNotFound;
 import at.arz.ngs.security.Role;
 import at.arz.ngs.security.RoleRepository;
 
+@Dependent
 public class JPARoleRepository
 		implements RoleRepository {
 
@@ -22,6 +24,11 @@ public class JPARoleRepository
 
 	}
 
+	/**
+	 * Only for JUnit-Tests to use!!
+	 * 
+	 * @param entityManager
+	 */
 	public JPARoleRepository(EntityManager entityManager) {
 		this.entityManager = entityManager;
 	}
