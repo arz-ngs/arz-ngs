@@ -64,7 +64,7 @@
 
 
 .colPermissionEnv, .colPermissionService, .colPermissionAction, .colRole, .colRight {
-	width: 400px;
+	width: 300px;
 }
 
 .userOverview {
@@ -75,12 +75,13 @@
 	top: 80px;
 	position: absolute;
 	overflow-y: scroll;
-	width: 600px;
+	width: 650px;
 }
 
 .tblPermission {
 	position: relative;
 	top: 50px;
+	width: 650px;
 }
 
 #ngs-form\:roleName {

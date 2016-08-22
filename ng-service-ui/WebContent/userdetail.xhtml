@@ -45,43 +45,38 @@
 								action="#{users.goToUserOverview()}"
 								value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{role.goToRoleOverview()}"
+								action="#{roles.goToRoleOverview()}"
 								value="Rollenübersicht" /></li>
 							</ul></li>
 					</ul>
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
-				<h:selectOneMenu value="Role" class="addPermission">
-   						<f:selectItem itemLabel="Rolle" />
-   						<f:selectItem itemLabel="Admin" />
-   						<f:selectItem itemLabel="Java-Entwickler" />
-   						<f:selectItem itemLabel="Rolle1" />
-   						<f:selectItem itemLabel="Rolle2" />
-   						<f:selectItem itemLabel="Rolle3" />
-   						<f:selectItem itemLabel="Rolle4" />
-   						<f:selectItem itemLabel="Rolle5" />
+				<h:selectOneMenu value="asdf" class="addPermission">
+   						<f:selectItem value="#{roles.roleOverview}" var="role"/>
    				</h:selectOneMenu>
    				<label class="addPermission">Weitergaberecht</label>
-   				<input type="checkbox" class="addPermission"></input>
-				<h:commandButton value="Hinzufügen"
+   				<h:selectBooleanCheckbox type="checkbox" value="#{userDetail.handover}" class="addPermission"/>
+				<h:commandButton value="Hinzufügen" action="#{userDetail.addRoleToUser(role, userDetail.name)}"
 					class="btn btn-primary addPermission">
 				</h:commandButton>
 				<br/>
 				<br/>
-				<h:outputText id="roleName" value="#{userDetail.completeName}" styleClass="h1"></h:outputText>
-				<h:dataTable id="roleDetailTable" columnClasses="colRole, colRight"
-					headerClass="columnCenter" value="" var=""
+				<h:outputText id="roleName" value="#{userDetail.name}" styleClass="h2"></h:outputText>
+				<br/>
+				<h:outputText id="roleName" value="#{userDetail.firstLastName}" styleClass="h3"></h:outputText>
+				<h:dataTable columnClasses="colRole, colRight"
+					headerClass="columnCenter" value="#{userDetail.userRoles}" var="userDetails"
 					class="tblPermission table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Rolle<br />
 						</f:facet>
-						<h:outputText value="Java-Entwickler"/>
+						<h:commandLink value="#{userDetails.roleName}" action="#{roleDetail.goToRoleDetail(userDetails.roleName)}"></h:commandLink>
 					</h:column>
 					<h:column>
-						<f:facet name="header">Recht<br />
+						<f:facet name="header">Weitergabe<br />
 						</f:facet>
-						<h:outputText value="Nutzungsrecht/Weitergaberecht"/>
+						<h:commandLink value="#{userDetails.handover}"></h:commandLink>
 					</h:column>
 					<h:column>
 						<f:facet name="header"><br />

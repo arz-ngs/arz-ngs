@@ -23,11 +23,21 @@ public class RoleOverviewController implements Serializable{
 	
 	@PostConstruct
 	public void init() {
-		// roleOverview = admin.getRoles().getRoles();
+
 	}
 
 	public String goToRoleOverview() {
+		// roleOverview = admin.getRoles().getRoles();
 		return "roleoverview";
+	}
+
+	public String addRole(String newRole) {
+		// try {
+		// admin.creatRole(newRole);
+		// } catch (RuntimeException e) {
+		//
+		// }
+		return "";
 	}
 
 	public List<String> getRoleOverview() {
@@ -37,5 +47,4 @@ public class RoleOverviewController implements Serializable{
 	public void setRoleOverview(List<String> roleOverview) {
 		this.roleOverview = roleOverview;
 	}
-
 }
