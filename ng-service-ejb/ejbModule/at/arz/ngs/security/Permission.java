@@ -1,13 +1,19 @@
 package at.arz.ngs.security;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -30,7 +36,6 @@ public class Permission {
 	public static final String QUERY_BY_ENVIRONMENTandSERVICEandACTION = "Permission.findByUniqueKey";
 
 	@Id
-	@Column(name = "OID")
 	@GeneratedValue(generator = "ngs.permission", strategy = GenerationType.TABLE)
 	private long oid;
 
@@ -46,6 +51,10 @@ public class Permission {
 	@Column(name = "ACTION")
 	private Action action;
 
+	@JoinColumn(name = "ROLE_OID")
+	@ManyToMany(fetch = FetchType.LAZY)
+	private List<Role> roles;
+
 	protected Permission() {
 		//jpa constructor
 	}
@@ -54,6 +63,7 @@ public class Permission {
 		this.environmentName = environment;
 		this.serviceName = service;
 		this.action = action;
+		roles = new LinkedList<>();
 	}
 
 	public EnvironmentName getEnvironmentName() {

@@ -1,10 +1,12 @@
 package at.arz.ngs.security;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,7 +37,7 @@ public class Role {
 	private RoleName roleName;
 
 	@JoinColumn(name = "PERMISSION_OID")
-	@ManyToMany(mappedBy = "PERMISSION.OID")
+	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 	private List<Permission> permissions;
 
 	protected Role() {
@@ -44,6 +46,7 @@ public class Role {
 
 	public Role(RoleName roleName) {
 		this.roleName = roleName;
+		permissions = new LinkedList<>();
 	}
 
 	public long getOid() {

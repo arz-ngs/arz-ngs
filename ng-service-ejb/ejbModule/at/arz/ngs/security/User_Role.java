@@ -1,6 +1,7 @@
 package at.arz.ngs.security;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,12 +12,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import at.arz.ngs.converter.jpa.BooleanTFConverter;
+
 @Entity
 @Table(name = "USER_ROLE", uniqueConstraints = {@UniqueConstraint(columnNames = {"USER", "ROLE"})})
 public class User_Role {
 
 	@Id
-	@Column(name = "OID")
 	@GeneratedValue(generator = "ngs.user_role", strategy = GenerationType.TABLE)
 	private long oid;
 
@@ -29,7 +31,8 @@ public class User_Role {
 	private Role role;
 
 	@Column(name = "HANDOVER")
-	private boolean handover;
+	@Convert(converter = BooleanTFConverter.class)
+	private Boolean handover;
 
 	protected User_Role() {
 		// jpa constructor
