@@ -8,6 +8,7 @@ import javax.inject.Named;
 
 import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.commands.login.Login;
+import at.arz.ngs.security.commands.login.LoginResponse;
 
 @RequestScoped
 @Named("login")
@@ -17,7 +18,10 @@ public class LoginController
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	SecurityAdmin admin;
+	private SecurityAdmin admin;
+
+	@Inject
+	private UserController userController;
 
 	private String userName;
 	private String password;
@@ -26,9 +30,9 @@ public class LoginController
 	public String sendUserData() {
 		if ((userName != null) && (!userName.equals("")) && (password != null) && (!password.equals(""))) {
 			Login loginData = new Login(userName, password);
-			if (userName.equals("admin") && password.equals("admin")) {
-				return "overview";
-			}
+			LoginResponse response = admin.login(loginData);
+			userController.setUserData(response.getUser());
+			return "overview";
 		}
 		return "";
 	}

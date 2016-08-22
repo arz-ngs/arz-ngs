@@ -5,20 +5,22 @@ import java.io.Serializable;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
+import at.arz.ngs.security.user.commands.UserData;
+
 @SessionScoped
 @Named("user")
 public class UserController
 		implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	private String userName;
+	private UserData userData;
 
-	public String getUserName() {
-		return userName;
+	public UserData getUserData() {
+		return userData;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserData(UserData userData) {
+		this.userData = userData;
 	}
 
 

@@ -18,6 +18,8 @@ import at.arz.ngs.api.exception.RoleNotFound;
 import at.arz.ngs.api.exception.UserNotFound;
 import at.arz.ngs.api.exception.User_RoleNotFound;
 import at.arz.ngs.security.commands.Actor;
+import at.arz.ngs.security.commands.login.Login;
+import at.arz.ngs.security.commands.login.LoginResponse;
 import at.arz.ngs.security.permission.commands.PermissionData;
 import at.arz.ngs.security.permission.commands.addToRole.AddPermissionToRole;
 import at.arz.ngs.security.permission.commands.get.PermissionResponse;
@@ -27,6 +29,7 @@ import at.arz.ngs.security.role.commands.create.CreateRole;
 import at.arz.ngs.security.role.commands.get.AllRolesResponse;
 import at.arz.ngs.security.role.commands.get.RoleResponse;
 import at.arz.ngs.security.role.commands.remove.RemoveRole;
+import at.arz.ngs.security.user.commands.UserData;
 import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
 import at.arz.ngs.security.user.commands.get.UserResponse;
 import at.arz.ngs.security.user.commands.removeRole.RemoveRoleFromUser;
@@ -67,15 +70,45 @@ public class SecurityAdmin {
 		this.userRepository = userRepository;
 	}
 
-	public UserResponse getUserOverview() {
-		return null; // TODO -> ldap
+	public UserResponse getUserOverview() { // TODO ldap
+		UserResponse res = new UserResponse();
+
+		res.addUser(new UserData("a", "alex", "schiegl")); // fake data
+		res.addUser(new UserData("b", "daniel", "testor"));
+
+		return res;
+	}
+
+	public LoginResponse login(Login login) {
+		if (login == null || login.getUserName() == null || login.getUserName().equals("") || login.getPassword() == null) {
+			throw new EmptyField("login field must be set");
+		}
+		
+		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { //TODO IMPORTANT: remove in productional stage
+			return new LoginResponse(new UserData("Admin", "Max", "Mustermann"));
+		}
+		
+		return new LoginResponse(new UserData(login.getUserName(), "test", "User"));
 	}
 
 	/**
-	 * Must be invoked to edit user, roles or permission.
-	 * Only Administrators have access to perfom changes.
+	 * Checks if the actor has the rights to perfom an action. If not an NoPermission Exception is thrown.
 	 */
-	private void proofActorAdminAccess(Actor actor) {
+	public void proofPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
+		throw new NoPermission("The actor "+ actor
+								+ " does not have permission to perform an action in environment "
+								+ env.getName()
+								+ " on service "
+								+ service.getName()
+								+ "!");
+	}
+
+	/**
+	 * Must be invoked to edit user, roles or permission to proof the actors access. Also for editing/new/remove
+	 * ServiceInstance this method has to be used.
+	 * Only Administrators have access to perfom changes. If no permission an NoPermission Exception is thrown.
+	 */
+	public void proofActorAdminAccess(Actor actor) {
 		if (actor == null || actor.getUserName() == null || actor.getUserName().equals("")) {
 			throw new EmptyField("actor was null or empty");
 		}
