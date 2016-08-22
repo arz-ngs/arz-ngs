@@ -8,30 +8,32 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.converter.jpa.UserNameConverter;
 
 @Entity
-@NamedQueries({ @NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u"),
-				@NamedQuery(name = User.QUERY_BY_USERNAME, query = "SELECT u FROM User u WHERE u.userName = :uname")})
+@Table(name = "USER")
+@NamedQueries({@NamedQuery(name = User.QUERY_ALL, query = "SELECT u FROM User u"),
+		@NamedQuery(name = User.QUERY_BY_USERNAME, query = "SELECT u FROM User u WHERE u.userName = :uname")})
 public class User {
-	
+
 	public static final String QUERY_ALL = "User.getAll";
 	public static final String QUERY_BY_USERNAME = "User.findByUniqueKey";
-	
+
 	@Id
 	@GeneratedValue(generator = "ngs.user", strategy = GenerationType.TABLE)
 	private long oid;
-	
+
 	@Column(name = "USER_NAME", unique = true)
 	@Convert(converter = UserNameConverter.class)
 	private UserName userName;
-	
+
 	protected User() {
-		
+		//jpa constructor
 	}
-	
+
 	public User(UserName applicationName) {
 		this.userName = applicationName;
 	}
@@ -39,7 +41,7 @@ public class User {
 	public long getOid() {
 		return oid;
 	}
-	
+
 	public UserName getUserName() {
 		return userName;
 	}
@@ -64,10 +66,10 @@ public class User {
 		if (userName == null) {
 			if (other.userName != null)
 				return false;
-		} else if (!userName.equals(other.userName))
+		}
+		else if (!userName.equals(other.userName))
 			return false;
 		return true;
 	}
-	
-	
+
 }

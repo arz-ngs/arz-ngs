@@ -21,29 +21,19 @@ import at.arz.ngs.api.Status;
 import at.arz.ngs.converter.jpa.ServiceInstanceNameConverter;
 
 @Entity
-@Table(	name = "SERVICEINSTANCE",
-		uniqueConstraints = { @UniqueConstraint(columnNames = {	"SERVICE",
-																"HOST",
-																"ENVIRONMENT",
-																"SERVICEINSTANCE_NAME" }) })
-@NamedQueries({	@NamedQuery(name = ServiceInstance.QUERY_ALL, query = "SELECT si FROM ServiceInstance si"),
-				@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST_SERVICEINSTANCENAME,
-							query = "SELECT si "+ "FROM ServiceInstance si "
-									+ "WHERE si.host = :host AND "
-									+ "si.service = :service AND "
-									+ "si.environment = :environment AND "
-									+ "si.serviceInstanceName = :siname"),
-				@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST,
-							query = "SELECT si "+ "FROM ServiceInstance si "
-									+ "WHERE si.service = :service AND "
-									+ "si.environment = :environment AND "
-									+ "si.host = :host"),
-				@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT,
-							query = "SELECT si "+ "FROM ServiceInstance si "
-									+ "WHERE si.service = :service AND "
-									+ "si.environment = :environment"),
-				@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE,
-							query = "SELECT si " + "FROM ServiceInstance si " + "WHERE si.service = :service") })
+@Table(name = "SERVICEINSTANCE", uniqueConstraints = {
+		@UniqueConstraint(columnNames = {"SERVICE", "HOST", "ENVIRONMENT", "SERVICEINSTANCE_NAME"})})
+@NamedQueries({@NamedQuery(name = ServiceInstance.QUERY_ALL, query = "SELECT si FROM ServiceInstance si"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST_SERVICEINSTANCENAME, query = "SELECT si "
+				+ "FROM ServiceInstance si " + "WHERE si.host = :host AND " + "si.service = :service AND "
+				+ "si.environment = :environment AND " + "si.serviceInstanceName = :siname"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST, query = "SELECT si "
+				+ "FROM ServiceInstance si " + "WHERE si.service = :service AND " + "si.environment = :environment AND "
+				+ "si.host = :host"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT, query = "SELECT si "
+				+ "FROM ServiceInstance si " + "WHERE si.service = :service AND " + "si.environment = :environment"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE, query = "SELECT si " + "FROM ServiceInstance si "
+				+ "WHERE si.service = :service")})
 public class ServiceInstance {
 
 	public static final String QUERY_ALL = "ServiceInstance.getAll";
@@ -61,17 +51,14 @@ public class ServiceInstance {
 	private ServiceInstanceName serviceInstanceName;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "SERVICE")
 	private Service service;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "HOST")
 	private Host host;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE })
 	@JoinColumn(name = "ENVIRONMENT")
 	private Environment environment;
 
@@ -80,7 +67,6 @@ public class ServiceInstance {
 	private Status status;
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	// @ManyToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL, CascadeType.REMOVE})
 	@JoinColumn(name = "SCRIPT")
 	private Script script;
 
@@ -97,12 +83,8 @@ public class ServiceInstance {
 		// jpa constructor
 	}
 
-	public ServiceInstance(	ServiceInstanceName serviceName,
-							Service service,
-							Host host,
-							Environment environment,
-							Script script,
-							Status status) {
+	public ServiceInstance(ServiceInstanceName serviceName, Service service, Host host, Environment environment,
+			Script script, Status status) {
 		this.environment = environment;
 		this.serviceInstanceName = serviceName;
 		this.host = host;
@@ -202,33 +184,33 @@ public class ServiceInstance {
 		if (environment == null) {
 			if (other.environment != null)
 				return false;
-		} else if (!environment.equals(other.environment))
+		}
+		else if (!environment.equals(other.environment))
 			return false;
 		if (host == null) {
 			if (other.host != null)
 				return false;
-		} else if (!host.equals(other.host))
+		}
+		else if (!host.equals(other.host))
 			return false;
 		if (service == null) {
 			if (other.service != null)
 				return false;
-		} else if (!service.equals(other.service))
+		}
+		else if (!service.equals(other.service))
 			return false;
 		if (serviceInstanceName == null) {
 			if (other.serviceInstanceName != null)
 				return false;
-		} else if (!serviceInstanceName.equals(other.serviceInstanceName))
+		}
+		else if (!serviceInstanceName.equals(other.serviceInstanceName))
 			return false;
 		return true;
 	}
 
 	@Override
 	public String toString() {
-		return service.getServiceName()+ "/"
-				+ environment.getEnvironmentName()
-				+ "/"
-				+ host.getHostName()
-				+ "/"
+		return service.getServiceName() + "/" + environment.getEnvironmentName() + "/" + host.getHostName() + "/"
 				+ serviceInstanceName.getName();
 	}
 }
