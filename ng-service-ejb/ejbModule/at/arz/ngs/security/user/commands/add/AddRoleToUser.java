@@ -1,15 +1,26 @@
-package at.arz.ngs.security.role.commands.get;
+package at.arz.ngs.security.user.commands.add;
 
 
-public class UserRole {
+public class AddRoleToUser {
+
+	private String userName;
 
 	private String roleName;
 
 	private boolean handover;
 
-	public UserRole(String roleName, boolean handover) {
+	public AddRoleToUser(String userName, String roleName, boolean handover) {
+		this.userName = userName;
 		this.roleName = roleName;
 		this.handover = handover;
+	}
+
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 
 	public String getRoleName() {
