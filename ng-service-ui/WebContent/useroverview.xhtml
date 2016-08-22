@@ -52,16 +52,24 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 usercol">
-				<h:dataTable id="userOverviewTable" columnClasses="colRoleUser"
-					headerClass="columnCenter" value="" var=""
+				<h:dataTable columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
+					headerClass="columnCenter" value="#{users.userOverview}"
+					var="user"
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
-						<f:facet name="header">Benutzer<br />
-							<!-- 							<h:inputText id="userRegex" class="searchUsers" -->
-							<!-- 								a:placeholder="Suche nach Benutzer..." value=""> -->
-							<!-- 							</h:inputText> -->
-						</f:facet>
-						<h:link outcome="userdetail" value="Daniel Testor" />
+						<f:facet name="header">Benutzer</f:facet>
+						<h:commandLink
+							value="#{user.userName}" action="#{userDetail.goToUserDetail(user.userName, user.first_name, user.last_name)}"/>
+					</h:column>
+				<h:column>
+						<f:facet name="header">Vorname</f:facet>
+						<h:outputText
+							value="#{user.first_name}" />
+					</h:column>
+					<h:column>
+						<f:facet name="header">Nachname</f:facet>
+						<h:outputText
+							value="#{user.last_name}" />
 					</h:column>
 				</h:dataTable>
 			</div>

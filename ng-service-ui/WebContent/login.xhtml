@@ -33,6 +33,7 @@
                         		<div class="form-top-left">
                         			<h3>Willkommen beim Web-Dashboard</h3>
                             		<p>Username und Passwort eingeben:</p>
+<!--                             		<h:outputLabel value="Falsche Daten eingegeben!" rendered="#{login.wrongInput}"></h:outputLabel> -->
                         		</div>
                         		<div class="form-top-right">
                         			<i class="fa fa-lock"></i>
@@ -42,13 +43,13 @@
 			                    <h:form id="ngs-form" role="form" action="" method="post" class="login-form">
 			                    	<div class="form-group">
 			                    		<h:outputLabel class="sr-only" for="form-username">Username</h:outputLabel>
-			                        	<h:inputText type="text" name="form-username" a:placeholder="Username..." class="form-username form-control" id="form-username"></h:inputText>
+			                        	<h:inputText type="text" value="#{login.userName}" name="form-username" a:placeholder="Username..." class="form-username form-control" id="form-username"></h:inputText>
 			                        </div>
 			                        <div class="form-group">
 			                        	<h:outputLabel class="sr-only" for="form-password">Passwort</h:outputLabel>
-			                        	<h:inputSecret type="password" name="form-password" a:placeholder="Password..." class="form-password form-control" id="form-password"></h:inputSecret>
+			                        	<h:inputSecret type="password" value="#{login.password}" name="form-password" a:placeholder="Password..." class="form-password form-control" id="form-password"></h:inputSecret>
 			                        </div>
-			                        <button type="submit" class="btn" jsf:id="login">Anmelden!</button>
+			                        <h:commandLink type="submit" class="btn" action="#{login.sendUserData()}" id="loginButton">Anmelden!</h:commandLink>
 			                    </h:form>
 		                    </div>
                         </div>

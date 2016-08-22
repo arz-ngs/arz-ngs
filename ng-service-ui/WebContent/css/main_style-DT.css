@@ -58,17 +58,24 @@
 }
 
 .colRoleUser {
-	width: 450px;
+	width: 500px;
 }
+
+
 
 .colPermissionEnv, .colPermissionService, .colPermissionAction, .colRole, .colRight {
 	width: 400px;
+}
+
+.userOverview {
+	wdith: 300px;
 }
 
 .tblRoleUser {
 	top: 80px;
 	position: absolute;
 	overflow-y: scroll;
+	width: 600px;
 }
 
 .tblPermission {

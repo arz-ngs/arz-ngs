@@ -58,21 +58,17 @@
 				<h:commandButton value="Hinzufügen"
 					class="btn btn-primary addButton">
 				</h:commandButton>
-				<h:dataTable id="roleOverviewTable" columnClasses="colRoleUser"
-					headerClass="columnCenter" value="" var=""
+				<h:dataTable id="roleOverviewTable" columnClasses="colRole, colRoleDelete"
+					headerClass="columnCenter" value="#{roles.roleOverview}" var="role"
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Rolle<br />
-<!-- 							<h:inputText id="roleRegex" class="searchRoles" -->
-<!-- 								a:placeholder="Suche nach Rollen..." value=""> -->
-<!-- 							</h:inputText> -->
 						</f:facet>
-						<h:link
-							outcome="permission" value="Java-Entwickler" />
+						<h:outputText
+							value="#{role}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">
-							<br />
+						<f:facet name="header">Löschen
 						</f:facet>
 						<h:commandLink type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
