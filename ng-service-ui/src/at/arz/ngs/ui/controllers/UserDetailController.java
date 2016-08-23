@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -13,7 +13,7 @@ import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.role.commands.UserRole;
 import at.arz.ngs.security.user.commands.UserData;
 
-@RequestScoped
+@SessionScoped
 @Named("userDetail")
 public class UserDetailController
 		implements Serializable {
@@ -35,23 +35,35 @@ public class UserDetailController
 
 	@PostConstruct
 	public void init() {
+		if (currentUser == null) {
+			currentUser = new UserData("", "please choose", " an user", "");
+			currentUserRoles = new LinkedList<>();
+			availableRoles = new LinkedList<>();
+			chosenElement = "Bitte auswählen...";
+			availableRoles.add(chosenElement);
+			return;
+		}
+		formSubmit();
+	}
 
+	public void formSubmit() {
+		currentUserRoles = admin.getRolesForUser(currentUser.getUserName()).getUserRoles();
+		availableRoles = new LinkedList<>();
+		chosenElement = "Bitte auswählen...";
+		availableRoles.add("Bitte auswählen...");
+		availableRoles.addAll(admin.getAllRoles().getRoles());
 	}
 
 	public String goToUserDetail(String name, String firstName, String lastName) {
-		currentUserRoles = admin.getRolesForUser(name).getUserRoles();
 		currentUser = new UserData(name, firstName, lastName, "");
-
-		availableRoles = new LinkedList<>();
-		chosenElement = "Bitte auswählen...";
-		availableRoles.add(chosenElement);
-		availableRoles.addAll(admin.getAllRoles().getRoles());
+		formSubmit();
 
 		return "userdetail";
 	}
 
 	public String addRoleToUser(String role, String user) {
-		// admin.addRoleToUser(role, user, handover);
+		// admin.addRoleToUser(actor, command); //TODO
+		formSubmit();
 		return "";
 	}
 

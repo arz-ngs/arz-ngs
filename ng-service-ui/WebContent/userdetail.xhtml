@@ -62,7 +62,7 @@
 							styleClass="h2"></h:outputText>
 					</div>
 					<div>
-						<h:selectOneMenu value="#{userDetail.chosenElement}">
+						<h:selectOneMenu id="roledropdown" value="asdf">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
 						<label class="addPermission">Weitergaberecht</label>
@@ -98,7 +98,8 @@
 						</h:column>
 					</h:dataTable>
 				</div>
-				<div id="user-col" class="col-md-2">
+			</div>
+			<div id="user-col" class="col-md-2">
 					<div class="dropdown">
 						<button class="btn btn-default dropdown-toggle" type="button"
 							id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
@@ -112,7 +113,6 @@
 						</ul>
 					</div>
 				</div>
-			</div>
 		</div>
 	</h:form>
 </body>

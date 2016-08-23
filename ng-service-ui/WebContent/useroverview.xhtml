@@ -52,7 +52,9 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
-				<h:dataTable columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
+				<h3>Alle bisher eingeloggten User</h3>
+			
+				<h:dataTable id="userTable" columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
 					headerClass="columnCenter" value="#{useroverview.userOverview}"
 					var="userItem"
 					class="tblRoleUser table-responsive table-bordered table-hover">
