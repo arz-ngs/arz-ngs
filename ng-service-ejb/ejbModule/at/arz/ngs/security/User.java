@@ -6,7 +6,6 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,7 +52,7 @@ public class User {
 	@Convert(converter = EmailConverter.class)
 	private Email email;
 
-	@OneToMany(fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user")
 	private List<User_Role> user_roles;
 
 	protected User() {

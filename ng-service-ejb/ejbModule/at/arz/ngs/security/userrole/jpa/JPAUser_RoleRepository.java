@@ -36,6 +36,7 @@ public class JPAUser_RoleRepository
 	@Override
 	public void addUser_Role(User user, Role role, boolean handover) {
 		User_Role userRole = new User_Role(user, role, handover);
+		user.addUser_Role(userRole);
 		entityManager.persist(userRole);
 	}
 

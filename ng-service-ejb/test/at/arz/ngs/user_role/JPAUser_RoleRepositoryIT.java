@@ -63,6 +63,10 @@ public class JPAUser_RoleRepositoryIT
 		assertEquals("dani1", userRole1.getUser().getUserName().toString());
 		assertEquals("entwickler1", userRole1.getRole().getRoleName().toString());
 		assertEquals(true, userRole1.isHandover());
+		User u = userRepository.getUser(new UserName("dani1"));
+		for (User_Role ur : u.getUser_roles()) {
+			System.err.println("" + ur.getRole().getRoleName().getName());
+		}
 	}
 
 	@Test
