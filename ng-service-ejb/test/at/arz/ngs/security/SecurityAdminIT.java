@@ -1,5 +1,6 @@
 package at.arz.ngs.security;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import javax.persistence.Query;
@@ -123,6 +124,38 @@ public class SecurityAdminIT
 
 	}
 
+	@Test
+	public void addRoleToUser() {
+		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
+		Actor actor2 = new Actor(userRepository.getUser(new UserName("alex")).getUserName().toString());
+		Actor actor3 = new Actor(userRepository.getUser(new UserName("user1")).getUserName().toString());
+		Actor actor4 = new Actor(userRepository.getUser(new UserName("user2")).getUserName().toString());
+		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
+		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", false);
+		AddRoleToUser addRoleToUserCommand2 = new AddRoleToUser("user2", "entwickler", true);
+		securityAdmin.addRoleToUser(admin, addRoleToUserCommand2);
+		assertEquals(2, roleRepository.getAllRoles().size());
+		try {
+			securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
+		try {
+			securityAdmin.addRoleToUser(actor2, addRoleToUserCommand);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
+		try {
+			securityAdmin.addRoleToUser(actor3, addRoleToUserCommand);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
+		securityAdmin.addRoleToUser(actor4, addRoleToUserCommand);
+	}
+
 	// @Test
 	public void proofPermission() {
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
@@ -195,39 +228,10 @@ public class SecurityAdminIT
 		} catch (NoPermission e) {
 			// wanted
 		}
+
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
 	}
 
-	@Test
-	public void addRoleToUser() {
-		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
-		Actor actor2 = new Actor(userRepository.getUser(new UserName("alex")).getUserName().toString());
-		Actor actor3 = new Actor(userRepository.getUser(new UserName("user1")).getUserName().toString());
-		Actor actor4 = new Actor(userRepository.getUser(new UserName("user2")).getUserName().toString());
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
-		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", false);
-		AddRoleToUser addRoleToUserCommand2 = new AddRoleToUser("user2", "entwickler", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand2);
-		try {
-			securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
-			fail();
-		} catch (NoPermission e) {
-			// wanted
-		}
-		try {
-			securityAdmin.addRoleToUser(actor2, addRoleToUserCommand);
-			fail();
-		} catch (NoPermission e) {
-			// wanted
-		}
-		try {
-			securityAdmin.addRoleToUser(actor3, addRoleToUserCommand);
-			fail();
-		} catch (NoPermission e) {
-			// wanted
-		}
-		securityAdmin.addRoleToUser(actor4, addRoleToUserCommand);
-	}
 
 
 	/**

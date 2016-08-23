@@ -85,7 +85,7 @@ public class SecurityAdmin {
 												u.getFirstName().getName(),
 												u.getLastName().getName(),
 										u.getEmail().getEmail()));
-
+			System.out.println("UserOverview: " + u.getUserName());
 		}
 
 		res.addUser(new UserData("a", "alex", "schiegl", "test@email.at")); // fake data
