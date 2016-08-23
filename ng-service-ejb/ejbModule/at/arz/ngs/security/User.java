@@ -65,6 +65,9 @@ public class User {
 	}
 
 	public List<User_Role> getUser_roles() {
+		for (User_Role ur : user_roles) {
+			System.err.println("asdf " + ur.getRole().getRoleName().getName());
+		}
 		return Collections.unmodifiableList(user_roles);
 	}
 
