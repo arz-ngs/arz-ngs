@@ -78,8 +78,15 @@ public class SecurityAdmin {
 		isJunitTest = true;
 	}
 
-	public UserResponse getUserOverview() { // TODO ldap
+	public UserResponse getUserOverview() {
 		UserResponse res = new UserResponse();
+		for (User u : userRepository.getAllUsers()) {
+			res.addUser(new UserData(	u.getUserName().getName(),
+												u.getFirstName().getName(),
+												u.getLastName().getName(),
+										u.getEmail().getEmail()));
+
+		}
 
 		res.addUser(new UserData("a", "alex", "schiegl", "test@email.at")); // fake data
 		res.addUser(new UserData("b", "daniel", "testor", "test@email.at"));
@@ -126,10 +133,8 @@ public class SecurityAdmin {
 
 		User user = userRepository.getUser(new UserName(actor.getUserName()));
 
-		System.err.println("User: " + user.getUserName().getName());
 
 		for (User_Role ur : user.getUser_roles()) {
-			System.err.println("Role: " + ur.getRole().getRoleName().getName());
 			if (ur.getRole().getRoleName().getName().equals(ADMIN)) {
 				return; // ok, access is granted
 			}
@@ -165,7 +170,6 @@ public class SecurityAdmin {
 		boolean checkIfUserhasSameRole = false; // admin do not need the same role
 
 		if (!isJunitTest) {
-			System.err.println("\n\n\n\n\n\n\n\n\n\n JUnit Test but still goes into this if");
 			try {
 				proofActorAdminAccess(actor);
 			} catch (NoPermission e) { // user is not an Admin -> check if he can handover his own role to other people
@@ -189,7 +193,6 @@ public class SecurityAdmin {
 			proofActorHasSameRoleAndHandoverRights(actor, roleToAdd);
 		
 		 }
-		System.err.println(userToAddTo.getUserName().getName() + " role: " + roleToAdd.getRoleName().getName());
 		userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
 	}
 
@@ -289,9 +292,7 @@ public class SecurityAdmin {
 		RoleResponse res = new RoleResponse(userName);
 
 		User user = userRepository.getUser(new UserName(userName));
-		System.err.println("get role for user" + user.getUserName().getName());
 		for (User_Role ur : user.getUser_roles()) {
-			System.err.println("role retrieved: " + ur.getRole().getRoleName().getName());
 			res.addUserRole(new UserRole(ur.getRole().getRoleName().getName(), ur.isHandover()));
 		}
 

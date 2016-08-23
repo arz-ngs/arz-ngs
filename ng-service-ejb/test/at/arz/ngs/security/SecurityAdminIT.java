@@ -113,6 +113,8 @@ public class SecurityAdminIT
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
 		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		System.err.println("\n\n\n\nROLLE: " + roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN)).getRoleName());
+		System.err.println("\nUSER: " + userRepository.getUser(new UserName("admin")).getUserName());
 
 		RoleResponse adminRoles = securityAdmin.getRolesForUser("admin");
 		for (UserRole ur : adminRoles.getUserRoles()) {
