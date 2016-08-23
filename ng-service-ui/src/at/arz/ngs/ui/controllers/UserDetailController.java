@@ -1,6 +1,7 @@
 package at.arz.ngs.ui.controllers;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +31,8 @@ public class UserDetailController
 
 	private List<String> availableRoles;
 
+	private String chosenElement;
+
 	@PostConstruct
 	public void init() {
 
@@ -38,13 +41,26 @@ public class UserDetailController
 	public String goToUserDetail(String name, String firstName, String lastName) {
 		currentUserRoles = admin.getRolesForUser(name).getUserRoles();
 		currentUser = new UserData(name, firstName, lastName, "");
-		availableRoles = admin.getAllRoles().getRoles();
+
+		availableRoles = new LinkedList<>();
+		chosenElement = "Bitte auswählen...";
+		availableRoles.add(chosenElement);
+		availableRoles.addAll(admin.getAllRoles().getRoles());
+
 		return "userdetail";
 	}
 
 	public String addRoleToUser(String role, String user) {
 		// admin.addRoleToUser(role, user, handover);
 		return "";
+	}
+
+	public String getChosenElement() {
+		return chosenElement;
+	}
+
+	public void setChosenElement(String chosenElement) {
+		this.chosenElement = chosenElement;
 	}
 
 	public UserData getCurrentUser() {

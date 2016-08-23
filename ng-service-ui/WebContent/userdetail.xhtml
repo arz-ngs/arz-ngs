@@ -62,7 +62,7 @@
 							styleClass="h2"></h:outputText>
 					</div>
 					<div>
-						<h:selectOneMenu value="Bitte auswählen...">
+						<h:selectOneMenu value="#{userDetail.chosenElement}">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
 						<label class="addPermission">Weitergaberecht</label>

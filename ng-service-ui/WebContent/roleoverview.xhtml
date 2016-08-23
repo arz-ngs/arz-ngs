@@ -64,8 +64,11 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
-				<h:inputText type="text"
-								class="addButton" p:placeholder="Neue Rolle eintragen..."
+				<div>
+					<h1>Alle Rollen</h1>
+				</div>
+				<h:inputText type="text" value="#{roleoverview.}"
+								class="createRole" p:placeholder="Neue Rolle eintragen..."
 								aria-describedby="Rolle"></h:inputText>
 				<h:commandButton value="Hinzufügen"
 					class="btn btn-primary addButton">

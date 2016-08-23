@@ -17,10 +17,12 @@ public class RoleOverviewController implements Serializable{
 	private static final long serialVersionUID = 1L;	
 
 	@Inject
-	SecurityAdmin admin;
+	private SecurityAdmin admin;
 
 	private List<String> roleOverview;
 	
+	private String createRoleName;
+
 	@PostConstruct
 	public void init() {
 
@@ -46,5 +48,13 @@ public class RoleOverviewController implements Serializable{
 
 	public void setRoleOverview(List<String> roleOverview) {
 		this.roleOverview = roleOverview;
+	}
+
+	public String getCreateRoleName() {
+		return createRoleName;
+	}
+
+	public void setCreateRoleName(String createRoleName) {
+		this.createRoleName = createRoleName;
 	}
 }

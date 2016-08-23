@@ -89,16 +89,14 @@
 	top:40px;
 }
 
-.addButton {
+.createRole {
 	position: relative;
-	top: 30px;
 	left: 10px;
 	margin-left: 30px;
 }
 
 .addPermission {
 	position: relative;
-	top:30px;
 	left: 40px;
 	margin-left: 30px;
 }
