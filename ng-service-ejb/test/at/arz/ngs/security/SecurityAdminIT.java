@@ -32,8 +32,6 @@ import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.permission.commands.PermissionData;
 import at.arz.ngs.security.permission.commands.addToRole.AddPermissionToRole;
 import at.arz.ngs.security.permission.jpa.JPAPermissionRepository;
-import at.arz.ngs.security.role.commands.UserRole;
-import at.arz.ngs.security.role.commands.get.RoleResponse;
 import at.arz.ngs.security.role.jpa.JPARoleRepository;
 import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
 import at.arz.ngs.security.user.jpa.JPAUserRepository;
@@ -114,14 +112,6 @@ public class SecurityAdminIT
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
 		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
-		System.err.println("\n\n\n\nROLLE: " + roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN)).getRoleName());
-		System.err.println("\nUSER: " + userRepository.getUser(new UserName("admin")).getUserName());
-
-		RoleResponse adminRoles = securityAdmin.getRolesForUser("admin");
-		for (UserRole ur : adminRoles.getUserRoles()) {
-			System.err.println("Role for admin: " + ur.getRoleName());
-		}
-
 	}
 
 	@Test
@@ -156,7 +146,7 @@ public class SecurityAdminIT
 		securityAdmin.addRoleToUser(actor4, addRoleToUserCommand);
 	}
 
-	// @Test
+	@Test
 	public void proofPermission() {
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
 		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
@@ -180,7 +170,7 @@ public class SecurityAdminIT
 		}
 	}
 
-	// @Test
+	@Test
 	public void proofPermission2() {
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
 		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
@@ -190,6 +180,10 @@ public class SecurityAdminIT
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start, actor);
+		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.all, actor);
+		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.start, actor);
+		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.start, actor);
+		// securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("*"), Action.start, actor);
 		try {
 			securityAdmin.proofPerformAction(	new EnvironmentName("env2"),
 												new ServiceName("serv1"),
@@ -214,6 +208,12 @@ public class SecurityAdminIT
 		} catch (NoPermission e) {
 			// wanted
 		}
+		try {
+			securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.stop, actor);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
 	}
 
 	@Test
@@ -230,6 +230,35 @@ public class SecurityAdminIT
 		}
 
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+	}
+
+	@Test
+	public void proofPermission3() {
+		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
+		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
+		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
+		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		PermissionData permissionData = new PermissionData("env1", "serv1", Action.start.name());
+		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
+		PermissionData permissionData2 = new PermissionData("*", "serv1", Action.all.name());
+		AddPermissionToRole addPermissionToRoleCommand2 = new AddPermissionToRole("entwickler", permissionData2);
+		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand2);
+		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start, actor);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop, actor);
+			securityAdmin.proofPerformAction(	new EnvironmentName("env2"),
+												new ServiceName("serv1"),
+												Action.start,
+												actor);
+		try {
+			securityAdmin.proofPerformAction(	new EnvironmentName("env1"),
+												new ServiceName("serv2"),
+												Action.start,
+												actor);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
 	}
 
 

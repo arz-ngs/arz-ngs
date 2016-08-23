@@ -30,7 +30,9 @@ import at.arz.ngs.converter.jpa.ServiceNameConverter;
 		@UniqueConstraint(columnNames = {"ENVIRONMENT_NAME", "SERVICE_NAME", "ACTION"})})
 @NamedQueries({
 		@NamedQuery(name = Permission.QUERY_BY_ENVIRONMENTandSERVICEandACTION, query = "SELECT p FROM Permission p "
-				+ "WHERE p.environmentName = :ename " + "AND p.serviceName = :sname " + "AND p.action = :action")})
+									+ "WHERE p.environmentName = :ename "
+									+ "AND p.serviceName = :sname "
+									+ "AND p.action = :action") })
 public class Permission {
 
 	public static final String QUERY_BY_ENVIRONMENTandSERVICEandACTION = "Permission.findByUniqueKey";

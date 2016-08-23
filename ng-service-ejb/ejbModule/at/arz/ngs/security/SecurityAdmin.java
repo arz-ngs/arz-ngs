@@ -82,14 +82,11 @@ public class SecurityAdmin {
 		UserResponse res = new UserResponse();
 		for (User u : userRepository.getAllUsers()) {
 			res.addUser(new UserData(	u.getUserName().getName(),
-												u.getFirstName().getName(),
-												u.getLastName().getName(),
+										u.getFirstName().getName(),
+										u.getLastName().getName(),
 										u.getEmail().getEmail()));
 			System.out.println("UserOverview: " + u.getUserName());
 		}
-
-		res.addUser(new UserData("a", "alex", "schiegl", "test@email.at")); // fake data
-		res.addUser(new UserData("b", "daniel", "testor", "test@email.at"));
 
 		return res;
 	}
@@ -102,7 +99,7 @@ public class SecurityAdmin {
 		}
 
 		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
-																							// productional stage
+			// productional stage
 			return new LoginResponse(new UserData("Admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
 		// adjustUser(name, firstName, lastName, email); TODO Fill method with data from LDAP
@@ -113,6 +110,26 @@ public class SecurityAdmin {
 	 * Checks if the actor has the rights to perfom an action. If not an NoPermission Exception is thrown.
 	 */
 	public void proofPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
+		try {
+			proofActorAdminAccess(actor);
+			return;
+		} catch (NoPermission e) {
+			User user = userRepository.getUser(new UserName(actor.getUserName()));
+			for (User_Role ur : user.getUser_roles()) {
+				Role role = ur.getRole();
+				System.err.println("PROOFPERMISSION: ROLLE " + role.getRoleName().getName());
+				for (Permission permission : role.getPermissions()) {
+					EnvironmentName envName = permission.getEnvironmentName();
+					ServiceName serviceName = permission.getServiceName();
+					Action act = permission.getAction();
+					if ((envName.equals(env) || envName.getName().equals("*"))
+						&& (serviceName.equals(service) || serviceName.getName().equals("*"))
+						&& (act.equals(action) || act.name().equals("all"))) {
+						return;
+					}
+				}
+			}
+		}
 		throw new NoPermission("The actor "+ actor
 								+ " does not have permission to perform an action in environment "
 								+ env.getName()
@@ -191,8 +208,8 @@ public class SecurityAdmin {
 
 		if (checkIfUserhasSameRole) {
 			proofActorHasSameRoleAndHandoverRights(actor, roleToAdd);
-		
-		 }
+
+		}
 		userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
 	}
 
@@ -418,10 +435,10 @@ public class SecurityAdmin {
 			email = new Email("");
 		}
 		try {
-		User user = userRepository.getUser(name);
-		user.setFirstName(firstName);
-		user.setLastName(lastName);
-		user.setEmail(email);
+			User user = userRepository.getUser(name);
+			user.setFirstName(firstName);
+			user.setLastName(lastName);
+			user.setEmail(email);
 		} catch (UserNotFound e) {
 			userRepository.addUser(name, firstName, lastName, email);
 		}

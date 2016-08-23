@@ -6,4 +6,8 @@ INSERT INTO `osrtest`.`user_role` (`OID`, `HANDOVER`, `ROLE_OID`, `USER_OID`) VA
 
 
 
+//TEST INSERT
 INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES ('2', 'Java-Entwickler');
+INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES ('3', 'Tester');
+INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES ('3', 'Organsisation');
+INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES ('3', 'Organsisation');
