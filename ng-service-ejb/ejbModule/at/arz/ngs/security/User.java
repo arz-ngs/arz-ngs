@@ -10,7 +10,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -54,7 +53,6 @@ public class User {
 	@Convert(converter = EmailConverter.class)
 	private Email email;
 
-	@JoinColumn(name = "USER_ROLES")
 	@OneToMany(fetch = FetchType.LAZY)
 	private List<User_Role> user_roles;
 
@@ -86,9 +84,6 @@ public class User {
 	}
 
 	public List<User_Role> getUser_roles() {
-		for (User_Role ur : user_roles) {
-			System.err.println("asdf " + ur.getRole().getRoleName().getName());
-		}
 		return Collections.unmodifiableList(user_roles);
 	}
 

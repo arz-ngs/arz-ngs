@@ -20,15 +20,15 @@ public class UserDetailController
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	SecurityAdmin admin;
+	private SecurityAdmin admin;
 
-	private UserData user;
-	private String name;
-	private String firstLastName;
+	private UserData currentUser;
 
 	private boolean handover;
 
-	private List<UserRole> userRoles;
+	private List<UserRole> currentUserRoles;
+
+	private List<String> availableRoles;
 
 	@PostConstruct
 	public void init() {
@@ -36,9 +36,9 @@ public class UserDetailController
 	}
 
 	public String goToUserDetail(String name, String firstName, String lastName) {
-		userRoles = admin.getRolesForUser(name).getUserRoles();
-		this.name = name;
-		this.firstLastName = firstName + " " + lastName;
+		currentUserRoles = admin.getRolesForUser(name).getUserRoles();
+		currentUser = new UserData(name, firstName, lastName, "");
+		availableRoles = admin.getAllRoles().getRoles();
 		return "userdetail";
 	}
 
@@ -47,20 +47,20 @@ public class UserDetailController
 		return "";
 	}
 
-	public UserData getUser() {
-		return user;
+	public UserData getCurrentUser() {
+		return currentUser;
 	}
 
-	public void setUser(UserData user) {
-		this.user = user;
+	public void setCurrentUser(UserData currentUser) {
+		this.currentUser = currentUser;
 	}
 
-	public List<UserRole> getUserRoles() {
-		return userRoles;
+	public List<UserRole> getCurrentUserRoles() {
+		return currentUserRoles;
 	}
 
-	public void setUserRoles(List<UserRole> userRoles) {
-		this.userRoles = userRoles;
+	public void setCurrentUserRoles(List<UserRole> currentUserRoles) {
+		this.currentUserRoles = currentUserRoles;
 	}
 
 	public boolean isHandover() {
@@ -71,20 +71,11 @@ public class UserDetailController
 		this.handover = handover;
 	}
 
-	public String getName() {
-		return name;
+	public List<String> getAvailableRoles() {
+		return availableRoles;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setAvailableRoles(List<String> availableRoles) {
+		this.availableRoles = availableRoles;
 	}
-
-	public String getFirstLastName() {
-		return firstLastName;
-	}
-
-	public void setFirstLastName(String firstLastName) {
-		this.firstLastName = firstLastName;
-	}
-
 }

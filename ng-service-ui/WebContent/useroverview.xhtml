@@ -51,8 +51,7 @@
 					</ul>
 				</div>
 			</div>
-			<div id="mid-col" class="col-md-8 usercol">
-			<div class="row">
+			<div id="mid-col" class="col-md-8 secondcol">
 				<h:dataTable columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
 					headerClass="columnCenter" value="#{useroverview.userOverview}"
 					var="userItem"
@@ -72,8 +71,7 @@
 						<h:outputText
 							value="#{userItem.last_name}" />
 					</h:column>
-				</h:dataTable>
-				</div>
+				</h:dataTable>	
 			</div>
 			<div id="user-col" class="col-md-2">
 				<div class="dropdown">

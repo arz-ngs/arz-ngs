@@ -17,7 +17,7 @@ import javax.persistence.UniqueConstraint;
 import at.arz.ngs.converter.jpa.BooleanTFConverter;
 
 @Entity
-@Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_", "ROLE" }) })
+@Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_OID", "ROLE_OID" }) })
 @NamedQueries({ @NamedQuery(name = User_Role.QUERY_BY_USER_ROLE,
 							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole") })
 public class User_Role {
@@ -28,11 +28,11 @@ public class User_Role {
 	@GeneratedValue(generator = "ngs.user_role", strategy = GenerationType.TABLE)
 	private long oid;
 
-	@JoinColumn(name = "USER_")
+	@JoinColumn(name = "USER_OID")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
 
-	@JoinColumn(name = "ROLE")
+	@JoinColumn(name = "ROLE_OID")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private Role role;
 
