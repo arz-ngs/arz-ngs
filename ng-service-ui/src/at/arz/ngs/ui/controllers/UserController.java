@@ -6,6 +6,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.user.commands.UserData;
 
 @SessionScoped
@@ -31,5 +32,9 @@ public class UserController
 		userData = null;
 		loginController.logout();
 		return "login";
+	}
+
+	public Actor getCurrentActor() {
+		return new Actor(userData.getUserName());
 	}
 }

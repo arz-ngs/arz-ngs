@@ -72,10 +72,9 @@
 }
 
 .tblRoleUser {
-	top: 80px;
-	position: absolute;
+	margin-top: 20px;
 	overflow-y: scroll;
-	width: 650px;
+	min-width: 500px;
 }
 
 .tblPermission {
@@ -90,9 +89,12 @@
 }
 
 .createRole {
-	position: relative;
-	left: 10px;
-	margin-left: 30px;
+	margin-top: 20px;
+}
+
+.createRoleText {
+	margin-right: 20px;
+	min-width: 200px;
 }
 
 .addPermission {

@@ -9,6 +9,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.role.commands.create.CreateRole;
+import at.arz.ngs.ui.data_collections.Error;
+import at.arz.ngs.ui.data_collections.ErrorCollection;
 
 @RequestScoped
 @Named("roleoverview")
@@ -19,9 +22,14 @@ public class RoleOverviewController implements Serializable{
 	@Inject
 	private SecurityAdmin admin;
 
+	@Inject
+	private UserController userController;
+
 	private List<String> roleOverview;
 	
 	private String createRoleName;
+
+	private ErrorCollection errorCollection;
 
 	@PostConstruct
 	public void init() {
@@ -34,12 +42,14 @@ public class RoleOverviewController implements Serializable{
 	}
 
 	public String addRole(String newRole) {
-		// try {
-		// admin.creatRole(newRole);
-		// } catch (RuntimeException e) {
-		//
-		// }
-		return "";
+		errorCollection = new ErrorCollection();
+		try {
+			admin.createRole(userController.getCurrentActor(), new CreateRole(newRole));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
+		return "roleoverview.xhtml?faces-redirct=true";
 	}
 
 	public List<String> getRoleOverview() {
@@ -56,5 +66,13 @@ public class RoleOverviewController implements Serializable{
 
 	public void setCreateRoleName(String createRoleName) {
 		this.createRoleName = createRoleName;
+	}
+
+	public ErrorCollection getErrorCollection() {
+		return errorCollection;
+	}
+
+	public void setErrorCollection(ErrorCollection errorCollection) {
+		this.errorCollection = errorCollection;
 	}
 }
