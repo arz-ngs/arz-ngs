@@ -6,7 +6,10 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import at.arz.ngs.api.Action;
+import at.arz.ngs.api.Email;
 import at.arz.ngs.api.EnvironmentName;
+import at.arz.ngs.api.FirstName;
+import at.arz.ngs.api.LastName;
 import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.UserName;
@@ -78,8 +81,8 @@ public class SecurityAdmin {
 	public UserResponse getUserOverview() { // TODO ldap
 		UserResponse res = new UserResponse();
 
-		res.addUser(new UserData("a", "alex", "schiegl")); // fake data
-		res.addUser(new UserData("b", "daniel", "testor"));
+		res.addUser(new UserData("a", "alex", "schiegl", "test@email.at")); // fake data
+		res.addUser(new UserData("b", "daniel", "testor", "test@email.at"));
 
 		return res;
 	}
@@ -93,10 +96,10 @@ public class SecurityAdmin {
 
 		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
 																							// productional stage
-			return new LoginResponse(new UserData("Admin", "Max", "Mustermann"));
+			return new LoginResponse(new UserData("Admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
-
-		return new LoginResponse(new UserData(login.getUserName(), "test", "User"));
+		// adjustUser(name, firstName, lastName, email); TODO Fill method with data from LDAP
+		return new LoginResponse(new UserData(login.getUserName(), "test", "User", "test.user@email.at"));
 	}
 
 	/**
@@ -178,7 +181,7 @@ public class SecurityAdmin {
 			|| command.getRoleName().equals("")) {
 			throw new EmptyField("Could not add role to user in order to empty fields.");
 		}
-		User userToAddTo = getOrCreateUser(new UserName(command.getUserName()));
+		User userToAddTo = userRepository.getUser(new UserName(command.getUserName()));
 
 		Role roleToAdd = roleRepository.getRole(new RoleName(command.getRoleName())); // if role not found -> rollback
 
@@ -391,20 +394,6 @@ public class SecurityAdmin {
 		}
 	}
 
-	/**
-	 * 
-	 * @param user Must not be null.
-	 * @return
-	 */
-	private User getOrCreateUser(UserName userName) {
-		try {
-			return userRepository.getUser(userName);
-		} catch (UserNotFound e) {
-			userRepository.addUser(userName);
-		}
-		return userRepository.getUser(userName);
-	}
-
 	private Permission getOrCreatePermission(EnvironmentName environmentName, ServiceName serviceName, Action action) {
 		try {
 			return permissionRepository.getPermission(environmentName, serviceName, action);
@@ -413,4 +402,28 @@ public class SecurityAdmin {
 		}
 		return permissionRepository.getPermission(environmentName, serviceName, action);
 	}
+
+	private void adjustUser(UserName name, FirstName firstName, LastName lastName, Email email) {
+		if (name == null || name.getName().equals("")) {
+			throw new EmptyField("user identification is empty!");
+		}
+		if (firstName == null) {
+			firstName = new FirstName("");
+		}
+		if (lastName == null) {
+			lastName = new LastName("");
+		}
+		if (email == null) {
+			email = new Email("");
+		}
+		try {
+		User user = userRepository.getUser(name);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setEmail(email);
+		} catch (UserNotFound e) {
+			userRepository.addUser(name, firstName, lastName, email);
+		}
+	}
+
 }

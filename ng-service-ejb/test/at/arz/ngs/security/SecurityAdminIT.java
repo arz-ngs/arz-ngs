@@ -15,7 +15,10 @@ import at.arz.ngs.ScriptRepository;
 import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.Action;
+import at.arz.ngs.api.Email;
 import at.arz.ngs.api.EnvironmentName;
+import at.arz.ngs.api.FirstName;
+import at.arz.ngs.api.LastName;
 import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.UserName;
@@ -90,11 +93,11 @@ public class SecurityAdminIT
 		command.setScript(scriptData);
 		serviceAdmin.createNewServiceInstance(command);
 
-		userRepository.addUser(new UserName("daniel"));
-		userRepository.addUser(new UserName("admin"));
-		userRepository.addUser(new UserName("alex"));
-		userRepository.addUser(new UserName("user1"));
-		userRepository.addUser(new UserName("user2"));
+		userRepository.addUser(new UserName("daniel"), new FirstName(""), new LastName(""), new Email(""));
+		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
+		userRepository.addUser(new UserName("alex"), new FirstName(""), new LastName(""), new Email(""));
+		userRepository.addUser(new UserName("user1"), new FirstName(""), new LastName(""), new Email(""));
+		userRepository.addUser(new UserName("user2"), new FirstName(""), new LastName(""), new Email(""));
 		// roleRepository.addRole(new RoleName("Administrator"));
 		roleRepository.addRole(new RoleName("entwickler"));
 

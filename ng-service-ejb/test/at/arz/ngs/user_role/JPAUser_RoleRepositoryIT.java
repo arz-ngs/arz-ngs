@@ -10,6 +10,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
+import at.arz.ngs.api.Email;
+import at.arz.ngs.api.FirstName;
+import at.arz.ngs.api.LastName;
 import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.User_RoleNotFound;
@@ -38,7 +41,7 @@ public class JPAUser_RoleRepositoryIT
 		roleRepository = new JPARoleRepository(getEntityManager());
 
 		UserName userName1 = new UserName("dani");
-		userRepository.addUser(userName1);
+		userRepository.addUser(userName1, new FirstName(""), new LastName(""), new Email(""));
 		RoleName roleName1 = new RoleName("entwickler");
 		roleRepository.addRole(roleName1);
 		User user1 = userRepository.getUser(userName1);
@@ -49,7 +52,7 @@ public class JPAUser_RoleRepositoryIT
 	@Test
 	public void addUserRole() {
 		UserName userName1 = new UserName("dani1");
-		userRepository.addUser(userName1);
+		userRepository.addUser(userName1, new FirstName(""), new LastName(""), new Email(""));
 		RoleName roleName1 = new RoleName("entwickler1");
 		roleRepository.addRole(roleName1);
 		User user1 = userRepository.getUser(userName1);

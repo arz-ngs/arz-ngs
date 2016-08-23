@@ -8,6 +8,9 @@ import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import at.arz.ngs.api.Email;
+import at.arz.ngs.api.FirstName;
+import at.arz.ngs.api.LastName;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.UserNotFound;
 import at.arz.ngs.security.User;
@@ -52,11 +55,13 @@ public class JPAUserRepository
 		return allUsers.getResultList();
 	}
 
+
 	@Override
-	public void addUser(UserName name) {
-		User user = new User(name);
+	public void addUser(UserName name, FirstName firstName, LastName lastName, Email email) {
+		User user = new User(name, firstName, lastName, email);
 		entityManager.persist(user);
 	}
+
 
 	@Override
 	public void removeUser(User user) {
