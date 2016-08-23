@@ -31,8 +31,8 @@
 		<class>at.arz.ngs.security.User_Role</class>
 		<exclude-unlisted-classes>false</exclude-unlisted-classes>
 		<properties>
-<!-- 			  <property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->
-<!-- 			<property name="eclipselink.ddl-generation.output-mode" value="database" /> -->
+			  <property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+			<property name="eclipselink.ddl-generation.output-mode" value="database" />
 		</properties>
 	</persistence-unit>
 
