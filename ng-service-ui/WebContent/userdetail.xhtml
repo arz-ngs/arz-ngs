@@ -42,10 +42,10 @@
 							data-toggle="dropdown">Berechtigungen<b class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
 								<li class="nav-list dpList"><h:commandLink
-								action="#{users.goToUserOverview()}"
+								action="#{useroverview.goToUserOverview()}"
 								value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{roles.goToRoleOverview()}"
+								action="#{roleoverview.goToRoleOverview()}"
 								value="Rollenübersicht" /></li>
 							</ul></li>
 					</ul>
@@ -53,7 +53,7 @@
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
 				<h:selectOneMenu value="asdf" class="addPermission">
-   						<f:selectItem value="#{roles.roleOverview}" var="role"/>
+   						<f:selectItem value="#{roleoverview.roleOverview}" var="role"/>
    				</h:selectOneMenu>
    				<label class="addPermission">Weitergaberecht</label>
    				<h:selectBooleanCheckbox type="checkbox" value="#{userDetail.handover}" class="addPermission"/>
@@ -93,13 +93,10 @@
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="true">
-						Alexander Schiegl <span class="caret"></span>
+						<h:outputText value="#{user.userData.first_name} #{user.userData.last_name}" /> <span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-						<li><a href="#">Action</a></li>
-						<li><a href="#">Another action</a></li>
-						<li role="separator" class="divider"></li>
-						<li><a href="#">Ausloggen</a></li>
+						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
 					</ul>
 				</div>
 			</div>

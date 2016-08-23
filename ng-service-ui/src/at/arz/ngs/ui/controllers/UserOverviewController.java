@@ -12,7 +12,7 @@ import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.user.commands.UserData;
 
 @RequestScoped
-@Named("users")
+@Named("useroverview")
 public class UserOverviewController implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

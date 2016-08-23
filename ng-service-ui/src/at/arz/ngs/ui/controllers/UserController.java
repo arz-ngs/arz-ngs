@@ -3,6 +3,7 @@ package at.arz.ngs.ui.controllers;
 import java.io.Serializable;
 
 import javax.enterprise.context.SessionScoped;
+import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.security.user.commands.UserData;
@@ -15,6 +16,9 @@ public class UserController
 	private static final long serialVersionUID = 1L;
 	private UserData userData;
 
+	@Inject
+	private LoginController loginController;
+
 	public UserData getUserData() {
 		return userData;
 	}
@@ -23,5 +27,9 @@ public class UserController
 		this.userData = userData;
 	}
 
-
+	public String logout() {
+		userData = null;
+		loginController.logout();
+		return "login";
+	}
 }

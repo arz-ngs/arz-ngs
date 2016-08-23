@@ -11,7 +11,7 @@ import javax.inject.Named;
 import at.arz.ngs.security.SecurityAdmin;
 
 @RequestScoped
-@Named("roles")
+@Named("roleoverview")
 public class RoleOverviewController implements Serializable{
 
 	private static final long serialVersionUID = 1L;	

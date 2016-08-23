@@ -42,12 +42,24 @@
 							data-toggle="dropdown">Berechtigungen<b class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
 								<li class="nav-list dpList"><h:commandLink
-								action="#{users.goToUserOverview()}"
+								action="#{useroverview.goToUserOverview()}"
 								value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{roles.goToRoleOverview()}"
+								action="#{roleoverview.goToRoleOverview()}"
 								value="Rollenübersicht" /></li>
 							</ul></li>
+					</ul>
+				</div>
+			</div>
+			<div id="user-col" class="col-md-2">
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						<h:outputText value="#{user.userData.first_name} #{user.userData.last_name}" /> <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
 					</ul>
 				</div>
 			</div>
@@ -59,7 +71,7 @@
 					class="btn btn-primary addButton">
 				</h:commandButton>
 				<h:dataTable id="roleOverviewTable" columnClasses="colRole, colRoleDelete"
-					headerClass="columnCenter" value="#{roles.roleOverview}" var="role"
+					headerClass="columnCenter" value="#{roleoverview.roleOverview}" var="role"
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Rolle<br />
