@@ -101,7 +101,7 @@ public class SecurityAdmin {
 
 		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
 			// productional stage
-			return new LoginResponse(new UserData("Admin", "Max", "Mustermann", "max.mustermann@email.at"));
+			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
 		// adjustUser(name, firstName, lastName, email); TODO Fill method with data from LDAP
 		return new LoginResponse(new UserData(login.getUserName(), "test", "User", "test.user@email.at"));
@@ -349,6 +349,7 @@ public class SecurityAdmin {
 
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
 		role.addPermission(permission);
+		permission.addRole(role);
 	}
 
 	private Action convert(String action) {

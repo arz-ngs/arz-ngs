@@ -155,6 +155,7 @@ public class SecurityAdminIT
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.all.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.all, actor);
 		securityAdmin.proofActorAdminAccess(admin);
 		try {

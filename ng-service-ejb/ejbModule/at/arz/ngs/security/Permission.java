@@ -130,5 +130,7 @@ public class Permission {
 		return true;
 	}
 
-
+	public void addRole(Role role) {
+		this.roles.add(role);
+	}
 }
