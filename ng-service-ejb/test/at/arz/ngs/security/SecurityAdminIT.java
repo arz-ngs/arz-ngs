@@ -156,6 +156,7 @@ public class SecurityAdminIT
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.all, actor);
+		securityAdmin.proofActorAdminAccess(admin);
 		try {
 			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.all, actor);
 			fail();
@@ -164,6 +165,12 @@ public class SecurityAdminIT
 		}
 		try {
 			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.all, actor);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
+		try {
+			securityAdmin.proofActorAdminAccess(actor);
 			fail();
 		} catch (NoPermission e) {
 			// wanted

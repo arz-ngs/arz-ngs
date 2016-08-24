@@ -8,6 +8,7 @@ import at.arz.ngs.host.jpa.JPAHostRepositoryIT;
 import at.arz.ngs.permission.JPAPermissionRepositoryIT;
 import at.arz.ngs.role.JPARoleRepositoryIT;
 import at.arz.ngs.search.SearchEngineIT;
+import at.arz.ngs.security.SecurityAdminIT;
 import at.arz.ngs.service.jpa.JPAServiceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepositoryIT;
 import at.arz.ngs.serviceinstance.jpa.ServiceInstanceAdminIT;
@@ -23,7 +24,8 @@ import at.arz.ngs.user_role.JPAUser_RoleRepositoryIT;
 				JPAPermissionRepositoryIT.class,
 				JPARoleRepositoryIT.class,
 				JPAUserRepositoryIT.class,
-				JPAUser_RoleRepositoryIT.class })
+				JPAUser_RoleRepositoryIT.class,
+				SecurityAdminIT.class })
 public class AllTestsSuite {
 
 }

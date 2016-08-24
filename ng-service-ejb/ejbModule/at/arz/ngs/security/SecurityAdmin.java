@@ -412,6 +412,14 @@ public class SecurityAdmin {
 		}
 	}
 
+	public UserData getUserDataFromUser(String userName) {
+		User user = userRepository.getUser(new UserName(userName));
+		return new UserData(userName,
+											user.getFirstName().getName(),
+											user.getLastName().getName(),
+											user.getEmail().getEmail());
+	}
+
 	private Permission getOrCreatePermission(EnvironmentName environmentName, ServiceName serviceName, Action action) {
 		try {
 			return permissionRepository.getPermission(environmentName, serviceName, action);
