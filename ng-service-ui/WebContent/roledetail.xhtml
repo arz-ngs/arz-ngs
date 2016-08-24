@@ -58,7 +58,7 @@
 				</div>
 				<div>
 					<h:selectOneMenu onchange="submit()" valueChangeListener="#{roleDetail.envIDchanged}"
-						value="#{roleDetail.chosenEnvID}" class="addPermission">
+						value="#{roleDetail.chosenEnvID}" class="addPermission_leftElem">
 						<f:selectItems value="#{roleDetail.availableEnvIDs}" />
 					</h:selectOneMenu>
 					<h:selectOneMenu disabled="#{roleDetail.serviceDisabled}" value="#{roleDetail.chosenService}"

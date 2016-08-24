@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ValueChangeEvent;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -21,7 +21,7 @@ import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 
-@SessionScoped
+@ViewScoped
 @Named("roleDetail")
 public class RoleDetailController
 		implements Serializable {
@@ -70,10 +70,13 @@ public class RoleDetailController
 		refresh();
 	}
 
-	public String addPermission() {
+	public void addPermission() {
 		if (chosenAction.equals(PLEASE_CHOOSE)|| chosenEnvID.equals(PLEASE_CHOOSE)
 			|| chosenService.equals(PLEASE_CHOOSE)) {
-			return "";
+			errorCollection = new ErrorCollection();
+			errorCollection.addError(new Error(new IllegalArgumentException("All fields must be set. Please choose one item from each dropdown.")));
+			errorCollection.setShowPopup(true);
+			return;
 		}
 
 		String envId = chosenEnvID.equals("alle") ? "*" : chosenEnvID;
@@ -88,7 +91,7 @@ public class RoleDetailController
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
-			e.printStackTrace();
+			return;
 		}
 
 		chosenEnvID = PLEASE_CHOOSE;
@@ -96,8 +99,8 @@ public class RoleDetailController
 		chosenAction = PLEASE_CHOOSE;
 		System.out.println("add perm");
 		refresh();
-		return "";
 	}
+
 
 	public String removePermission(PermissionData data) {
 		errorCollection = new ErrorCollection();
@@ -107,7 +110,7 @@ public class RoleDetailController
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
-			e.printStackTrace();
+			return "";
 		}
 
 		chosenEnvID = PLEASE_CHOOSE;

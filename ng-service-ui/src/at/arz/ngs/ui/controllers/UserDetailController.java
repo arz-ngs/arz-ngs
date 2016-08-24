@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -20,7 +20,7 @@ import at.arz.ngs.security.user.commands.removeRole.RemoveRoleFromUser;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 
-@SessionScoped
+@ViewScoped
 @Named("userDetail")
 public class UserDetailController
 		implements Serializable {
@@ -54,6 +54,10 @@ public class UserDetailController
 		errorCollection = new ErrorCollection();
 		try {
 			currentUser = admin.getUserDataFromUser(params.get("username"));
+			if (!(currentUser.getFirst_name() == null|| currentUser.getFirst_name().equals("")
+					|| currentUser.getFirst_name().equals(" "))) {
+				currentUser.setFirst_name(" - " + currentUser.getFirst_name());
+			}
 		}
 		catch (RuntimeException e) {
 			availableRoles = new LinkedList<>();
@@ -110,6 +114,13 @@ public class UserDetailController
 	}
 
 	public String addRoleToUser() {
+		if (chosenElement.equals(PLEASE_CHOOSE)) {
+			errorCollection = new ErrorCollection();
+			errorCollection.addError(new Error(new IllegalArgumentException("No role is selected! Please choose one")));
+			errorCollection.setShowPopup(true);
+			return "";
+		}
+
 		AddRoleToUser command = new AddRoleToUser(currentUser.getUserName(), chosenElement, handover);
 
 		errorCollection = new ErrorCollection();

@@ -58,6 +58,13 @@ public class RoleOverviewController
 	}
 
 	public String addRole() {
+		if (createRoleName == null || createRoleName.trim().equals("")) {
+			errorCollection = new ErrorCollection();
+			errorCollection.addError(new Error(new IllegalArgumentException("The name of a role must not be empty!")));
+			errorCollection.setShowPopup(true);
+			return "";
+		}
+
 		errorCollection = new ErrorCollection();
 		try {
 			admin.createRole(userController.getCurrentActor(), new CreateRole(createRoleName));

@@ -78,14 +78,8 @@
 }
 
 .tblPermission {
-	position: relative;
-	top: 50px;
+	margin-top: 20px;
 	width: 650px;
-}
-
-.user_detail_top {
-	position: relative;
-	top:40px;
 }
 
 .createRole {
@@ -98,9 +92,12 @@
 }
 
 .addPermission {
-	position: relative;
-	left: 40px;
-	margin-left: 30px;
+	margin-left: 20px;
+	margin-right: 10px;
+}
+
+.addPermission_leftElem {
+	margin-right: 10px;
 }
 
 .deletePermission{

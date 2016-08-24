@@ -55,10 +55,10 @@
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div>
 					<div class="useroverviewHeader">
-						<h:outputText class="user_detail_top"
+						<h:outputText
 							value="#{userDetail.currentUser.userName}" styleClass="h1"></h:outputText>
-						<h:outputText class="user_detail_top"
-							value=" - #{userDetail.currentUser.first_name} #{userDetail.currentUser.last_name}"
+						<h:outputText
+							value="#{userDetail.currentUser.first_name} #{userDetail.currentUser.last_name}"
 							styleClass="h2"></h:outputText>
 					</div>
 					<div class="userdetail_newDiv">
@@ -114,6 +114,21 @@
 					</div>
 				</div>
 		</div>
+		<h:outputScript
+			rendered="#{userDetail.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{userDetail.errorCollection.headerInformation}',
+            message: '#{userDetail.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		console.log("test");
+            	}
+            }]
+        });
+		</h:outputScript>
 	</h:form>
 </body>
 </html>
