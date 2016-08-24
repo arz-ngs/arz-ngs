@@ -96,6 +96,10 @@ public class Permission {
 		return oid;
 	}
 
+	public List<Role> getRoles() {
+		return roles;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -132,5 +136,9 @@ public class Permission {
 
 	public void addRole(Role role) {
 		this.roles.add(role);
+	}
+
+	public void removeRole(Role role) {
+		this.roles.remove(role);
 	}
 }

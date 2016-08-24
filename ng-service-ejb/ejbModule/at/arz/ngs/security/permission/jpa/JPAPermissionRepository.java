@@ -61,5 +61,4 @@ public class JPAPermissionRepository
 		entityManager.remove(permission);
 		System.err.println("in remove method");
 	}
-
 }

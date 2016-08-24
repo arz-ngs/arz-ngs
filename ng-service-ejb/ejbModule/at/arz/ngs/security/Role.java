@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import at.arz.ngs.api.RoleName;
@@ -40,6 +41,9 @@ public class Role {
 	@JoinColumn(name = "PERMISSION_OID")
 	@ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
 	private List<Permission> permissions;
+
+	@OneToMany(mappedBy = "role")
+	private List<User_Role> user_roles;
 
 	protected Role() {
 		//jpa constructor
@@ -68,6 +72,14 @@ public class Role {
 
 	public void removePermission(Permission permission) {
 		permissions.remove(permission);
+	}
+
+	public void addUser_Role(User_Role userRole) {
+		user_roles.add(userRole);
+	}
+
+	public void removeUser_Role(User_Role userRole) {
+		user_roles.remove(userRole);
 	}
 
 	@Override

@@ -241,6 +241,7 @@ public class SecurityAdmin {
 			proofActorHasSameRoleAndHandoverRights(actor, role);
 		}
 
+
 		removeRoleFromUser(role, user);
 	}
 
@@ -250,8 +251,9 @@ public class SecurityAdmin {
 
 		// remove user if no role is set. If removal did not succeed, because of references go further
 		try {
+
 			user.removeUser_Role(user_Role);
-			userRepository.removeUser(user);
+			role.removeUser_Role(user_Role);
 		} catch (RuntimeException e) {
 			// also ok, then go further
 		}
@@ -293,8 +295,16 @@ public class SecurityAdmin {
 				// this user did not have this role -> continue
 			}
 		}
-
+		List<Permission> permToDelete = role.getPermissions();
 		roleRepository.removeRole(role);
+		for (Permission p : permToDelete) {
+			try {
+				if (p.getRoles().size() == 1) {
+				permissionRepository.removePermission(p);
+				}
+			} catch (RuntimeException e) {
+			}
+		}
 	}
 
 	public AllRolesResponse getAllRoles() {
@@ -429,6 +439,7 @@ public class SecurityAdmin {
 		Permission permission = permissionRepository.getPermission(	new EnvironmentName(envName),
 																	new ServiceName(servName),
 																	convert(action));
+		permission.removeRole(role);
 		role.removePermission(permission);
 
 		// try to remove permission if not used anymore, if exception this permission is used
