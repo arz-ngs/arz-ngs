@@ -257,3 +257,8 @@ tbody tr:hover {
 .userdetail_newDiv {
 	margin-top: 25px;
 }
+
+.delRow {
+	padding-left: 20px;
+	padding-right: 20px;
+}

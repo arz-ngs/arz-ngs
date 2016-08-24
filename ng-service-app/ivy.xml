@@ -3,7 +3,7 @@
        xsi:noNamespaceSchemaLocation="http://ant.apache.org/ivy/schemas/ivy.xsd">
     <info
         organisation="at.arz.ng-service"
-        module="ng-service-ejb"
+        module="ng-service-app"
         status="integration">
 	</info>
 	
@@ -14,8 +14,6 @@
 	</configurations>
 	
 	<dependencies>
-		<dependency org="commons-pool" name="commons-pool" rev="1.6" conf="compile->default"/>
-		<dependency org="junit" name="junit" rev="4.12" conf="test->default"/>	
-		<dependency org="org.mockito" name="mockito-all" rev="1.10.19" conf="test->default"/>	
+		<dependency org="commons-pool" name="commons-pool" rev="1.6" conf="default"/>
 	</dependencies>
 </ivy-module>

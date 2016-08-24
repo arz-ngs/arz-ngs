@@ -61,7 +61,7 @@
 							value="#{userDetail.currentUser.first_name} #{userDetail.currentUser.last_name}"
 							styleClass="h2"></h:outputText>
 					</div>
-					<div class="userdetail_newDiv">
+					<h:panelGroup layout="block" class="userdetail_newDiv" rendered="#{user.renderAdminOnlyElements}">
 						<h:selectOneMenu id="roledropdown" value="#{userDetail.chosenElement}">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
@@ -72,25 +72,24 @@
 							action="#{userDetail.addRoleToUser()}"
 							class="btn btn-primary addPermission">
 						</h:commandButton>
-					</div>
+					</h:panelGroup>
 					<h:dataTable columnClasses="colRole, colRight"
 						headerClass="columnCenter" value="#{userDetail.currentUserRoles}"
 						var="userDetails"
 						class="tblPermission table-responsive table-bordered table-hover">
 						<h:column>
-							<f:facet name="header">Rolle<br />
+							<f:facet name="header">Rolle
 							</f:facet>
 							<h:commandLink value="#{userDetails.roleName}"
 								action="#{userDetail.goToRoleDetail(userDetails.roleName)}"></h:commandLink>
 						</h:column>
 						<h:column>
-							<f:facet name="header">Weitergabe<br />
+							<f:facet name="header">Weitergabe
 							</f:facet>
 							<h:outputText value="#{userDetails.handover}" />
 						</h:column>
-						<h:column>
-							<f:facet name="header">
-								<br />
+						<h:column rendered="#{user.renderAdminOnlyElements}">
+							<f:facet name="header"><h:outputText class="delRow" value="Löschen" />
 							</f:facet>
 							<h:commandLink action="#{userDetail.removeRoleFromUser(userDetails.roleName)}" type="button" styleClass="btn deletePermission ">
 								<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>

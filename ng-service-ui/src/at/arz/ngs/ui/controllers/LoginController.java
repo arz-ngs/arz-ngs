@@ -5,7 +5,6 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -58,17 +57,20 @@ public class LoginController
 			// return null;
 			// }
 
-			LoginResponse response = admin.login(loginData);
-			UserData user = response.getUser();
-			FacesContext context = FacesContext.getCurrentInstance();
+			try {
+				LoginResponse response = admin.login(loginData);
+				UserData user = response.getUser();
+				FacesContext context = FacesContext.getCurrentInstance();
 
-			if (user != null) {
-				userController.setUserData(user);
-				context.getExternalContext().getSessionMap().put("user", user.getUserName());
-				return "overview.xhtml?faces-redirect=true";
-			} else {
-				context.addMessage(null, new FacesMessage("Unknown login, try again."));
-				return "";
+				if (user != null) {
+					userController.setUserData(user);
+					userController.setRenderAdminOnlyElements(admin.isAdmin(userController.getCurrentActor()));
+					return "overview.xhtml?faces-redirect=true";
+				} else {
+					return "";
+				}
+			} catch (RuntimeException e) {
+
 			}
 		}
 		return "";

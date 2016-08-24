@@ -70,26 +70,26 @@
 				<div>
 					<h1>Alle Rollen</h1>
 				</div>
-				<div class="createRole">
+				<h:panelGroup layout="block" class="createRole" rendered="#{user.renderAdminOnlyElements}">
 					<h:inputText type="text" value="#{roleoverview.createRoleName}"
 						class="createRoleText" p:placeholder="Neuer Rollenname..."
 						aria-describedby="Rolle"></h:inputText>
 					<h:commandButton value="Hinzufügen" class="btn btn-primary" action="#{roleoverview.addRole()}">
 					</h:commandButton>
-				</div>
+				</h:panelGroup>
 				<h:dataTable id="roleOverviewTable"
 					columnClasses="colRole, colRoleDelete" headerClass="columnCenter"
 					value="#{roleoverview.roleOverview}" var="role"
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
-						<f:facet name="header">Rolle<br />
+						<f:facet name="header">Rolle
 						</f:facet>
 						<h:commandLink value="#{role}"
 							action="#{roleoverview.goToRoleDetail(role)}"></h:commandLink>
 					</h:column>
-					<h:column>
-						<f:facet name="header">
-						</f:facet>
+					<h:column rendered="#{user.renderAdminOnlyElements}">
+						<f:facet name="header"><h:outputText class="delRow" value="Löschen" />
+							</f:facet>
 						<h:commandLink action="#{roleoverview.removeRole(role)}" type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 						</h:commandLink>

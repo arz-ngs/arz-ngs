@@ -56,7 +56,7 @@
 				<div>
 					<h2>#{roleDetail.currentRole}</h2>
 				</div>
-				<div>
+				<h:panelGroup layout="block" rendered="#{user.renderAdminOnlyElements}">
 					<h:selectOneMenu onchange="submit()" valueChangeListener="#{roleDetail.envIDchanged}"
 						value="#{roleDetail.chosenEnvID}" class="addPermission_leftElem">
 						<f:selectItems value="#{roleDetail.availableEnvIDs}" />
@@ -72,30 +72,29 @@
 					<h:commandLink value="Hinzufügen"
 						class="btn btn-primary addPermission" action="#{roleDetail.addPermission()}">
 					</h:commandLink>
-				</div>
+				</h:panelGroup>
 				<h:dataTable id="roleDetailTable"
 					columnClasses="colPermissionEnv, colPermissionService, colPermissionAction"
 					headerClass="columnCenter" value="#{roleDetail.permissions}" var="permission"
 					class="tblPermission table-responsive table-bordered table-hover">
 					<h:column>
-						<f:facet name="header">EnvId<br />
+						<f:facet name="header">EnvId
 						</f:facet>
 						<h:outputText value="#{permission.environmentName}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">Service<br />
+						<f:facet name="header">Service
 						</f:facet>
 						<h:outputText value="#{permission.serviceName}" />
 					</h:column>
 					<h:column>
-						<f:facet name="header">Aktion<br />
+						<f:facet name="header">Aktion
 						</f:facet>
 						<h:outputText value="#{permission.action}" />
 					</h:column>
-					<h:column>
-						<f:facet name="header">
-							<br />
-						</f:facet>
+					<h:column rendered="#{user.renderAdminOnlyElements}">
+						<f:facet name="header"><h:outputText class="delRow" value="Löschen" />
+							</f:facet>
 						<h:commandLink action="#{roleDetail.removePermission(permission)}" type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 						</h:commandLink>

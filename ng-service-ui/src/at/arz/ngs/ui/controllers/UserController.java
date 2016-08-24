@@ -17,6 +17,8 @@ public class UserController
 	private static final long serialVersionUID = 1L;
 	private UserData userData;
 
+	private boolean renderAdminOnlyElements;
+
 	@Inject
 	private LoginController loginController;
 
@@ -37,4 +39,13 @@ public class UserController
 	public Actor getCurrentActor() {
 		return new Actor(userData.getUserName());
 	}
+
+	public boolean isRenderAdminOnlyElements() {
+		return renderAdminOnlyElements;
+	}
+
+	public void setRenderAdminOnlyElements(boolean renderAdminOnlyElements) {
+		this.renderAdminOnlyElements = renderAdminOnlyElements;
+	}
+
 }
