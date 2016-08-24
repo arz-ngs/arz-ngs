@@ -1,6 +1,7 @@
 package at.arz.ngs.serviceinstance;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -137,7 +138,7 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) { // TODO exchange for multithreading: start with adding host,
-															// then getHost if AlreadyExists!!!!
+		// then getHost if AlreadyExists!!!!
 		if (hostName == null || hostName.getName() == null || hostName.getName().equals("")) {
 			throw new EmptyField("HostName");
 		}
@@ -611,4 +612,31 @@ public class ServiceInstanceAdmin {
 		return p;
 	}
 
+	public List<String> getAllEnvironments() {
+		List<String> environmentList = new LinkedList<String>();
+		for (Environment env : environments.getAllEnvironments()) {
+			environmentList.add(env.getEnvironmentName().getName());
+		}
+		return environmentList;
+	}
+
+	public List<String> getServicesByEnvironmentName(String environmentName) {
+		List<String> serviceList = new LinkedList<String>();
+		if (environmentName.equals("*")) {
+			for (Service service : services.getAllServices()) {
+				if (!serviceList.contains(service.getServiceName().getName())) {
+					serviceList.add(service.getServiceName().getName());
+				}
+			}
+		} else {
+			for (ServiceInstance instance : serviceInstances.getAllInstances()) {
+				if (instance.getEnvironment().getEnvironmentName().getName().equals(environmentName)) {
+					if (!serviceList.contains(instance.getService().getServiceName().getName())) {
+						serviceList.add(instance.getService().getServiceName().getName());
+					}
+				}
+			}
+		}
+		return serviceList;
+	}
 }
