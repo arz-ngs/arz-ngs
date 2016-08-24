@@ -43,3 +43,19 @@ curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"pebk123"
 curl -H "Content-Type: application/json" -X DELETE http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx003/arctis_1
 
 curl -H "Content-Type: application/json" -X POST -d '{"environmentName":"pebk123", "hostName":"lnx003", "serviceName":"arctis", "instanceName":"arctis_4","version":"0", "script": {"pathStart":"init.d/arctis start", "pathStop":"stop"}}' http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx003/arctis_4
+
+
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env1", "hostName":"host1", "serviceName":"service1", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env1", "hostName":"host1", "serviceName":"service2", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env1", "hostName":"host2", "serviceName":"service3", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env1", "hostName":"host2", "serviceName":"service3", "instanceName":"instance2", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env1", "hostName":"host2", "serviceName":"service4", "instanceName":"instance2", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env2", "hostName":"host1", "serviceName":"service1", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env2", "hostName":"host2", "serviceName":"service1", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env2", "hostName":"host2", "serviceName":"service2", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env2", "hostName":"host2", "serviceName":"service4", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env2", "hostName":"host2", "serviceName":"service5", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env3", "hostName":"host1", "serviceName":"service6", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service5", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service6", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service7", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
