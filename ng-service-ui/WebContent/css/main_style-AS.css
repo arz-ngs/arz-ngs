@@ -253,3 +253,7 @@ tbody tr:hover {
 .dropdown_disabled {	
 	color: grey;
 }
+
+.userdetail_newDiv {
+	margin-top: 25px;
+}

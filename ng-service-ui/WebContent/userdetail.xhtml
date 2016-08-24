@@ -61,7 +61,7 @@
 							value=" - #{userDetail.currentUser.first_name} #{userDetail.currentUser.last_name}"
 							styleClass="h2"></h:outputText>
 					</div>
-					<div>
+					<div class="userdetail_newDiv">
 						<h:selectOneMenu id="roledropdown" value="#{userDetail.chosenElement}">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
@@ -81,7 +81,7 @@
 							<f:facet name="header">Rolle<br />
 							</f:facet>
 							<h:commandLink value="#{userDetails.roleName}"
-								action="#{roleDetail.goToRoleDetail(userDetails.roleName)}"></h:commandLink>
+								action="#{userDetail.goToRoleDetail(userDetails.roleName)}"></h:commandLink>
 						</h:column>
 						<h:column>
 							<f:facet name="header">Weitergabe<br />
@@ -92,7 +92,7 @@
 							<f:facet name="header">
 								<br />
 							</f:facet>
-							<h:commandLink action="userDetail.removeRoleFromUser(userDetails.roleName)" type="button" styleClass="btn deletePermission ">
+							<h:commandLink action="#{userDetail.removeRoleFromUser(userDetails.roleName)}" type="button" styleClass="btn deletePermission ">
 								<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 							</h:commandLink>
 						</h:column>

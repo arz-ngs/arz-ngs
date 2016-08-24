@@ -1,5 +1,6 @@
 package at.arz.ngs.ui.controllers;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,6 +24,8 @@ import at.arz.ngs.ui.data_collections.ErrorCollection;
 @Named("userDetail")
 public class UserDetailController
 		implements Serializable {
+
+	public static final String PLEASE_CHOOSE = "Rolle auswählen...";
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,25 +57,34 @@ public class UserDetailController
 		}
 		catch (RuntimeException e) {
 			availableRoles = new LinkedList<>();
-			chosenElement = "Bitte auswählen...";
-			availableRoles.add("Bitte auswählen...");
+			chosenElement = PLEASE_CHOOSE;
+			availableRoles.add(PLEASE_CHOOSE);
 			currentUser = new UserData("", "", "", "");
 
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return;
 		}
-		formSubmit();
+		refresh();
 	}
 
-	private void formSubmit() {
-		currentUserRoles = admin.getRolesForUser(currentUser.getUserName()).getUserRoles();
+	public void goToRoleDetail(String role) {
+		try {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("roledetail.xhtml?role=" + role);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void refresh() {
 		availableRoles = new LinkedList<>();
-		availableRoles.add("Bitte auswählen...");
+		availableRoles.add(PLEASE_CHOOSE);
+		handover = false;
 
 		errorCollection = new ErrorCollection();
 		try {
 			availableRoles.addAll(admin.getAllRoles().getRoles());
+			currentUserRoles = admin.getRolesForUser(currentUser.getUserName()).getUserRoles();
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
@@ -93,7 +105,7 @@ public class UserDetailController
 			return "";
 		}
 
-		formSubmit();
+		refresh();
 		return "";
 	}
 
@@ -110,7 +122,7 @@ public class UserDetailController
 			return "";
 		}
 
-		formSubmit();
+		refresh();
 		return "";
 	}
 

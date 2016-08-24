@@ -111,5 +111,4 @@ public class User_Role {
 			return false;
 		return true;
 	}
-
 }
