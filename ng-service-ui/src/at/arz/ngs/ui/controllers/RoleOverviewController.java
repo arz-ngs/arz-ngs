@@ -1,15 +1,18 @@
 package at.arz.ngs.ui.controllers;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.role.commands.create.CreateRole;
+import at.arz.ngs.security.role.commands.remove.RemoveRole;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 
@@ -31,13 +34,14 @@ public class RoleOverviewController
 	private String createRoleName;
 
 	private ErrorCollection errorCollection;
-
+	
 	@PostConstruct
 	public void init() {
 		refresh();
 	}
 
 	public String goToRoleOverview() {
+		createRoleName = "";
 		refresh();
 		return "roleoverview";
 	}
@@ -53,17 +57,40 @@ public class RoleOverviewController
 		}
 	}
 
-	public String addRole(String newRole) {
+	public String addRole() {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.createRole(userController.getCurrentActor(), new CreateRole(newRole));
+			admin.createRole(userController.getCurrentActor(), new CreateRole(createRoleName));
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 		}
 		refresh();
-		return "roleoverview.xhtml?faces-redirct=true";
+		createRoleName = "";
+		return "roleoverview";
+	}
+
+	public String removeRole(String roleName) {
+		errorCollection = new ErrorCollection();
+		try {
+			admin.removeRole(userController.getCurrentActor(), new RemoveRole(roleName));
+		} catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
+		refresh();
+		return "roleoverview";
+	}
+
+	public void goToRoleDetail(String role) {
+		try {
+			FacesContext.getCurrentInstance()
+						.getExternalContext()
+						.redirect("roledetail.xhtml?role=" + role);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<String> getRoleOverview() {

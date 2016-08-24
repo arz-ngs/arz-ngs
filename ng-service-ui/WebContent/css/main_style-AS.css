@@ -249,3 +249,7 @@ tbody tr:hover {
 .useroverviewHeader {
 	margin-top: 30px;
 }
+
+.dropdown_disabled {	
+	color: grey;
+}

@@ -1,6 +1,6 @@
-INSERT INTO `user_` (`OID`,`EMAIL`,`FIRST_NAME`,`LAST_NAME`,`USER_NAME`) VALUES (1,' ',' ',' ','admin');
-INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES ('1', 'Administrator');
-INSERT INTO `osrtest`.`user_role` (`OID`, `HANDOVER`, `ROLE_OID`, `USER_OID`) VALUES ('1', 'T', '1', '1');
+INSERT INTO `user_` (`OID`,`EMAIL`,`FIRST_NAME`,`LAST_NAME`,`USER_NAME`) VALUES (0,' ',' ',' ','admin');
+INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES (0, 'Administrator');
+INSERT INTO `osrtest`.`user_role` (`OID`, `HANDOVER`, `ROLE_OID`, `USER_OID`) VALUES (0, 'T', 0, 0);
 
 
 

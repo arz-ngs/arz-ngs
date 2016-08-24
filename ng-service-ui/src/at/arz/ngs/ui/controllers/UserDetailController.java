@@ -50,7 +50,7 @@ public class UserDetailController
 
 		errorCollection = new ErrorCollection();
 		try {
-			currentUser = new UserData(params.get("username"), "", "", ""); //TODO get user from admin
+			currentUser = admin.getUserDataFromUser(params.get("username"));
 		}
 		catch (RuntimeException e) {
 			availableRoles = new LinkedList<>();

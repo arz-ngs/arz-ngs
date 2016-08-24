@@ -74,7 +74,7 @@
 					<h:inputText type="text" value="#{roleoverview.createRoleName}"
 						class="createRoleText" p:placeholder="Neuer Rollenname..."
 						aria-describedby="Rolle"></h:inputText>
-					<h:commandButton value="Hinzufügen" class="btn btn-primary" action="#{roleoverview.addRole(roleoverview.createRoleName)}">
+					<h:commandButton value="Hinzufügen" class="btn btn-primary" action="#{roleoverview.addRole()}">
 					</h:commandButton>
 				</div>
 				<h:dataTable id="roleOverviewTable"
@@ -85,12 +85,12 @@
 						<f:facet name="header">Rolle<br />
 						</f:facet>
 						<h:commandLink value="#{role}"
-							action="#{roleDetail.goToRoleDetail(role)}"></h:commandLink>
+							action="#{roleoverview.goToRoleDetail(role)}"></h:commandLink>
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 						</f:facet>
-						<h:commandLink type="button" styleClass="btn deletePermission ">
+						<h:commandLink action="#{roleoverview.removeRole(role)}" type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 						</h:commandLink>
 					</h:column>

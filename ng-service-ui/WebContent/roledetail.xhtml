@@ -53,45 +53,50 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
-				<h:selectOneMenu valueChangeListener="#{roleDetail.envIDchanged}" value="#{roleDetail.chosenEnvID}" class="addPermission">
-					<f:selectItems value="#{roleDetail.availableEnvIDs}" />
-				</h:selectOneMenu>
-				<h:selectOneMenu disabled="#{roleDetail.serviceDisabled}" disabledClass="disabled" value="#{roleDetail.chosenService}" class="addPermission">
-					<f:selectItems value="#{roleDetail.availableServices}" />
-				</h:selectOneMenu>
-				<h:selectOneMenu value="roleDetail.chosenAction" class="addPermission">
-					<f:selectItems value="#{roleDetail.availableActions}" />
-				</h:selectOneMenu>
-				<h:commandButton value="Hinzufügen"
-					class="btn btn-primary addPermission">
-				</h:commandButton>
-				<br /> <br />
-				<h:outputText id="roleName" value="Rolle: Java-Entwickler"
-					styleClass="h1"></h:outputText>
+				<div>
+					<h2>#{roleDetail.currentRole}</h2>
+				</div>
+				<div>
+					<h:selectOneMenu onchange="submit()" valueChangeListener="#{roleDetail.envIDchanged}"
+						value="#{roleDetail.chosenEnvID}" class="addPermission">
+						<f:selectItems value="#{roleDetail.availableEnvIDs}" />
+					</h:selectOneMenu>
+					<h:selectOneMenu disabled="#{roleDetail.serviceDisabled}" value="#{roleDetail.chosenService}"
+						class="addPermission #{roleDetail.serviceCSSclass}">
+						<f:selectItems value="#{roleDetail.availableServices}" />
+					</h:selectOneMenu>
+					<h:selectOneMenu value="#{roleDetail.chosenAction}"
+						class="addPermission">
+						<f:selectItems value="#{roleDetail.availableActions}" />
+					</h:selectOneMenu>
+					<h:commandLink value="Hinzufügen"
+						class="btn btn-primary addPermission" action="#{roleDetail.addPermission()}">
+					</h:commandLink>
+				</div>
 				<h:dataTable id="roleDetailTable"
 					columnClasses="colPermissionEnv, colPermissionService, colPermissionAction"
-					headerClass="columnCenter" value="" var=""
+					headerClass="columnCenter" value="#{roleDetail.permissions}" var="permission"
 					class="tblPermission table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">EnvId<br />
 						</f:facet>
-						<h:outputText value="env1" />
+						<h:outputText value="#{permission.environmentName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Service<br />
 						</f:facet>
-						<h:outputText value="service1" />
+						<h:outputText value="#{permission.serviceName}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Aktion<br />
 						</f:facet>
-						<h:outputText value="start" />
+						<h:outputText value="#{permission.action}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">
 							<br />
 						</f:facet>
-						<h:commandLink type="button" styleClass="btn deletePermission ">
+						<h:commandLink action="#{roleDetail.removePermission(permission)}" type="button" styleClass="btn deletePermission ">
 							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 						</h:commandLink>
 					</h:column>
@@ -112,6 +117,21 @@
 				</div>
 			</div>
 		</div>
+		<h:outputScript
+			rendered="#{roleDetail.errorCollection.showPopup}">
+    	 BootstrapDialog.show({
+            title: '#{roleDetail.errorCollection.headerInformation}',
+            message: '#{roleDetail.errorCollection.messages}',
+            closable: false,
+            buttons: [{
+            	label: 'Schließen',
+            	action: function(dialogRef) {
+            		dialogRef.close();
+            		console.log("test");
+            	}
+            }]
+        });
+		</h:outputScript>
 	</h:form>
 </body>
 </html>
