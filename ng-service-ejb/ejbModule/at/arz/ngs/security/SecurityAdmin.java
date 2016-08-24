@@ -18,6 +18,7 @@ import at.arz.ngs.api.exception.NoPermission;
 import at.arz.ngs.api.exception.PermissionNotFound;
 import at.arz.ngs.api.exception.RoleAlreadyExist;
 import at.arz.ngs.api.exception.RoleNotFound;
+import at.arz.ngs.api.exception.UserAlreadyHasRole;
 import at.arz.ngs.api.exception.UserNotFound;
 import at.arz.ngs.api.exception.User_RoleNotFound;
 import at.arz.ngs.security.commands.Actor;
@@ -145,10 +146,10 @@ public class SecurityAdmin {
 	 */
 	public void proofActorAdminAccess(Actor actor) {
 		if (!isAdmin(actor)) {
-		throw new NoPermission("The actor "+ actor.getUserName()
-								+ " does not have the permission to edit security settings. To change one must have to role '"
-								+ ADMIN
-								+ "'!");
+			throw new NoPermission("The actor "+ actor.getUserName()
+									+ " does not have the permission to edit security settings. To change one must have to role '"
+									+ ADMIN
+									+ "'!");
 		}
 	}
 
@@ -210,7 +211,12 @@ public class SecurityAdmin {
 			proofActorHasSameRoleAndHandoverRights(actor, roleToAdd);
 
 		}
-		userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
+		try {
+			userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
+			throw new UserAlreadyHasRole(userToAddTo.getUserName().getName(), roleToAdd.getRoleName().getName());
+		} catch (User_RoleNotFound e) {
+			userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
+		}
 	}
 
 	public void removeRoleFromUser(Actor actor, RemoveRoleFromUser command) {
@@ -244,6 +250,7 @@ public class SecurityAdmin {
 
 		// remove user if no role is set. If removal did not succeed, because of references go further
 		try {
+			user.removeUser_Role(user_Role);
 			userRepository.removeUser(user);
 		} catch (RuntimeException e) {
 			// also ok, then go further
@@ -371,12 +378,24 @@ public class SecurityAdmin {
 		Role role = roleRepository.getRole(new RoleName(roleName));
 
 		for (Permission p : role.getPermissions()) {
-			res.addPermission(new PermissionData(	p.getEnvironmentName().getName(),
-													p.getServiceName().getName(),
-													p.getAction().name()));
+			String envName = convertStarToAll(p.getEnvironmentName().getName());
+			String servName = convertStarToAll(p.getServiceName().getName());
+			String action = p.getAction().name();
+			if (action.equals("all")) {
+				action = "alle";
+			}
+			res.addPermission(new PermissionData(	envName,
+			                                     	servName, 
+			                                     	action));
 		}
-
 		return res;
+	}
+
+	private String convertStarToAll(String value) {
+		if (value.equals("*")) {
+			return "alle";
+		}
+		return value;
 	}
 
 	public void removePermissionFromRole(Actor actor, RemovePermissionFromRole command) {
@@ -399,9 +418,16 @@ public class SecurityAdmin {
 
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
 
-		Permission permission = permissionRepository.getPermission(	new EnvironmentName(permissionData.getEnvironmentName()),
-																	new ServiceName(permissionData.getServiceName()),
-																	convert(permissionData.getAction()));
+		String envName = convertAllToStar(permissionData.getEnvironmentName());
+		String servName = convertAllToStar(permissionData.getServiceName());
+		String action = permissionData.getAction();
+		if (action.equals("alle")) {
+			action = "all";
+		}
+
+		Permission permission = permissionRepository.getPermission(	new EnvironmentName(envName),
+																	new ServiceName(servName),
+																	convert(action));
 		role.removePermission(permission);
 
 		// try to remove permission if not used anymore, if exception this permission is used
@@ -412,12 +438,19 @@ public class SecurityAdmin {
 		}
 	}
 
+	private String convertAllToStar(String value) {
+		if (value.equals("alle")) {
+			value = "*";
+		}
+		return value;
+	}
+
 	public UserData getUserDataFromUser(String userName) {
 		User user = userRepository.getUser(new UserName(userName));
 		return new UserData(userName,
-											user.getFirstName().getName(),
-											user.getLastName().getName(),
-											user.getEmail().getEmail());
+							user.getFirstName().getName(),
+							user.getLastName().getName(),
+							user.getEmail().getEmail());
 	}
 
 	private Permission getOrCreatePermission(EnvironmentName environmentName, ServiceName serviceName, Action action) {

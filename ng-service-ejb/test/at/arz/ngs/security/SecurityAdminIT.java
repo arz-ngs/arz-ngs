@@ -245,6 +245,15 @@ public class SecurityAdminIT
 		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
 		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		try {
+			securityAdmin.proofPerformAction(	new EnvironmentName("env1"),
+												new ServiceName("serv1"),
+												Action.start,
+												actor);
+			fail();
+		} catch (NoPermission e) {
+			// wanted
+		}
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.start.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		PermissionData permissionData2 = new PermissionData("*", "serv1", Action.all.name());
