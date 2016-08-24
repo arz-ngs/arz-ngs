@@ -15,9 +15,10 @@ import at.arz.ngs.ui.data_collections.ErrorCollection;
 
 @RequestScoped
 @Named("roleoverview")
-public class RoleOverviewController implements Serializable{
+public class RoleOverviewController
+		implements Serializable {
 
-	private static final long serialVersionUID = 1L;	
+	private static final long serialVersionUID = 1L;
 
 	@Inject
 	private SecurityAdmin admin;
@@ -26,29 +27,42 @@ public class RoleOverviewController implements Serializable{
 	private UserController userController;
 
 	private List<String> roleOverview;
-	
+
 	private String createRoleName;
 
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
 	public void init() {
-
+		refresh();
 	}
 
 	public String goToRoleOverview() {
-		roleOverview = admin.getAllRoles().getRoles();
+		refresh();
 		return "roleoverview";
+	}
+
+	private void refresh() {
+		errorCollection = new ErrorCollection();
+		try {
+			roleOverview = admin.getAllRoles().getRoles();;
+		}
+		catch (RuntimeException e) {
+			errorCollection.addError(new Error(e));
+			errorCollection.setShowPopup(true);
+		}
 	}
 
 	public String addRole(String newRole) {
 		errorCollection = new ErrorCollection();
 		try {
 			admin.createRole(userController.getCurrentActor(), new CreateRole(newRole));
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 		}
+		refresh();
 		return "roleoverview.xhtml?faces-redirct=true";
 	}
 

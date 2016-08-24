@@ -53,27 +53,14 @@
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
-				<h:selectOneMenu value="EnvId" class="addPermission">
-					<f:selectItem value="#{serviceinstance.instancesCollection}"
-						var="role" />
+				<h:selectOneMenu valueChangeListener="#{roleDetail.envIDchanged}" value="#{roleDetail.chosenEnvID}" class="addPermission">
+					<f:selectItems value="#{roleDetail.availableEnvIDs}" />
 				</h:selectOneMenu>
-				<h:selectOneMenu value="Service" class="addPermission">
-					<f:selectItem itemLabel="Service" />
-					<f:selectItem itemLabel="Alle" />
-					<f:selectItem itemLabel="service1" />
-					<f:selectItem itemLabel="service2" />
-					<f:selectItem itemLabel="service3" />
-					<f:selectItem itemLabel="service4" />
-					<f:selectItem itemLabel="service5" />
-					<f:selectItem itemLabel="service6" />
+				<h:selectOneMenu disabled="#{roleDetail.serviceDisabled}" disabledClass="disabled" value="#{roleDetail.chosenService}" class="addPermission">
+					<f:selectItems value="#{roleDetail.availableServices}" />
 				</h:selectOneMenu>
-				<h:selectOneMenu value="Action" class="addPermission">
-					<f:selectItem itemLabel="Aktion" />
-					<f:selectItem itemLabel="Alle" />
-					<f:selectItem itemLabel="start" />
-					<f:selectItem itemLabel="stop" />
-					<f:selectItem itemLabel="neustart" />
-					<f:selectItem itemLabel="status" />
+				<h:selectOneMenu value="roleDetail.chosenAction" class="addPermission">
+					<f:selectItems value="#{roleDetail.availableActions}" />
 				</h:selectOneMenu>
 				<h:commandButton value="Hinzufügen"
 					class="btn btn-primary addPermission">

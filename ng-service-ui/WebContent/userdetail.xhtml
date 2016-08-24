@@ -62,14 +62,14 @@
 							styleClass="h2"></h:outputText>
 					</div>
 					<div>
-						<h:selectOneMenu id="roledropdown" value="asdf">
+						<h:selectOneMenu id="roledropdown" value="#{userDetail.chosenElement}">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
 						<label class="addPermission">Weitergaberecht</label>
 						<h:selectBooleanCheckbox type="checkbox"
 							value="#{userDetail.handover}" class="addPermission" />
-						<h:commandButton value="Hinzufügen"
-							action="#{userDetail.addRoleToUser(role, userDetail.currentUser.userName)}"
+						<h:commandButton type="submit" value="Hinzufügen"
+							action="#{userDetail.addRoleToUser()}"
 							class="btn btn-primary addPermission">
 						</h:commandButton>
 					</div>
@@ -92,7 +92,7 @@
 							<f:facet name="header">
 								<br />
 							</f:facet>
-							<h:commandLink type="button" styleClass="btn deletePermission ">
+							<h:commandLink action="userDetail.removeRoleFromUser(userDetails.roleName)" type="button" styleClass="btn deletePermission ">
 								<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 							</h:commandLink>
 						</h:column>
