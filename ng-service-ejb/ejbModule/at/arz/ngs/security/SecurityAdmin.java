@@ -144,25 +144,25 @@ public class SecurityAdmin {
 	 * Only Administrators have access to perfom changes. If no permission an NoPermission Exception is thrown.
 	 */
 	public void proofActorAdminAccess(Actor actor) {
-		if (actor == null || actor.getUserName() == null || actor.getUserName().equals("")) {
-			throw new EmptyField("actor was null or empty");
-		}
-
-		User user = userRepository.getUser(new UserName(actor.getUserName()));
-
-
-		for (User_Role ur : user.getUser_roles()) {
-			if (ur.getRole().getRoleName().getName().equals(ADMIN)) {
-				return; // ok, access is granted
-			}
-		}
-		// if (isJunitTest) {
-		// return;
-		// }
+		if (!isAdmin(actor)) {
 		throw new NoPermission("The actor "+ actor.getUserName()
 								+ " does not have the permission to edit security settings. To change one must have to role '"
 								+ ADMIN
 								+ "'!");
+		}
+	}
+
+	public boolean isAdmin(Actor actor) {
+		if (actor == null || actor.getUserName() == null || actor.getUserName().equals("")) {
+			throw new EmptyField("actor was null or empty");
+		}
+		User user = userRepository.getUser(new UserName(actor.getUserName()));
+		for (User_Role ur : user.getUser_roles()) {
+			if (ur.getRole().getRoleName().getName().equals(ADMIN)) {
+				return true; // ok, access is granted
+			}
+		}
+		return false;
 	}
 
 	private void proofActorHasSameRoleAndHandoverRights(Actor actor, Role role) {
