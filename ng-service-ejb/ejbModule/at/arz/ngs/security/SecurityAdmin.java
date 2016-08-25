@@ -508,7 +508,7 @@ public class SecurityAdmin {
 	}
 
 	public RolesResponse getHandoverRolesFromActor(Actor actor) {
-		if (actor.getUserName().equals(SecurityAdmin.ADMIN)) {
+		if (isAdmin(actor)) {
 			return getAllRoles();
 		} else {
 			User user = userRepository.getUser(new UserName(actor.getUserName()));
