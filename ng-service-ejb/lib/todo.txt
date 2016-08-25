@@ -1,0 +1,18 @@
+error message login 
+script data with curl -> remove noch prog
+intervall über property file einstellbar
+über rest statusupdates möglich machen
+bei status unknown einfügen
+ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
+test .bat oder .sh datei schreiben, die returncodes liefert
+ripple restart ???
+
+facescontext aus actioncontroller bei anderen auch übernehmen?
+
+http://docs.oracle.com/javaee/6/tutorial/doc/gkncy.html
+http://www.tutorialspoint.com/ejb/ejb_annotations.htm
+http://tomee.apache.org/examples-trunk/jpa-enumerated/README.html
+jpa interfaces mit methoden bestücken (get und so), unique 
+jpql inner join tex:  http://stackoverflow.com/questions/2844019/how-do-i-write-this-jpql-query
+
+http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html

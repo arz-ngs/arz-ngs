@@ -59,3 +59,5 @@ curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env3", "
 curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service5", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
 curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service6", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
 curl -H "Content-Type: application/json" -X PUT -d '{"environmentName":"env4", "hostName":"host1", "serviceName":"service7", "instanceName":"instance1", "script": {"pathStart":"init.d/arctis start"}}' http://localhost:8080/ngs/api/v1/instances
+
+
