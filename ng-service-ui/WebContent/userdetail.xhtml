@@ -55,14 +55,16 @@
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div>
 					<div class="useroverviewHeader">
-						<h:outputText
-							value="#{userDetail.currentUser.userName}" styleClass="h1"></h:outputText>
+						<h:outputText value="#{userDetail.currentUser.userName}"
+							styleClass="h1"></h:outputText>
 						<h:outputText
 							value="#{userDetail.currentUser.first_name} #{userDetail.currentUser.last_name}"
 							styleClass="h2"></h:outputText>
 					</div>
-					<h:panelGroup layout="block" class="userdetail_newDiv" rendered="#{user.renderAdminOnlyElements}">
-						<h:selectOneMenu id="roledropdown" value="#{userDetail.chosenElement}">
+					<h:panelGroup layout="block" class="userdetail_newDiv"
+						rendered="#{userDetail.renderNewRemoveRoleElements}">
+						<h:selectOneMenu id="roledropdown"
+							value="#{userDetail.chosenElement}">
 							<f:selectItems value="#{userDetail.availableRoles}" />
 						</h:selectOneMenu>
 						<label class="addPermission">Weitergaberecht</label>
@@ -75,23 +77,27 @@
 					</h:panelGroup>
 					<h:dataTable columnClasses="colRole, colRight"
 						headerClass="columnCenter" value="#{userDetail.currentUserRoles}"
-						var="userDetails"
+						var="userRoleCol"
 						class="tblPermission table-responsive table-bordered table-hover">
 						<h:column>
 							<f:facet name="header">Rolle
 							</f:facet>
-							<h:commandLink value="#{userDetails.roleName}"
-								action="#{userDetail.goToRoleDetail(userDetails.roleName)}"></h:commandLink>
+							<h:commandLink value="#{userRoleCol.userRole.roleName}"
+								action="#{userDetail.goToRoleDetail(userRoleCol.userRole.roleName)}"></h:commandLink>
 						</h:column>
 						<h:column>
 							<f:facet name="header">Weitergabe
 							</f:facet>
-							<h:outputText value="#{userDetails.handover}" />
+							<h:outputText value="#{userRoleCol.userRole.handover}" />
 						</h:column>
-						<h:column rendered="#{user.renderAdminOnlyElements}">
-							<f:facet name="header"><h:outputText class="delRow" value="Löschen" />
+						<h:column rendered="#{userDetail.renderNewRemoveRoleElements}">
+							<f:facet name="header">
+								<h:outputText class="delRow" value="Löschen" />
 							</f:facet>
-							<h:commandLink action="#{userDetail.removeRoleFromUser(userDetails.roleName)}" type="button" styleClass="btn deletePermission ">
+							<h:commandLink
+								action="#{userDetail.removeRoleFromUser(userRoleCol.userRole.roleName)}"
+								rendered="#{userRoleCol.removeFieldRendered}" type="button"
+								styleClass="btn deletePermission ">
 								<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
 							</h:commandLink>
 						</h:column>
@@ -99,22 +105,21 @@
 				</div>
 			</div>
 			<div id="user-col" class="col-md-2">
-					<div class="dropdown">
-						<button class="btn btn-default dropdown-toggle" type="button"
-							id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-							aria-expanded="true">
-							<h:outputText
-								value="#{user.userData.first_name} #{user.userData.last_name}" />
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
-						</ul>
-					</div>
+				<div class="dropdown">
+					<button class="btn btn-default dropdown-toggle" type="button"
+						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
+						aria-expanded="true">
+						<h:outputText
+							value="#{user.userData.first_name} #{user.userData.last_name}" />
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
+					</ul>
 				</div>
+			</div>
 		</div>
-		<h:outputScript
-			rendered="#{userDetail.errorCollection.showPopup}">
+		<h:outputScript rendered="#{userDetail.errorCollection.showPopup}">
     	 BootstrapDialog.show({
             title: '#{userDetail.errorCollection.headerInformation}',
             message: '#{userDetail.errorCollection.messages}',
