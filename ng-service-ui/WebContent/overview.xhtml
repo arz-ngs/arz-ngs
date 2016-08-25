@@ -183,7 +183,7 @@
 			</div>
 			<div id="settings_col" class="col-md-2">
 				<!-- bottom settings: new instance, pagination, elements per page -->
-				<h:commandLink type="button"
+				<h:commandLink type="button" rendered="#{user.renderAdminOnlyElements}"
 					styleClass="btn btn-primary btn-lg float_right"
 					id="addNew_ServiceInstanceButton"
 					action="#{newServiceInstance.addNewServiceInstance()}">

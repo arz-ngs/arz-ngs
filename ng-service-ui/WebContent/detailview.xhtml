@@ -184,7 +184,7 @@
 					</div>
 					<div>
 						<!-- edit button -->
-						<h:outputLink value="editServiceInstance.xhtml" class="btn btn-primary float_right" id="submit_input">
+						<h:outputLink rendered="#{user.renderAdminOnlyElements}" value="editServiceInstance.xhtml" class="btn btn-primary float_right" id="submit_input">
 							<f:param name="instance" value="#{serviceInstanceDetail.instance}"/>
 							<f:param name="service" value="#{serviceInstanceDetail.service}"/>
 							<f:param name="env" value="#{serviceInstanceDetail.environment}"/>
@@ -208,7 +208,7 @@
 			</div>
 			<div id="settings_col" class="col-md-2">
 				<!-- bottom settings: new instance, pagination, elements per page -->
-				<h:commandLink type="button"
+				<h:commandLink type="button" rendered="#{user.renderAdminOnlyElements}"
 					styleClass="btn btn-primary btn-lg float_right"
 					id="delete_ServiceInstanceButton"
 					action="#{deleteServiceInstance.deleteServiceInstance(serviceInstanceDetail.instance, serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host)}">

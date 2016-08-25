@@ -1,8 +1,10 @@
 package at.arz.ngs.ui.controllers;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -23,6 +25,9 @@ public class DeleteServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
+	@Inject
+	private UserController userController;
+
 	private String service;
 	private String environment;
 	private String host;
@@ -33,11 +38,24 @@ public class DeleteServiceInstanceController
 	public String deleteServiceInstance(String instance, String service, String environment, String host) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removeServiceInstance(service, environment, host, instance);
+			admin.removeServiceInstance(userController.getCurrentActor(), service, environment, host, instance);
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
-			return null;
+			try {
+				FacesContext.getCurrentInstance()
+							.getExternalContext()
+							.redirect("detailview.xhtml?instance="+ instance
+										+ "&service="
+										+ service
+										+ "&env="
+										+ environment
+										+ "&host="
+										+ host);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			return "";
 		}
 
 		serviceInstanceController.formSubmit();

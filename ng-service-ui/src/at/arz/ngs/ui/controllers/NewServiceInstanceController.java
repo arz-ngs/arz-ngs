@@ -26,6 +26,9 @@ public class NewServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
+	@Inject
+	private UserController userController;
+
 	private String instance;
 	private String service;
 	private String environment;
@@ -36,6 +39,7 @@ public class NewServiceInstanceController
 	private String pathStop;
 	private String pathRestart;
 	private String pathStatus;
+	private String information;
 
 	private ErrorCollection errorCollection;
 
@@ -54,6 +58,7 @@ public class NewServiceInstanceController
 		command.setEnvironmentName(this.environment);
 		command.setHostName(this.host);
 		command.setInstanceName(this.instance);
+		command.setInformation(this.information);
 		ScriptData scriptData = new ScriptData();
 		scriptData.setScriptName(this.scriptName);
 		scriptData.setPathStart(this.pathStart);
@@ -64,7 +69,7 @@ public class NewServiceInstanceController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.createNewServiceInstance(command);
+			admin.createNewServiceInstance(userController.getCurrentActor(), command);
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
@@ -154,4 +159,13 @@ public class NewServiceInstanceController
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
 	}
+
+	public String getInformation() {
+		return information;
+	}
+
+	public void setInformation(String information) {
+		this.information = information;
+	}
+
 }

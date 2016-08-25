@@ -16,6 +16,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
@@ -30,11 +31,16 @@ public class ServiceInstanceResource {
 	@Inject
 	private ServiceInstanceAdmin instanceAdmin;
 
+	// TODO remove this method for security
+	private Actor getAdminActor() {
+		return new Actor("admin");
+	}
+
 	@PUT
 	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
-		instanceAdmin.createNewServiceInstance(command);
+		instanceAdmin.createNewServiceInstance(getAdminActor(), command);
 
 		String path = command.getServiceName()+ "/"
 						+ command.getEnvironmentName()
@@ -66,7 +72,12 @@ public class ServiceInstanceResource {
 											@PathParam("host") String hostName,
 											@PathParam("name") String instanceName,
 											UpdateServiceInstance command) {
-		instanceAdmin.updateServiceInstance(command, serviceName, environmentName, hostName, instanceName);
+		instanceAdmin.updateServiceInstance(getAdminActor(),
+											command,
+											serviceName,
+											environmentName,
+											hostName,
+											instanceName);
 
 		String path = command.getServiceName()+ "/"
 						+ command.getEnvironmentName()
@@ -95,7 +106,7 @@ public class ServiceInstanceResource {
 										@PathParam("host") String hostName,
 										@PathParam("name") String instanceName) {
 
-		instanceAdmin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
+		instanceAdmin.removeServiceInstance(getAdminActor(), serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**
@@ -168,6 +179,11 @@ public class ServiceInstanceResource {
 										@PathParam("host") String hostName,
 										@PathParam("name") String instanceName,
 										PerformAction performAction) {
-		instanceAdmin.performAction(serviceName, environmentName, hostName, instanceName, performAction);
+		instanceAdmin.performAction(getAdminActor(),
+									serviceName,
+									environmentName,
+									hostName,
+									instanceName,
+									performAction);
 	}
 }

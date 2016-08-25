@@ -151,7 +151,7 @@ public class SecurityAdmin {
 	public void proofActorAdminAccess(Actor actor) {
 		if (!isAdmin(actor)) {
 			throw new NoPermission("The actor "+ actor.getUserName()
-									+ " does not have the permission to edit security settings. To change one must have to role '"
+									+ " does not have the permission to do this action. To change one must have to role '"
 									+ ADMIN
 									+ "'!");
 		}

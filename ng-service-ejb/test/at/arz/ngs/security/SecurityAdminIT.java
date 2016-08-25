@@ -66,21 +66,18 @@ public class SecurityAdminIT
 		environmentRepository = new JPAEnvironmentRepository(getEntityManager());
 		scriptRepository = new JPAScriptRepository(getEntityManager());
 		instanceRepository = new JPAServiceInstanceRepository(getEntityManager());
+		permissionRepository = new JPAPermissionRepository(getEntityManager());
+		roleRepository = new JPARoleRepository(getEntityManager());
+		userRepository = new JPAUserRepository(getEntityManager());
+		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository);
 		serviceAdmin = new ServiceInstanceAdmin(serviceRepository,
 												hostRepository,
 												environmentRepository,
 												instanceRepository,
 												scriptRepository,
-												new SearchEngine(getEntityManager()));
-
-		permissionRepository = new JPAPermissionRepository(getEntityManager());
-		roleRepository = new JPARoleRepository(getEntityManager());
-		userRepository = new JPAUserRepository(getEntityManager());
-		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository,
-											roleRepository,
-											userRepository,
-											userRoleRepository);
+												new SearchEngine(getEntityManager()),
+												securityAdmin);
 
 		ScriptData scriptData = new ScriptData();
 		scriptData.setPathStart("start");
@@ -90,7 +87,6 @@ public class SecurityAdminIT
 		command.setInstanceName("instance1");
 		command.setServiceName("serv1");
 		command.setScript(scriptData);
-		serviceAdmin.createNewServiceInstance(command);
 
 		userRepository.addUser(new UserName("daniel"), new FirstName(""), new LastName(""), new Email(""));
 		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
@@ -106,12 +102,15 @@ public class SecurityAdminIT
 
 		// securityAdmin.addPermissionToRole(actor, command);
 
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset admin
+		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset
 		// to
 		// admin-rights
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		securityAdmin.addRoleToUser(admin,
+									addRoleToUserCommand);
+		serviceAdmin.createNewServiceInstance(admin, command);
+
 	}
 
 	@Test

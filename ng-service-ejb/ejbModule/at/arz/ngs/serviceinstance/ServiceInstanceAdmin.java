@@ -17,6 +17,7 @@ import at.arz.ngs.Service;
 import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.ServiceRepository;
+import at.arz.ngs.api.Action;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.Path;
@@ -41,6 +42,8 @@ import at.arz.ngs.api.exception.WrongParam;
 import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.search.SearchEngine;
+import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
@@ -52,7 +55,7 @@ import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 /**
  * Manages the logic and the methods of the repositores methods
  * 
- * @author dani 
+ * @author dani
  *
  */
 @Stateless
@@ -76,6 +79,9 @@ public class ServiceInstanceAdmin {
 	@Inject
 	private SearchEngine engine;
 
+	@Inject
+	private SecurityAdmin securityAdmin;
+
 	/**
 	 * Only for JUnit Tests
 	 * 
@@ -91,20 +97,23 @@ public class ServiceInstanceAdmin {
 								EnvironmentRepository environments,
 								ServiceInstanceRepository serviceInstances,
 								ScriptRepository scripts,
-								SearchEngine engine) {
+								SearchEngine engine,
+								SecurityAdmin securityAdmin) {
 		this.services = services;
 		this.hosts = hosts;
 		this.environments = environments;
 		this.serviceInstances = serviceInstances;
 		this.scripts = scripts;
 		this.engine = engine;
+		this.securityAdmin = securityAdmin;
 	}
 
 	protected ServiceInstanceAdmin() {
 		// EJB Constructor
 	}
 
-	public void createNewServiceInstance(CreateNewServiceInstance command) {
+	public void createNewServiceInstance(Actor actor, CreateNewServiceInstance command) {
+		securityAdmin.proofActorAdminAccess(actor);
 		String hostNameString = command.getHostName();
 		String serviceNameString = command.getServiceName();
 		String environmentNameString = command.getEnvironmentName();
@@ -246,11 +255,13 @@ public class ServiceInstanceAdmin {
 		hosts.removeUnusedHosts();
 	}
 
-	public void updateServiceInstance(	UpdateServiceInstance command,
+	public void updateServiceInstance(	Actor actor,
+										UpdateServiceInstance command,
 										String oldServiceNameString,
 										String oldEnvironmentNameString,
 										String oldHostNameString,
 										String oldServiceInstanceNameString) {
+		securityAdmin.proofActorAdminAccess(actor);
 		ServiceName oldServiceName = new ServiceName(oldServiceNameString);
 		EnvironmentName oldEnvironmentName = new EnvironmentName(oldEnvironmentNameString);
 		HostName oldHostName = new HostName(oldHostNameString);
@@ -359,11 +370,12 @@ public class ServiceInstanceAdmin {
 		}
 	}
 
-	public void removeServiceInstance(	String serviceNameString,
+	public void removeServiceInstance(	Actor actor,
+										String serviceNameString,
 										String environmentNameString,
 										String hostNameString,
 										String serviceInstanceNameString) {
-
+		securityAdmin.proofActorAdminAccess(actor);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
 		HostName hostName = new HostName(hostNameString);
@@ -376,13 +388,10 @@ public class ServiceInstanceAdmin {
 																				service,
 																				host,
 																				environment);
-		if (serviceInstance != null) {
-			serviceInstances.removeServiceInstance(serviceInstance);
-		} else {
-			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
-		}
+		serviceInstances.removeServiceInstance(serviceInstance);
 
 		removeAllUnusedElements();
+
 	}
 
 	public ServiceInstanceResponse getServiceInstance(	String serviceNameString,
@@ -520,11 +529,17 @@ public class ServiceInstanceAdmin {
 		return ovList;
 	}
 
-	public void performAction(	String serviceNameString,
+	public void performAction(	Actor actor,
+								String serviceNameString,
 								String environmentNameString,
 								String hostNameString,
 								String serviceInstanceNameString,
 								PerformAction perform) {
+		securityAdmin.proofPerformAction(	new EnvironmentName(environmentNameString),
+											new ServiceName(serviceNameString),
+											Action.valueOf(perform.getPerformAction()),
+											actor);
+
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
@@ -604,7 +619,7 @@ public class ServiceInstanceAdmin {
 		return true;
 	}
 
-	public String resolvePath(Path path) {
+	private String resolvePath(Path path) {
 		String p = getPath(path);
 		if (p == null) {
 			throw new EmptyField("To perform an action a valid path must be set!");

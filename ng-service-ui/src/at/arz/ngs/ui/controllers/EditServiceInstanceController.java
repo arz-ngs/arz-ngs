@@ -52,6 +52,9 @@ public class EditServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
+	@Inject
+	private UserController userController;
+
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -125,7 +128,8 @@ public class EditServiceInstanceController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.updateServiceInstance(command,
+			admin.updateServiceInstance(userController.getCurrentActor(),
+										command,
 										this.response.getServiceName(),
 										this.response.getEnvironmentName(),
 										this.response.getHostName(),

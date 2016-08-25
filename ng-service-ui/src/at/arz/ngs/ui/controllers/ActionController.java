@@ -26,6 +26,9 @@ public class ActionController {
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
+	@Inject
+	private UserController userController;
+
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -79,11 +82,12 @@ public class ActionController {
 				ServiceInstanceOverview serviceInstance = oc.getServiceInstance();
 				System.out.println(action + " service instance: " + serviceInstance.toString());
 				try {
-					admin.performAction(serviceInstance.getServiceName(),
-										serviceInstance.getEnvironmentName(),
-										serviceInstance.getHostName(),
-										serviceInstance.getInstanceName(),
-										action);
+					admin.performAction(userController.getCurrentActor(),
+					                    serviceInstance.getServiceName(),
+					                    serviceInstance.getEnvironmentName(),
+					                    serviceInstance.getHostName(),
+					                    serviceInstance.getInstanceName(),
+					                    action);
 				} catch (RuntimeException e) {
 					errorCollection.addError(new Error(e));
 				}
@@ -105,14 +109,14 @@ public class ActionController {
 
 		try {
 			FacesContext.getCurrentInstance()
-						.getExternalContext()
-						.redirect("detailview.xhtml?instance="+ instance
-									+ "&service="
-									+ service
-									+ "&env="
-									+ environment
-									+ "&host="
-									+ host);
+			.getExternalContext()
+			.redirect("detailview.xhtml?instance="+ instance
+			          + "&service="
+			          + service
+			          + "&env="
+			          + environment
+			          + "&host="
+			          + host);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -128,14 +132,14 @@ public class ActionController {
 
 		try {
 			FacesContext.getCurrentInstance()
-						.getExternalContext()
-						.redirect("detailview.xhtml?instance="+ instance
-									+ "&service="
-									+ service
-									+ "&env="
-									+ environment
-									+ "&host="
-									+ host);
+			.getExternalContext()
+			.redirect("detailview.xhtml?instance="+ instance
+			          + "&service="
+			          + service
+			          + "&env="
+			          + environment
+			          + "&host="
+			          + host);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -151,14 +155,14 @@ public class ActionController {
 
 		try {
 			FacesContext.getCurrentInstance()
-						.getExternalContext()
-						.redirect("detailview.xhtml?instance="+ instance
-									+ "&service="
-									+ service
-									+ "&env="
-									+ environment
-									+ "&host="
-									+ host);
+			.getExternalContext()
+			.redirect("detailview.xhtml?instance="+ instance
+			          + "&service="
+			          + service
+			          + "&env="
+			          + environment
+			          + "&host="
+			          + host);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -174,14 +178,14 @@ public class ActionController {
 
 		try {
 			FacesContext.getCurrentInstance()
-						.getExternalContext()
-						.redirect("detailview.xhtml?instance="+ instance
-									+ "&service="
-									+ service
-									+ "&env="
-									+ environment
-									+ "&host="
-									+ host);
+			.getExternalContext()
+			.redirect("detailview.xhtml?instance="+ instance
+			          + "&service="
+			          + service
+			          + "&env="
+			          + environment
+			          + "&host="
+			          + host);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -196,26 +200,26 @@ public class ActionController {
 	}
 
 	private boolean performSingleAction(PerformAction action,
-										String service,
-										String environment,
-										String host,
-										String instance) {
+	                                    String service,
+	                                    String environment,
+	                                    String host,
+	                                    String instance) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.performAction(service, environment, host, instance, action);
+			admin.performAction(userController.getCurrentActor(), service, environment, host, instance, action);
 		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return false;
 		}
 		System.out.println(action.getPerformAction()+ ": "
-							+ instance
-							+ "/"
-							+ service
-							+ "/"
-							+ environment
-							+ "/"
-							+ host);
+				+ instance
+				+ "/"
+				+ service
+				+ "/"
+				+ environment
+				+ "/"
+				+ host);
 		return true;
 	}
 }

@@ -17,6 +17,11 @@ import at.arz.ngs.HostRepository;
 import at.arz.ngs.ScriptRepository;
 import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.ServiceRepository;
+import at.arz.ngs.api.Email;
+import at.arz.ngs.api.FirstName;
+import at.arz.ngs.api.LastName;
+import at.arz.ngs.api.RoleName;
+import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.AlreadyModified;
 import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.ServiceNotFound;
@@ -24,6 +29,17 @@ import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.SearchEngine;
+import at.arz.ngs.security.PermissionRepository;
+import at.arz.ngs.security.RoleRepository;
+import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.UserRepository;
+import at.arz.ngs.security.User_RoleRepository;
+import at.arz.ngs.security.commands.Actor;
+import at.arz.ngs.security.permission.jpa.JPAPermissionRepository;
+import at.arz.ngs.security.role.jpa.JPARoleRepository;
+import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
+import at.arz.ngs.security.user.jpa.JPAUserRepository;
+import at.arz.ngs.security.userrole.jpa.JPAUser_RoleRepository;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
@@ -42,6 +58,14 @@ public class ServiceInstanceAdminIT
 	private ScriptRepository scripts;
 	private ServiceInstanceRepository instances;
 
+	private SecurityAdmin securityAdmin;
+	private PermissionRepository permissionRepository;
+	private RoleRepository roleRepository;
+	private UserRepository userRepository;
+	private User_RoleRepository userRoleRepository;
+
+	private Actor actor;
+
 	@Before
 	public void setUpBefore() throws Exception {
 		services = new JPAServiceRepository(getEntityManager());
@@ -49,12 +73,20 @@ public class ServiceInstanceAdminIT
 		environments = new JPAEnvironmentRepository(getEntityManager());
 		scripts = new JPAScriptRepository(getEntityManager());
 		instances = new JPAServiceInstanceRepository(getEntityManager());
+		permissionRepository = new JPAPermissionRepository(getEntityManager());
+		roleRepository = new JPARoleRepository(getEntityManager());
+		userRepository = new JPAUserRepository(getEntityManager());
+		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository);
 		admin = new ServiceInstanceAdmin(	services,
 											hosts,
 											environments,
 											instances,
 											scripts,
-											new SearchEngine(getEntityManager()));
+											new SearchEngine(getEntityManager()),
+											securityAdmin);
+
+
 		String environmentName = "environment1";
 		String hostName = "host1";
 		String serviceName = "service1";
@@ -72,7 +104,12 @@ public class ServiceInstanceAdminIT
 		command.setInstanceName(instanceName);
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
-		admin.createNewServiceInstance(command);
+		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
+		actor = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset admin
+		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
+		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
+		securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
+		admin.createNewServiceInstance(actor, command);
 	}
 
 	@Test
@@ -96,7 +133,7 @@ public class ServiceInstanceAdminIT
 		command.setInstanceName(instanceName);
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
-		admin.createNewServiceInstance(command);
+		admin.createNewServiceInstance(actor, command);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -135,7 +172,7 @@ public class ServiceInstanceAdminIT
 		command.setServiceName(serviceName);
 
 		try {
-			admin.createNewServiceInstance(command);
+			admin.createNewServiceInstance(actor, command);
 			fail();
 		} catch (EmptyField e) {
 			// ok
@@ -166,7 +203,7 @@ public class ServiceInstanceAdminIT
 		command.setServiceName(serviceName);
 
 		try {
-			admin.createNewServiceInstance(command);
+			admin.createNewServiceInstance(actor, command);
 			fail();
 		} catch (EmptyField e) {
 			// ok
@@ -196,7 +233,7 @@ public class ServiceInstanceAdminIT
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 
-		admin.createNewServiceInstance(command);
+		admin.createNewServiceInstance(actor, command);
 		assertEquals(2, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
 
@@ -222,7 +259,7 @@ public class ServiceInstanceAdminIT
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 
-		admin.createNewServiceInstance(command);
+		admin.createNewServiceInstance(actor, command);
 
 		ServiceInstanceResponse serviceInstance = admin.getServiceInstance(	serviceName,
 																			environmentName,
@@ -242,7 +279,7 @@ public class ServiceInstanceAdminIT
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
-		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
+		admin.removeServiceInstance(actor, serviceName, environmentName, hostName, instanceName);
 
 		try {
 			admin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
@@ -281,7 +318,7 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -324,7 +361,7 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -368,7 +405,7 @@ public class ServiceInstanceAdminIT
 		String oldEnvironmentName = "environment1";
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -414,14 +451,19 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+			admin.updateServiceInstance(actor,
+										command,
+										oldServiceName,
+										oldEnvironmentName,
+										oldHostName,
+										oldInstanceName);
 			fail();
 		} catch (AlreadyModified e) {
 			// ok
 		}
 
 		command.setVersion(0);
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -465,14 +507,19 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+			admin.updateServiceInstance(actor,
+										command,
+										oldServiceName,
+										oldEnvironmentName,
+										oldHostName,
+										oldInstanceName);
 			fail();
 		} catch (AlreadyModified e) {
 		}
 
 		command.setVersion(0);
 
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
 																	environmentName,
@@ -515,7 +562,12 @@ public class ServiceInstanceAdminIT
 		String oldInstanceName = "instance1";
 
 		try {
-			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+			admin.updateServiceInstance(actor,
+										command,
+										oldServiceName,
+										oldEnvironmentName,
+										oldHostName,
+										oldInstanceName);
 			fail();
 		} catch (EmptyField e) {
 			// ok
@@ -551,7 +603,7 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
@@ -576,7 +628,7 @@ public class ServiceInstanceAdminIT
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 		assertEquals(1, hosts.getAllHosts().size());
-		admin.createNewServiceInstance(command);
+		admin.createNewServiceInstance(actor, command);
 		assertEquals(1, hosts.getAllHosts().size());
 
 		String environmentName3 = "environment3";
@@ -596,21 +648,22 @@ public class ServiceInstanceAdminIT
 		command3.setInstanceName(instanceName3);
 		command3.setScript(scriptData3);
 		command3.setServiceName(serviceName3);
-		admin.createNewServiceInstance(command3);
+		admin.createNewServiceInstance(actor, command3);
 		assertEquals(2, hosts.getAllHosts().size());
-		admin.removeServiceInstance(serviceName3,
+		admin.removeServiceInstance(actor,
+									serviceName3,
 									environmentName3,
 									hostName3,
 									instanceName3);
 		assertEquals(1, hosts.getAllHosts().size());
-		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
+		admin.removeServiceInstance(actor, serviceName, environmentName, hostName, instanceName);
 		assertEquals(1, hosts.getAllHosts().size());
 
 		String environmentName2 = "environment1";
 		String hostName2 = "host1";
 		String serviceName2 = "service1";
 		String instanceName2 = "instance1";
-		admin.removeServiceInstance(serviceName2, environmentName2, hostName2, instanceName2);
+		admin.removeServiceInstance(actor, serviceName2, environmentName2, hostName2, instanceName2);
 		assertEquals(0, hosts.getAllHosts().size());
 	}
 
