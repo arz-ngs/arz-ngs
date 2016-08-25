@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="ng-service-app">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <wb-resource deploy-path="/lib" source-path="/arzbuildTarget/jars"/>
+        <dependent-module archiveName="ng-service-ui.war" deploy-path="/" handle="module:/resource/ng-service-ui/ng-service-ui">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ng-service-restapi.war" deploy-path="/" handle="module:/resource/ng-service-restapi/ng-service-restapi">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="ng-service-ejb.jar" deploy-path="/" handle="module:/resource/ng-service-ejb/ng-service-ejb">
+            <dependent-object/>
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>
