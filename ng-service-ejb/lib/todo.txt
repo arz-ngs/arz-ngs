@@ -16,3 +16,6 @@ jpa interfaces mit methoden bestücken (get und so), unique
 jpql inner join tex:  http://stackoverflow.com/questions/2844019/how-do-i-write-this-jpql-query
 
 http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
+
+buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist
+

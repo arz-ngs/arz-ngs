@@ -1,0 +1,73 @@
+WILDFLY-KONFIGURATION
+
+Ausgangssituation: Leerer PC
+
+1.1) Firma
+
+ -MySQL Datenbank lokal mit den Namen "osrtest" anlegen
+ 
+-Ordner wildlfy_arz-config_daniel oder wildfly_arz-config_alex Ordner kopieren
+ Dabei ist die aktuelle standalone/configuration/standalone.xml vom arz beinhaltet (die für zuhause heißt standalone_old.xml)
+ Im Ordner modules/system/ sind die gesamten Wildfly-Datenbank Connectors beinhaltet(downloadet von einer ARZ Plattform)
+ 
+ (Falls Ordner komplett kopiert, nicht zu machen)
+-Wildfly in Eclipse hinzufügen
+ Wildfly 10.0 - Local - Filesystem and Shell operations
+ Wildfly starten
+ Wildfly im Webinterface öffnen unter http://localhost:8080
+ User anlegen (.bat oder .sh ausführen, ist aber im Interface beschrieben wie, falls noch kein User angelegt ist)
+ 
+ Wildlfy in der Administratorkonsole öffnen http://localhost:9990
+ Configuration -> Subsystems -> Datasources -> Non-XA -> Datasource Add ->
+ Custom, sonst MySql
+ Name: osr_non_xa_ds
+ JNDI: java:/osr_non_xa_ds
+ Detected Drivers: mysql
+ Connection URL: jdbc:mysql://localhost:3306/osrtest
+ USE JTA : true
+ USE CCM: true
+ Username: gleich wie bei Mysql (normal root)
+ password: gleich wie bei Mysql (root vielleicht auch keins)
+ Valid Connection Checker: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker
+ Exception Sorter: org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter
+ 
+
+1.2) ECLIPSE
+git clone https://github.com/arz-ngs/arz-ngs.git
+
+Ordner: arz-ngs
+4 Projekte
+Im Wurzelverzeichnis die .project, .class, .classpath löschen also zB im (ng-service-ejb)
+Die project Dateien sind in lib/default_settings/arz_settings/ jedes einzelnen Projektes zu finden 
+und an das Wurzelverzeichnis zu kopieren
+
+1.3) Ivy Plugin herunterladen im Eclipse
+Ivy resolve
+
+1.4) benötigte JAR -- Add to Build Path
+
+
+2.1) zu Hause
+Wildfly Ordner wildfly verwenden oder von wildlfy_arz-config_daniel standalone/configuration/standalone_old.xml
+Ähnliche Schritte.. User anlegen --> osr_non_xa_ds einrichten im Webinterface
+
+git clone
+
+lib/default_settings/arz_settings_old/
+.project, .class, .classpath in die Wurzelverzeichnisse der einzelnen Projekte kopieren
+
+ivy resolve
+
+
+
+persistence.xml:
+<!-- 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->
+<!-- 			<property name="eclipselink.ddl-generation.output-mode" value="database" /> -->
+das erste Mal nicht auskommentiere, damit die Datenbank neu aufgebaut wird.
+
+ 
+Um Compilefehler wegzubekommen
+jpa: queries and generators: generator is not defined in the persistence unit: info
+
+ 
+  
