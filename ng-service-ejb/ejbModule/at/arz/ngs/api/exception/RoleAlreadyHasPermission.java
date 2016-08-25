@@ -3,13 +3,12 @@ package at.arz.ngs.api.exception;
 import javax.ejb.ApplicationException;
 
 @ApplicationException(rollback = true)
-public class UserAlreadyHasRole
+public class RoleAlreadyHasPermission
 		extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public UserAlreadyHasRole(String user, String role) {
-		super(user + " hat bereits " + role);
+	public RoleAlreadyHasPermission(String role, String permission) {
+		super(role + " hat bereits die Berechtigung " + permission);
 	}
-
 }

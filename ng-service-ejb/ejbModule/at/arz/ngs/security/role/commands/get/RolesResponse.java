@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-public class AllRolesResponse {
+public class RolesResponse {
 
 	private List<String> roles;
 
-	public AllRolesResponse() {
+	public RolesResponse() {
 		roles = new LinkedList<>();
 	}
 

@@ -19,10 +19,13 @@ import at.arz.ngs.converter.jpa.BooleanTFConverter;
 @Entity
 @Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_OID", "ROLE_OID" }) })
 @NamedQueries({ @NamedQuery(name = User_Role.QUERY_BY_USER_ROLE,
-							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole") })
+							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole"),
+				@NamedQuery(name = User_Role.QUERY_BY_USER,
+							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser")})
 public class User_Role {
 
 	public static final String QUERY_BY_USER_ROLE = "User_Role.findbyUniqueKey";
+	public static final String QUERY_BY_USER = "User_Role.findbyUser";
 
 	@Id
 	@GeneratedValue(generator = "ngs.user_role", strategy = GenerationType.TABLE)

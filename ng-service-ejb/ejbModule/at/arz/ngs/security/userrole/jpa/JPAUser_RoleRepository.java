@@ -1,5 +1,7 @@
 package at.arz.ngs.security.userrole.jpa;
 
+import java.util.List;
+
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -56,6 +58,13 @@ public class JPAUser_RoleRepository
 	@Override
 	public void removeUser_Role(User_Role user_Role) {
 		entityManager.remove(user_Role);
+	}
+
+	@Override
+	public List<User_Role> getUser_RoleByUser(User u) {
+		TypedQuery<User_Role> getUserRoles = entityManager.createNamedQuery(User_Role.QUERY_BY_USER, User_Role.class);
+		getUserRoles.setParameter("uruser", u);
+		return getUserRoles.getResultList();
 	}
 
 }

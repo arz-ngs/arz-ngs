@@ -278,6 +278,25 @@ public class SecurityAdminIT
 		}
 	}
 
+	@Test
+	public void addMoreRolesToUser() {
+		roleRepository.addRole(new RoleName("role1"));
+		roleRepository.addRole(new RoleName("role2"));
+		roleRepository.addRole(new RoleName("role3"));
+		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "role1", true);
+		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
+		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
+		assertEquals(0, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		assertEquals(1, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+		AddRoleToUser addRoleToUserCommand2 = new AddRoleToUser("daniel", "role2", false);
+		securityAdmin.addRoleToUser(admin, addRoleToUserCommand2);
+		assertEquals(1, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+		AddRoleToUser addRoleToUserCommand3 = new AddRoleToUser("daniel", "role3", true);
+		securityAdmin.addRoleToUser(admin, addRoleToUserCommand3);
+		assertEquals(2, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+	}
+
 
 
 	/**

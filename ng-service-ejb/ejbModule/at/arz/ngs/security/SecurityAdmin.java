@@ -17,6 +17,7 @@ import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.NoPermission;
 import at.arz.ngs.api.exception.PermissionNotFound;
 import at.arz.ngs.api.exception.RoleAlreadyExist;
+import at.arz.ngs.api.exception.RoleAlreadyHasPermission;
 import at.arz.ngs.api.exception.RoleNotFound;
 import at.arz.ngs.api.exception.UserAlreadyHasRole;
 import at.arz.ngs.api.exception.UserNotFound;
@@ -30,8 +31,8 @@ import at.arz.ngs.security.permission.commands.get.PermissionResponse;
 import at.arz.ngs.security.permission.commands.removeFromRole.RemovePermissionFromRole;
 import at.arz.ngs.security.role.commands.UserRole;
 import at.arz.ngs.security.role.commands.create.CreateRole;
-import at.arz.ngs.security.role.commands.get.AllRolesResponse;
 import at.arz.ngs.security.role.commands.get.RoleResponse;
+import at.arz.ngs.security.role.commands.get.RolesResponse;
 import at.arz.ngs.security.role.commands.remove.RemoveRole;
 import at.arz.ngs.security.user.commands.UserData;
 import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
@@ -299,16 +300,16 @@ public class SecurityAdmin {
 		roleRepository.removeRole(role);
 		for (Permission p : permToDelete) {
 			try {
-				if (p.getRoles().size() == 1) {
-				permissionRepository.removePermission(p);
+				if (p.getRoles().size() <= 1) {
+					permissionRepository.removePermission(p);
 				}
 			} catch (RuntimeException e) {
 			}
 		}
 	}
 
-	public AllRolesResponse getAllRoles() {
-		AllRolesResponse res = new AllRolesResponse();
+	public RolesResponse getAllRoles() {
+		RolesResponse res = new RolesResponse();
 
 		List<Role> allRoles = roleRepository.getAllRoles();
 		for (Role r : allRoles) {
@@ -358,8 +359,17 @@ public class SecurityAdmin {
 														action);
 
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
+		if (!role.getPermissions().contains(permission) && !permission.getRoles().contains(role)) {
 		role.addPermission(permission);
 		permission.addRole(role);
+		} else {
+			throw new RoleAlreadyHasPermission(	role.getRoleName().getName(),
+												permission.getEnvironmentName().getName()+ "/"
+																				+ permission.getServiceName().getName()
+																				+ "/"
+																				+ permission.getAction().name());
+		}
+		
 	}
 
 	private Action convert(String action) {
@@ -494,6 +504,21 @@ public class SecurityAdmin {
 			user.setEmail(email);
 		} catch (UserNotFound e) {
 			userRepository.addUser(name, firstName, lastName, email);
+		}
+	}
+
+	public RolesResponse getHandoverRolesFromActor(Actor actor) {
+		if (actor.getUserName().equals(SecurityAdmin.ADMIN)) {
+			return getAllRoles();
+		} else {
+			User user = userRepository.getUser(new UserName(actor.getUserName()));
+			RolesResponse response = new RolesResponse();
+			for (User_Role ur : userRoleRepository.getUser_RoleByUser(user)) {
+				if (ur.isHandover()) {
+					response.addRole(ur.getRole().getRoleName().getName());
+				}
+			}
+			return response;
 		}
 	}
 
