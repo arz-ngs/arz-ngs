@@ -3,8 +3,8 @@
   ...
   </extensions>
   <system-properties>
-    <property name="ldapbaseDIR" value="${jboss.server.home.dir}/ldap/properties/base"/>
-    <property name="ldapconfigDIR" value="${jboss.server.home.dir}/ldap/properties/config"/>
+        <property name="ad_ngs_properties" value="/ldap_ad_config/active_directory_ngs.properties"/>
+        <property name="ad_properties" value="/ldap_ad_config/active_directory.properties"/>
   </system-properties>
     ...
 </server>

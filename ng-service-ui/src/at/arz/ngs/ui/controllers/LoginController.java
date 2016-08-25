@@ -60,7 +60,6 @@ public class LoginController
 			try {
 				LoginResponse response = admin.login(loginData);
 				UserData user = response.getUser();
-				FacesContext context = FacesContext.getCurrentInstance();
 
 				if (user != null) {
 					userController.setUserData(user);
@@ -70,7 +69,7 @@ public class LoginController
 					return "";
 				}
 			} catch (RuntimeException e) {
-
+				e.printStackTrace();
 			}
 		}
 		return "";

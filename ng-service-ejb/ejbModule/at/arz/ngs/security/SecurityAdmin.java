@@ -14,6 +14,7 @@ import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.EmptyField;
+import at.arz.ngs.api.exception.LoginFailed;
 import at.arz.ngs.api.exception.NoPermission;
 import at.arz.ngs.api.exception.PermissionNotFound;
 import at.arz.ngs.api.exception.RoleAlreadyExist;
@@ -104,8 +105,10 @@ public class SecurityAdmin {
 			// productional stage
 			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
-		// adjustUser(name, firstName, lastName, email); TODO Fill method with data from LDAP
-		return new LoginResponse(new UserData(login.getUserName(), "test", "User", "test.user@email.at"));
+
+		UserData userData = adjustUser(login.getUserName());
+
+		return new LoginResponse(userData);
 	}
 
 	/**
@@ -242,7 +245,6 @@ public class SecurityAdmin {
 			proofActorHasSameRoleAndHandoverRights(actor, role);
 		}
 
-
 		removeRoleFromUser(role, user);
 	}
 
@@ -360,8 +362,8 @@ public class SecurityAdmin {
 
 		Role role = roleRepository.getRole(new RoleName(command.getRoleName()));
 		if (!role.getPermissions().contains(permission) && !permission.getRoles().contains(role)) {
-		role.addPermission(permission);
-		permission.addRole(role);
+			role.addPermission(permission);
+			permission.addRole(role);
 		} else {
 			throw new RoleAlreadyHasPermission(	role.getRoleName().getName(),
 												permission.getEnvironmentName().getName()+ "/"
@@ -369,7 +371,7 @@ public class SecurityAdmin {
 																				+ "/"
 																				+ permission.getAction().name());
 		}
-		
+
 	}
 
 	private Action convert(String action) {
@@ -405,9 +407,7 @@ public class SecurityAdmin {
 			if (action.equals("all")) {
 				action = "alle";
 			}
-			res.addPermission(new PermissionData(	envName,
-			                                     	servName, 
-			                                     	action));
+			res.addPermission(new PermissionData(envName, servName, action));
 		}
 		return res;
 	}
@@ -484,20 +484,30 @@ public class SecurityAdmin {
 		return permissionRepository.getPermission(environmentName, serviceName, action);
 	}
 
-	private void adjustUser(UserName name, FirstName firstName, LastName lastName, Email email) {
-		if (name == null || name.getName().equals("")) {
+	private UserData adjustUser(String userName) {
+		if (userName == null || userName.equals("")) {
 			throw new EmptyField("user identification is empty!");
 		}
-		if (firstName == null) {
-			firstName = new FirstName("");
+		LDAPConnector con = new LDAPConnector();
+
+		UserData userData = con.getUserData(userName);
+
+		if (userData == null) {
+			throw new LoginFailed("Falsche Accountdaten. Bitte versuchen Sie es erneut.");
 		}
-		if (lastName == null) {
-			lastName = new LastName("");
-		}
-		if (email == null) {
-			email = new Email("");
-		}
+
+		UserName name = new UserName(userData.getUserName());
+		FirstName firstName = new FirstName(userData.getFirst_name());
+		LastName lastName = new LastName(userData.getLast_name());
+		Email email = new Email(userData.getEmail());
+
+		// System.out.println(userData.getUserName()); //well functioning
+		// System.out.println(userData.getFirst_name());
+		// System.out.println(userData.getLast_name());
+		// System.out.println(userData.getEmail());
+
 		try {
+
 			User user = userRepository.getUser(name);
 			user.setFirstName(firstName);
 			user.setLastName(lastName);
@@ -505,6 +515,8 @@ public class SecurityAdmin {
 		} catch (UserNotFound e) {
 			userRepository.addUser(name, firstName, lastName, email);
 		}
+
+		return userData;
 	}
 
 	public RolesResponse getHandoverRolesFromActor(Actor actor) {

@@ -92,7 +92,7 @@ public class UserDetailController
 
 		errorCollection = new ErrorCollection();
 		try {
-			List<String> rolesToHandOver = admin.getAllRoles().getRoles(); //TODO get only those roles which the user can handover
+			List<String> rolesToHandOver = admin.getHandoverRolesFromActor(userController.getCurrentActor()).getRoles();
 			if (rolesToHandOver == null || rolesToHandOver.size() == 0) {
 				renderNewRemoveRoleElements = false; //can not handover some roles, so he also can't remove roles
 			}
