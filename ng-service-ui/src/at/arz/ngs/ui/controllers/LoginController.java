@@ -39,6 +39,8 @@ public class LoginController
 	@PostConstruct
 	public void init() {
 		originalRequestedURI = determineOriginalURI();
+		userName = "";
+		password = "";
 	}
 
 	public String login() {
@@ -65,10 +67,12 @@ public class LoginController
 					userController.setUserData(user);
 					userController.setRenderAdminOnlyElements(admin.isAdmin(userController.getCurrentActor()));
 					return "overview.xhtml?faces-redirect=true";
-				} else {
+				}
+				else {
 					return "";
 				}
-			} catch (RuntimeException e) {
+			}
+			catch (RuntimeException e) {
 				e.printStackTrace();
 			}
 		}
@@ -76,20 +80,16 @@ public class LoginController
 	}
 
 	private String determineOriginalURI() {
-		String originalURI = (String) FacesContext	.getCurrentInstance()
-													.getExternalContext()
-													.getRequestMap()
-													.get(RequestDispatcher.FORWARD_REQUEST_URI);
+		String originalURI = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap()
+				.get(RequestDispatcher.FORWARD_REQUEST_URI);
 
 		if (originalURI == null) {
 			return originalRequestedURI = "overview";
 		}
 		originalURI = originalURI.substring(originalURI.lastIndexOf("/") + 1);
 
-		String originalQuery = (String) FacesContext.getCurrentInstance()
-													.getExternalContext()
-													.getRequestMap()
-													.get(RequestDispatcher.FORWARD_QUERY_STRING);
+		String originalQuery = (String) FacesContext.getCurrentInstance().getExternalContext().getRequestMap()
+				.get(RequestDispatcher.FORWARD_QUERY_STRING);
 		return originalRequestedURI = originalURI + "?faces-redirect=true&" + originalQuery;
 	}
 
@@ -118,16 +118,16 @@ public class LoginController
 	}
 
 	private HttpServletRequest getCurrentHttpRequest() {
-		HttpServletRequest httpRequest = (HttpServletRequest) FacesContext	.getCurrentInstance()
-																			.getExternalContext()
-																			.getRequest();
+		HttpServletRequest httpRequest = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext()
+				.getRequest();
 		return httpRequest;
 	}
 
 	public void redirectToLogin() {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -135,7 +135,8 @@ public class LoginController
 	public void logout() {
 		try {
 			getCurrentHttpRequest().logout();
-		} catch (ServletException e) {
+		}
+		catch (ServletException e) {
 			e.printStackTrace();
 		}
 	}
