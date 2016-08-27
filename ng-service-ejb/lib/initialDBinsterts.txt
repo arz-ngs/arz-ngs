@@ -3,7 +3,10 @@ INSERT INTO `osrtest`.`role` (`OID`, `ROLE_NAME`) VALUES (0, 'Administrator');
 INSERT INTO `osrtest`.`user_role` (`OID`, `HANDOVER`, `ROLE_OID`, `USER_OID`) VALUES (0, 'T', 0, 0);
 
 
-
+Linux:
+INSERT INTO `USER_` (`OID`,`EMAIL`,`FIRST_NAME`,`LAST_NAME`,`USER_NAME`) VALUES (0,' ',' ',' ','admin');
+INSERT INTO `osrtest`.`ROLE` (`OID`, `ROLE_NAME`) VALUES (0, 'Administrator');
+INSERT INTO `osrtest`.`USER_ROLE` (`OID`, `HANDOVER`, `ROLE_OID`, `USER_OID`) VALUES (0, 'T', 0, 0);
 
 
 //TEST INSERT

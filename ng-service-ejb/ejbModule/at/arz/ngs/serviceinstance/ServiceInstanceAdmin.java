@@ -1,5 +1,6 @@
 package at.arz.ngs.serviceinstance;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -558,7 +559,7 @@ public class ServiceInstanceAdmin {
 			throw new EmptyField("Script must be set to perform an action on an instance!");
 		}
 		String param = perform.getPerformAction().toLowerCase();
-		String path;
+		String path = "";
 		if (param.equals("start") || param.equals("stop") || param.equals("restart")) {
 			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
 				if (param.equals("start")) {
@@ -583,7 +584,7 @@ public class ServiceInstanceAdmin {
 									+ " -- Use only this action commands: start, stop, restart, status");
 		}
 		// TODO execute method on server with the path as parameter
-		// execute(path)
+		executeCommand(path);
 	}
 
 	private boolean checkScriptIfPathNotMissing(PerformAction action, Script script) {
@@ -653,5 +654,26 @@ public class ServiceInstanceAdmin {
 			}
 		}
 		return serviceList;
+	}
+	
+	private int executeCommand(String path) {
+		if (!path.equals("")) {
+			throw new EmptyField("Empty path");
+		}
+		List<String> command = new ArrayList<String>();
+		command.add(path);
+		ProcessBuilder processBuilder = new ProcessBuilder(command);
+		Process process;
+		try {
+			process = processBuilder.start();
+			int errorCode = process.waitFor();
+			System.out.println(errorCode);
+			return errorCode;
+		} catch (IOException e) { //TODO ErrorHandling somewhere else 
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return -1;
 	}
 }
