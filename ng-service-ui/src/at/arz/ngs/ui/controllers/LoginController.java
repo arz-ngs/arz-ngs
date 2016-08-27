@@ -51,13 +51,16 @@ public class LoginController
 		if ((userName != null) && (!userName.equals("")) && (password != null) && (!password.equals(""))) {
 			Login loginData = new Login(userName, password);
 
-			// HttpServletRequest httpRequest = getCurrentHttpRequest();
-			// try {
-			// httpRequest.login(loginData.getUserName(), loginData.getPassword());
-			// } catch (ServletException e) {
-			// e.printStackTrace();
-			// return null;
-			// }
+			if (admin.isApplicationUsingsLDAPauth()) {
+				HttpServletRequest httpRequest = getCurrentHttpRequest();
+				try {
+					httpRequest.login(loginData.getUserName(), loginData.getPassword());
+				}
+				catch (ServletException e) {
+					e.printStackTrace();
+					return null;
+				}
+			}
 
 			try {
 				LoginResponse response = admin.login(loginData);

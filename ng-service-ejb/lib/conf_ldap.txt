@@ -1,0 +1,32 @@
+Dieses File zeigt, wie dieses Projekt auf LDAP und JavaEE Security mit Wildfly umgestellt werden kann.
+
+Ausgangssituation: Voll funktionstüchtige, lokal arbeitende Applikation samt Wildfly-Server
+
+Voraussetzungen: LDAP-Infrastruktur mit ActiveDirectory inkl. Zugangsdaten und Serveradressen
+
+Schritte:
+
+Im Wildfly:
+1. In der Datei:
+wildfly\standalone\configuration\security_authentication.properties
+den Wert:
+is_AS_using_ldap=false
+auf true umstellen oder ggf. die Datei und den Eintrag erstellen. 
+Gibt es die Datei oder den Eintrag nicht, ist der Wert defaultmäßig false und es wird kein LDAP verwendet.
+
+
+
+Im ng-service-ui:
+1. jboss-web.xml die Zeile wieder einkommentieren
+
+2. web.xml alle Zeilen einkommentieren
+
+Im ng-service-app (falls noch nicht gemacht):
+1. Ivy retrieve dependencies
+2. Unter properties -> ivy:
+New: 
+retrieve pattern: arzbuildTarget/[type]s/[artifact].[ext]
+configurations: default
+
+3. Unter properties -> deployment assembly:
+Source: arzbuildTarget/jars und Deploy Path: lib

@@ -39,12 +39,12 @@ Ordner: arz-ngs
 4 Projekte
 Im Wurzelverzeichnis die .project, .class, .classpath löschen also zB im (ng-service-ejb)
 Die project Dateien sind in lib/default_settings/arz_settings/ jedes einzelnen Projektes zu finden 
-und an das Wurzelverzeichnis zu kopieren
+und in das Wurzelverzeichnis zu kopieren.
 
 1.3) Ivy Plugin herunterladen im Eclipse
 Ivy resolve
 
-1.4) benötigte JAR -- Add to Build Path
+1.4) benötigte JARs -- jeweils: Add to Build Path
 
 
 2.1) zu Hause
@@ -59,15 +59,28 @@ lib/default_settings/arz_settings_old/
 ivy resolve
 
 
+Für ng-service-app:
+1. Ivy retrieve dependencies
+2. Unter properties -> ivy:
+New: 
+retrieve pattern: arzbuildTarget/[type]s/[artifact].[ext]
+configurations: default
+
+3. Unter properties -> deployment assembly:
+Source: arzbuildTarget/jars und Deploy Path: lib
 
 persistence.xml:
 <!-- 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->
 <!-- 			<property name="eclipselink.ddl-generation.output-mode" value="database" /> -->
-das erste Mal nicht auskommentiere, damit die Datenbank neu aufgebaut wird.
+das erste Mal einkommentieren, damit die Datenbank neu aufgebaut wird. Dann wieder auskommentieren falls alles funktioniert.
+Nachdem die Datenbank erstellt worden ist, die initalen DB-Inserts machen: ejb/lib/initialDBinsterts in der Workbench
 
  
 Um Compilefehler wegzubekommen
 jpa: queries and generators: generator is not defined in the persistence unit: info
 
- 
+-Im Standalone xml die system properties von ejb/lib/conf-files/wildfly_system-properties.txt direkt unter den extension eintragen.
+-Die Datei ejb\lib\conf-files\security_authentication.properties nach wildfly\standalone\configuration\security_authentication.properties kopieren
+
+
   

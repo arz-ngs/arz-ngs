@@ -40,25 +40,15 @@ public class RoleDetailController
 	private UserController userController;
 
 	private String currentRole;
-
 	private List<PermissionData> permissions;
-
 	private String chosenEnvID;
-
 	private String chosenService;
-
 	private String chosenAction;
-
 	private List<String> availableEnvIDs;
-
 	private List<String> availableServices;
-
 	private List<String> availableActions;
-
 	private boolean serviceDisabled;
-
 	private ErrorCollection errorCollection;
-
 	private String serviceCSSclass;
 
 	@PostConstruct
@@ -71,10 +61,11 @@ public class RoleDetailController
 	}
 
 	public void addPermission() {
-		if (chosenAction.equals(PLEASE_CHOOSE)|| chosenEnvID.equals(PLEASE_CHOOSE)
-			|| chosenService.equals(PLEASE_CHOOSE)) {
+		if (chosenAction.equals(PLEASE_CHOOSE) || chosenEnvID.equals(PLEASE_CHOOSE)
+				|| chosenService.equals(PLEASE_CHOOSE)) {
 			errorCollection = new ErrorCollection();
-			errorCollection.addError(new Error(new IllegalArgumentException("All fields must be set. Please choose one item from each dropdown.")));
+			errorCollection.addError(new Error(new IllegalArgumentException(
+					"All fields must be set. Please choose one item from each dropdown.")));
 			errorCollection.setShowPopup(true);
 			return;
 		}
@@ -88,7 +79,8 @@ public class RoleDetailController
 		errorCollection = new ErrorCollection();
 		try {
 			admin.addPermissionToRole(userController.getCurrentActor(), command);
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return;
@@ -101,13 +93,13 @@ public class RoleDetailController
 		refresh();
 	}
 
-
 	public String removePermission(PermissionData data) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removePermissionFromRole(	userController.getCurrentActor(),
-											new RemovePermissionFromRole(currentRole, data));
-		} catch (RuntimeException e) {
+			admin.removePermissionFromRole(userController.getCurrentActor(),
+					new RemovePermissionFromRole(currentRole, data));
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return "";
@@ -138,7 +130,8 @@ public class RoleDetailController
 			permissions = admin.getPermissions(currentRole).getPermissions();
 
 			validateDropdowns();
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			chosenEnvID = PLEASE_CHOOSE;
 			chosenService = PLEASE_CHOOSE;
 			chosenAction = PLEASE_CHOOSE;
@@ -170,7 +163,8 @@ public class RoleDetailController
 
 			availableServices = new LinkedList<>();
 			availableServices.add("Zuerst eine EnvId auswählen");
-		} else {
+		}
+		else {
 			serviceDisabled = false;
 			serviceCSSclass = ""; // no disabled class
 
