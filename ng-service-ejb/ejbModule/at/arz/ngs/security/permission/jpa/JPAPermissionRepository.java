@@ -36,8 +36,8 @@ public class JPAPermissionRepository
 	@Override
 	public Permission getPermission(EnvironmentName environmentName, ServiceName serviceName, Action action) {
 		try {
-			TypedQuery<Permission> getPermission = entityManager.createNamedQuery(Permission.QUERY_BY_ENVIRONMENTandSERVICEandACTION,
-																			Permission.class);
+			TypedQuery<Permission> getPermission = entityManager
+					.createNamedQuery(Permission.QUERY_BY_ENVIRONMENTandSERVICEandACTION, Permission.class);
 
 			getPermission.setParameter("ename", environmentName);
 			getPermission.setParameter("sname", serviceName);
@@ -45,7 +45,8 @@ public class JPAPermissionRepository
 
 			return getPermission.getSingleResult();
 
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new PermissionNotFound(environmentName, serviceName, action);
 		}
 	}
@@ -59,6 +60,5 @@ public class JPAPermissionRepository
 	@Override
 	public void removePermission(Permission permission) {
 		entityManager.remove(permission);
-		System.err.println("in remove method");
 	}
 }

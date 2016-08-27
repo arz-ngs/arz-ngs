@@ -41,7 +41,8 @@ public class JPAHostRepository
 			getHost.setParameter("hname", hostName);
 
 			return getHost.getSingleResult();
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new HostNotFound(hostName);
 		}
 	}
@@ -65,9 +66,8 @@ public class JPAHostRepository
 
 	@Override
 	public void removeUnusedHosts() {
-		Query query =
-					entityManager.createQuery("DELETE FROM Host h WHERE h NOT IN (SELECT i.host FROM ServiceInstance i)");
+		Query query = entityManager
+				.createQuery("DELETE FROM Host h WHERE h NOT IN (SELECT i.host FROM ServiceInstance i)");
 		int count = query.executeUpdate();
-		System.out.println(count + " unused hosts removed");
 	}
 }

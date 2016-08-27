@@ -38,12 +38,13 @@ public class JPAEnvironmentRepository
 	public Environment getEnvironment(EnvironmentName environmentName) {
 		try {
 			TypedQuery<Environment> getEnv = entityManager.createNamedQuery(Environment.QUERY_BY_ENVIRONMENTNAME,
-																			Environment.class);
+					Environment.class);
 			getEnv.setParameter("ename", environmentName);
 
 			return getEnv.getSingleResult();
 
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new EnvironmentNotFound(environmentName);
 		}
 	}
@@ -56,20 +57,19 @@ public class JPAEnvironmentRepository
 
 	@Override
 	public void addEnvironment(EnvironmentName environmentName) {
-			Environment environment = new Environment(environmentName);
-			entityManager.persist(environment);
+		Environment environment = new Environment(environmentName);
+		entityManager.persist(environment);
 	}
 
 	@Override
 	public void removeEnvironment(Environment environment) {
-			entityManager.remove(environment);
+		entityManager.remove(environment);
 	}
 
 	@Override
 	public void removeUnusedEnvironments() {
-		Query query =
-					entityManager.createQuery("DELETE FROM Environment e WHERE e NOT IN (SELECT i.environment FROM ServiceInstance i)");
+		Query query = entityManager
+				.createQuery("DELETE FROM Environment e WHERE e NOT IN (SELECT i.environment FROM ServiceInstance i)");
 		int count = query.executeUpdate();
-		System.out.println(count + " unused environments removed");
 	}
 }

@@ -38,12 +38,13 @@ public class JPAServiceRepository
 	public Service getService(ServiceName serviceName) {
 		try {
 			TypedQuery<Service> getService = entityManager.createNamedQuery(Service.QUERY_BY_SERVICENAME,
-																			Service.class);
+					Service.class);
 			getService.setParameter("sname", serviceName);
 
 			return getService.getSingleResult();
 
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new ServiceNotFound(serviceName);
 		}
 	}
@@ -67,9 +68,8 @@ public class JPAServiceRepository
 
 	@Override
 	public void removeUnusedServices() {
-		Query query =
-					entityManager.createQuery("DELETE FROM Service s WHERE s NOT IN (SELECT i.service FROM ServiceInstance i)");
+		Query query = entityManager
+				.createQuery("DELETE FROM Service s WHERE s NOT IN (SELECT i.service FROM ServiceInstance i)");
 		int count = query.executeUpdate();
-		System.out.println(count + " unused services removed");
 	}
 }

@@ -89,7 +89,6 @@ public class RoleDetailController
 		chosenEnvID = PLEASE_CHOOSE;
 		chosenService = PLEASE_CHOOSE;
 		chosenAction = PLEASE_CHOOSE;
-		System.out.println("add perm");
 		refresh();
 	}
 

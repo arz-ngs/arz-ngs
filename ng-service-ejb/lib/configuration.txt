@@ -70,10 +70,18 @@ configurations: default
 Source: arzbuildTarget/jars und Deploy Path: lib
 
 persistence.xml:
-<!-- 			<property name="eclipselink.ddl-generation" value="drop-and-create-tables" /> -->
-<!-- 			<property name="eclipselink.ddl-generation.output-mode" value="database" /> -->
-das erste Mal einkommentieren, damit die Datenbank neu aufgebaut wird. Dann wieder auskommentieren falls alles funktioniert.
-Nachdem die Datenbank erstellt worden ist, die initalen DB-Inserts machen: ejb/lib/initialDBinsterts in der Workbench
+Nachdem die Database erzeugt wurde müssen die Tabellen folgendermaßen erzeugt werden
+	<property name="eclipselink.ddl-generation" value="create-tables" /> 
+	<property name="eclipselink.ddl-generation.output-mode" value="database" />
+Clean im Wildfly nicht vergessen!
+
+Nachdem die Tabellen in der Workbench! erzeugt worden sind -> restart des AS, wobei die persitence.xml auf folgendes geändert werden muss:
+	<property name="eclipselink.ddl-generation" value="drop-and-create-tables" />
+	<property name="eclipselink.ddl-generation.output-mode" value="database" /> 
+Nach dem Neustart versuchen sich anzumelden und von allem Inserts machen, damit die Sequence-Table aufgebaut werden kann. 
+Funktioniert dann alles, so werden die o.g. Properties auskommentiert und die initalen DB-Inserts gemacht: ejb/lib/initialDBinsterts (in der Workbench).
+Im Anschluss ein Clean und Restart des Application Servers!
+Jetzt alle Funktionen testen ob keine Fehler mit den Sequence-Infos auftaucht! -> wenn kein Fehler -> super, sonst -> schlecht, nochmal von vorne (ab Punkt mit drop-and-create)
 
  
 Um Compilefehler wegzubekommen

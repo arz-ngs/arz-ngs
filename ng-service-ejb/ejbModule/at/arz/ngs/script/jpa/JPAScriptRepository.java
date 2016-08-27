@@ -45,38 +45,35 @@ public class JPAScriptRepository
 			getScript.setParameter("scname", scriptName);
 			return getScript.getSingleResult();
 
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new ScriptNotFound(scriptName);
 		}
 	}
 
 	@Override
 	public List<Script> getAllScripts() {
-			TypedQuery<Script> getAllScripts = entityManager.createNamedQuery("getAllScripts", Script.class);
+		TypedQuery<Script> getAllScripts = entityManager.createNamedQuery("getAllScripts", Script.class);
 		return getAllScripts.getResultList();
 	}
 
 	@Override
-	public void addScript(	ScriptName scriptName,
-							PathStart pathStart,
-							PathStop pathStop,
-							PathRestart pathRestart,
-							PathStatus pathStatus) {
+	public void addScript(ScriptName scriptName, PathStart pathStart, PathStop pathStop, PathRestart pathRestart,
+			PathStatus pathStatus) {
 
-			Script script = new Script(scriptName, pathStart, pathStop, pathRestart, pathStatus);
-			entityManager.persist(script);
+		Script script = new Script(scriptName, pathStart, pathStop, pathRestart, pathStatus);
+		entityManager.persist(script);
 	}
 
 	@Override
 	public void removeScript(Script script) {
-			entityManager.remove(script);
+		entityManager.remove(script);
 	}
 
 	@Override
 	public void removeUnusedScripts() {
-		Query query =
-					entityManager.createQuery("DELETE FROM Script s WHERE s NOT IN (SELECT i.script FROM ServiceInstance i)");
+		Query query = entityManager
+				.createQuery("DELETE FROM Script s WHERE s NOT IN (SELECT i.script FROM ServiceInstance i)");
 		int count = query.executeUpdate();
-		System.out.println(count + " unused scripts removed");
 	}
 }

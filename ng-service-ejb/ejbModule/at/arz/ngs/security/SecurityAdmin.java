@@ -89,7 +89,6 @@ public class SecurityAdmin {
 		for (User u : userRepository.getAllUsers()) {
 			res.addUser(new UserData(u.getUserName().getName(), u.getFirstName().getName(), u.getLastName().getName(),
 					u.getEmail().getEmail()));
-			System.out.println("UserOverview: " + u.getUserName());
 		}
 
 		return res;
@@ -124,7 +123,7 @@ public class SecurityAdmin {
 			User user = userRepository.getUser(new UserName(actor.getUserName()));
 			for (User_Role ur : user.getUser_roles()) {
 				Role role = ur.getRole();
-				System.err.println("PROOFPERMISSION: ROLLE " + role.getRoleName().getName());
+				//				System.err.println("PROOFPERMISSION: ROLLE " + role.getRoleName().getName());
 				for (Permission permission : role.getPermissions()) {
 					EnvironmentName envName = permission.getEnvironmentName();
 					ServiceName serviceName = permission.getServiceName();
@@ -509,11 +508,6 @@ public class SecurityAdmin {
 		FirstName firstName = new FirstName(userData.getFirst_name());
 		LastName lastName = new LastName(userData.getLast_name());
 		Email email = new Email(userData.getEmail());
-
-		// System.out.println(userData.getUserName()); //well functioning
-		// System.out.println(userData.getFirst_name());
-		// System.out.println(userData.getLast_name());
-		// System.out.println(userData.getEmail());
 
 		try {
 
