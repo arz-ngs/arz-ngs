@@ -16,6 +16,7 @@ import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.commands.login.Login;
 import at.arz.ngs.security.commands.login.LoginResponse;
 import at.arz.ngs.security.user.commands.UserData;
+import at.arz.ngs.ui.data_collections.LoginCollection;
 
 @RequestScoped
 @Named("login")
@@ -35,12 +36,14 @@ public class LoginController
 	private boolean wrongInput;
 
 	private String originalRequestedURI;
+	private LoginCollection loginCollection;
 
 	@PostConstruct
 	public void init() {
 		originalRequestedURI = determineOriginalURI();
 		userName = "";
 		password = "";
+		loginCollection = new LoginCollection("", false);
 	}
 
 	public String login() {
@@ -58,6 +61,8 @@ public class LoginController
 				}
 				catch (ServletException e) {
 					e.printStackTrace();
+					loginCollection = new LoginCollection(
+							"Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabedaten", true);
 					return null;
 				}
 			}
@@ -72,12 +77,19 @@ public class LoginController
 					return "overview.xhtml?faces-redirect=true";
 				}
 				else {
+					loginCollection = new LoginCollection(
+							"Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabedaten", true);
 					return "";
 				}
 			}
 			catch (RuntimeException e) {
 				e.printStackTrace();
+				loginCollection = new LoginCollection("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabedaten",
+						true);
 			}
+		}
+		else {
+			loginCollection = new LoginCollection("Die Felder dürfen nicht leer sein!", true);
 		}
 		return "";
 	}
@@ -143,4 +155,13 @@ public class LoginController
 			e.printStackTrace();
 		}
 	}
+
+	public LoginCollection getLoginCollection() {
+		return loginCollection;
+	}
+
+	public void setLoginCollection(LoginCollection loginCollection) {
+		this.loginCollection = loginCollection;
+	}
+
 }

@@ -38,7 +38,6 @@ html, body {
 	margin-top: 100px;
 }
 
-
 .input_descriptor {
 	min-width: 130px;
 	text-align: left;
@@ -113,7 +112,8 @@ html, body {
 	height: 20px;
 }
 
-#ngs-form\:buttonStart { /*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
+#ngs-form\:buttonStart {
+	/*this id declaration is needed for JSF, because JSF is generating a new id for an element out of the form id and the origin element id*/
 	position: relative;
 	left: 50px;
 	background-color: #29a20b;
@@ -156,7 +156,6 @@ html, body {
 .colService {
 	width: 200px;
 }
-
 
 .colEnvironment {
 	width: 200px;
@@ -202,7 +201,6 @@ tbody tr:hover {
 	border-color: blue;
 }
 
-
 #user-col {
 	z-index: 2; /*overlap other things whose index is 0 like the nav-bar*/
 	margin-top: 30px;
@@ -215,7 +213,8 @@ tbody tr:hover {
 #settings_col {
 	z-index: 100; /*overlap other things whose index is 0 like the nav-bar*/
 	right: 0;
-	bottom: 0; position : fixed;
+	bottom: 0;
+	position: fixed;
 	position: fixed;
 	min-height: 200px;
 }
@@ -250,7 +249,7 @@ tbody tr:hover {
 	margin-top: 30px;
 }
 
-.dropdown_disabled {	
+.dropdown_disabled {
 	color: grey;
 }
 
@@ -261,4 +260,10 @@ tbody tr:hover {
 .delRow {
 	padding-left: 20px;
 	padding-right: 20px;
+}
+
+.loginErrorMessageHeaderDIV {
+	position: fixed;
+	top: 0px;
+	width: 100%;
 }
