@@ -1,0 +1,31 @@
+To enable more than the default 10 threads for async tasks like for the annotation @Asynchronous in class TransactionalExecutor the 
+configuration of the AS must be set to a higher thread count. 
+
+Reason:
+If we execute a script of a serviceinstance, this starting/stopping sequence is supposed to take a higher amount of time.
+Most of this time these threads are idle, in order to waiting for the executed script to return, so it would have no bad affect to the application 
+if the thread pool is bigger.
+
+If too less threads are in this pool only this amount of scripts can be started at the same time. The other scripts are waiting in a queue 
+for the others to return to get processed. Default only 10 scripts can be executed at the same time and this is not wanted.
+
+Solution:
+Set the maximum number of thread in this thread pool to a higher count:
+
+in standalome.xml edit the count of 10 to e.g. 100 (make sure you editing the right subsystem!):
+
+<subsystem xmlns="urn:jboss:domain:ejb3:4.0">
+    ...
+    <thread-pools>
+        <thread-pool name="default">
+            <max-threads count="100"/>
+            <keepalive-time time="100" unit="milliseconds"/>
+        </thread-pool>
+    </thread-pools>
+    ...
+</subsystem>
+
+
+Now 100 scripts can be executed at the same time.
+
+For more information see link: https://docs.jboss.org/author/display/WFLY10/EJB3+subsystem+configuration+guide

@@ -90,5 +90,5 @@ jpa: queries and generators: generator is not defined in the persistence unit: i
 -Im Standalone xml die system properties von ejb/lib/conf-files/wildfly_system-properties.txt direkt unter den extension eintragen.
 -Die Datei ejb\lib\conf-files\security_authentication.properties nach wildfly\standalone\configuration\security_authentication.properties kopieren
 
-
+-lib/async_thread-pool_setup-wildfly.txt lesen und machen
   
