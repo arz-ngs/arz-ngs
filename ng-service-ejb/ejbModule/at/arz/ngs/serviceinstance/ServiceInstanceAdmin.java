@@ -1,6 +1,5 @@
 package at.arz.ngs.serviceinstance;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +39,7 @@ import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.api.exception.WrongParam;
+import at.arz.ngs.script.ScriptExecutor;
 import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.search.SearchEngine;
@@ -63,25 +63,28 @@ import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 public class ServiceInstanceAdmin {
 
 	@Inject
-	private ServiceRepository services;
+	private ServiceRepository serviceRepository;
 
 	@Inject
-	private HostRepository hosts;
+	private HostRepository hostRepository;
 
 	@Inject
-	private EnvironmentRepository environments;
+	private EnvironmentRepository environmentRepository;
 
 	@Inject
-	private ServiceInstanceRepository serviceInstances;
+	private ServiceInstanceRepository serviceInstanceRepository;
 
 	@Inject
-	private ScriptRepository scripts;
+	private ScriptRepository scriptRepository;
 
 	@Inject
-	private SearchEngine engine;
+	private SearchEngine searchEngine;
 
 	@Inject
 	private SecurityAdmin securityAdmin;
+
+	@Inject
+	private ScriptExecutor scriptExecutor;
 
 	/**
 	 * Only for JUnit Tests
@@ -93,19 +96,15 @@ public class ServiceInstanceAdmin {
 	 * @param scripts
 	 * @param engine
 	 */
-	public ServiceInstanceAdmin(ServiceRepository services,
-								HostRepository hosts,
-								EnvironmentRepository environments,
-								ServiceInstanceRepository serviceInstances,
-								ScriptRepository scripts,
-								SearchEngine engine,
-								SecurityAdmin securityAdmin) {
-		this.services = services;
-		this.hosts = hosts;
-		this.environments = environments;
-		this.serviceInstances = serviceInstances;
-		this.scripts = scripts;
-		this.engine = engine;
+	public ServiceInstanceAdmin(ServiceRepository services, HostRepository hosts, EnvironmentRepository environments,
+			ServiceInstanceRepository serviceInstances, ScriptRepository scripts, SearchEngine engine,
+			SecurityAdmin securityAdmin) {
+		this.serviceRepository = services;
+		this.hostRepository = hosts;
+		this.environmentRepository = environments;
+		this.serviceInstanceRepository = serviceInstances;
+		this.scriptRepository = scripts;
+		this.searchEngine = engine;
 		this.securityAdmin = securityAdmin;
 	}
 
@@ -139,11 +138,8 @@ public class ServiceInstanceAdmin {
 		if (scriptNameString == null || scriptNameString.equals("")) {
 			scriptNameString = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName).getName();
 		}
-		Script newScript = getOrCreateNewScript(scriptNameString,
-												pathStartString,
-												pathStopString,
-												pathRestartString,
-												pathStatusString);
+		Script newScript = getOrCreateNewScript(scriptNameString, pathStartString, pathStopString, pathRestartString,
+				pathStatusString);
 		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript, information);
 	}
 
@@ -153,10 +149,11 @@ public class ServiceInstanceAdmin {
 			throw new EmptyField("HostName");
 		}
 		try {
-			return hosts.getHost(hostName);
-		} catch (HostNotFound eHost) {
-			hosts.addHost(hostName);
-			return hosts.getHost(hostName);
+			return hostRepository.getHost(hostName);
+		}
+		catch (HostNotFound eHost) {
+			hostRepository.addHost(hostName);
+			return hostRepository.getHost(hostName);
 		}
 	}
 
@@ -165,10 +162,11 @@ public class ServiceInstanceAdmin {
 			throw new EmptyField("ServiceName");
 		}
 		try {
-			return services.getService(serviceName);
-		} catch (ServiceNotFound eService) {
-			services.addService(serviceName);
-			return services.getService(serviceName);
+			return serviceRepository.getService(serviceName);
+		}
+		catch (ServiceNotFound eService) {
+			serviceRepository.addService(serviceName);
+			return serviceRepository.getService(serviceName);
 		}
 	}
 
@@ -177,18 +175,16 @@ public class ServiceInstanceAdmin {
 			throw new EmptyField("EnvironmentName");
 		}
 		try {
-			return environments.getEnvironment(environmentName);
-		} catch (EnvironmentNotFound eEnvironment) {
-			environments.addEnvironment(environmentName);
-			return environments.getEnvironment(environmentName);
+			return environmentRepository.getEnvironment(environmentName);
+		}
+		catch (EnvironmentNotFound eEnvironment) {
+			environmentRepository.addEnvironment(environmentName);
+			return environmentRepository.getEnvironment(environmentName);
 		}
 	}
 
-	private Script getOrCreateNewScript(String scriptNameString,
-										String pathStartString,
-										String pathStopString,
-										String pathRestartString,
-										String pathStatusString) {
+	private Script getOrCreateNewScript(String scriptNameString, String pathStartString, String pathStopString,
+			String pathRestartString, String pathStatusString) {
 		if (scriptNameString == null || scriptNameString.equals("")) {
 			throw new EmptyField("Skriptname");
 		}
@@ -199,10 +195,11 @@ public class ServiceInstanceAdmin {
 		PathStatus pathStatus = new PathStatus(pathStatusString);
 		Script sc;
 		try {
-			sc = scripts.getScript(scriptName);
-		} catch (ScriptNotFound eScript) {
-			scripts.addScript(scriptName, pathStart, pathStop, pathRestart, pathStatus);
-			sc = scripts.getScript(scriptName);
+			sc = scriptRepository.getScript(scriptName);
+		}
+		catch (ScriptNotFound eScript) {
+			scriptRepository.addScript(scriptName, pathStart, pathStop, pathRestart, pathStatus);
+			sc = scriptRepository.getScript(scriptName);
 		}
 		sc.setPathStart(pathStart);
 		sc.setPathStop(pathStop);
@@ -211,14 +208,10 @@ public class ServiceInstanceAdmin {
 		return sc;
 	}
 
-	private void createNewServiceInstance(	ServiceInstanceName serviceInstanceName,
-											Service service,
-											Host host,
-											Environment environment,
-											Script script,
-											String information) {
-		if (serviceInstanceName == null|| serviceInstanceName.getName() == null
-			|| serviceInstanceName.getName().equals("")) {
+	private void createNewServiceInstance(ServiceInstanceName serviceInstanceName, Service service, Host host,
+			Environment environment, Script script, String information) {
+		if (serviceInstanceName == null || serviceInstanceName.getName() == null
+				|| serviceInstanceName.getName().equals("")) {
 			throw new EmptyField("ServiceInstanceName");
 		}
 
@@ -227,41 +220,30 @@ public class ServiceInstanceAdmin {
 		}
 
 		try {
-			serviceInstances.getServiceInstance(serviceInstanceName, service, host, environment);
-			throw new ServiceInstanceAlreadyExist(service.getServiceName().toString()+ "/"
-													+ host.getHostName().toString()
-													+ "/"
-													+ environment.getEnvironmentName().toString()
-													+ "/"
-													+ serviceInstanceName);
-		} catch (ServiceInstanceNotFound e) {
+			serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host, environment);
+			throw new ServiceInstanceAlreadyExist(
+					service.getServiceName().toString() + "/" + host.getHostName().toString() + "/"
+							+ environment.getEnvironmentName().toString() + "/" + serviceInstanceName);
+		}
+		catch (ServiceInstanceNotFound e) {
 			// wanted
 		}
-		serviceInstances.addServiceInstance(host,
-											service,
-											environment,
-											script,
-											serviceInstanceName,
-											Status.not_active,
-											information);
+		serviceInstanceRepository.addServiceInstance(host, service, environment, script, serviceInstanceName,
+				Status.not_active, information);
 	}
 
 	/**
 	 * Removes unused scripts, services, environments, hosts.
 	 */
 	private void removeAllUnusedElements() {
-		scripts.removeUnusedScripts();
-		services.removeUnusedServices();
-		environments.removeUnusedEnvironments();
-		hosts.removeUnusedHosts();
+		scriptRepository.removeUnusedScripts();
+		serviceRepository.removeUnusedServices();
+		environmentRepository.removeUnusedEnvironments();
+		hostRepository.removeUnusedHosts();
 	}
 
-	public void updateServiceInstance(	Actor actor,
-										UpdateServiceInstance command,
-										String oldServiceNameString,
-										String oldEnvironmentNameString,
-										String oldHostNameString,
-										String oldServiceInstanceNameString) {
+	public void updateServiceInstance(Actor actor, UpdateServiceInstance command, String oldServiceNameString,
+			String oldEnvironmentNameString, String oldHostNameString, String oldServiceInstanceNameString) {
 		securityAdmin.proofActorAdminAccess(actor);
 		ServiceName oldServiceName = new ServiceName(oldServiceNameString);
 		EnvironmentName oldEnvironmentName = new EnvironmentName(oldEnvironmentNameString);
@@ -296,59 +278,34 @@ public class ServiceInstanceAdmin {
 		if (information == null) {
 			information = "";
 		}
-		Script newScript = getOrCreateNewScript(scriptNameString,
-												pathStartString,
-												pathStopString,
-												pathRestartString,
-												pathStatusString);
-		updateServiceInstance(	oldServiceName,
-								oldEnvironmentName,
-								oldHostName,
-								oldServiceInstanceName,
-								newHost,
-								newService,
-								newEnvironment,
-								newScript,
-								serviceInstanceName,
-								version,
-								information);
+		Script newScript = getOrCreateNewScript(scriptNameString, pathStartString, pathStopString, pathRestartString,
+				pathStatusString);
+		updateServiceInstance(oldServiceName, oldEnvironmentName, oldHostName, oldServiceInstanceName, newHost,
+				newService, newEnvironment, newScript, serviceInstanceName, version, information);
 
 		removeAllUnusedElements();
 	}
 
-	private void updateServiceInstance(	ServiceName oldServiceName,
-										EnvironmentName oldEnvironmentName,
-										HostName oldHostName,
-										ServiceInstanceName oldServiceInstanceName,
-										Host newHost,
-										Service newService,
-										Environment newEnvironment,
-										Script newScript,
-										ServiceInstanceName serviceInstanceName,
-										long version,
-										String information) {
-		Service oldService = services.getService(oldServiceName);
-		Environment oldEnvironment = environments.getEnvironment(oldEnvironmentName); // OldEnvironment should already
+	private void updateServiceInstance(ServiceName oldServiceName, EnvironmentName oldEnvironmentName,
+			HostName oldHostName, ServiceInstanceName oldServiceInstanceName, Host newHost, Service newService,
+			Environment newEnvironment, Script newScript, ServiceInstanceName serviceInstanceName, long version,
+			String information) {
+		Service oldService = serviceRepository.getService(oldServiceName);
+		Environment oldEnvironment = environmentRepository.getEnvironment(oldEnvironmentName); // OldEnvironment should already
 		// exist
-		Host oldHost = hosts.getHost(oldHostName);
-		ServiceInstance oldServiceInstance = serviceInstances.getServiceInstance(	oldServiceInstanceName,
-																					oldService,
-																					oldHost,
-																					oldEnvironment);
+		Host oldHost = hostRepository.getHost(oldHostName);
+		ServiceInstance oldServiceInstance = serviceInstanceRepository.getServiceInstance(oldServiceInstanceName,
+				oldService, oldHost, oldEnvironment);
 		if (!(oldServiceInstanceName.equals(serviceInstanceName)
 				&& oldEnvironmentName.equals(newEnvironment.getEnvironmentName())
-				&& oldServiceName.equals(newService.getServiceName())
-				&& oldHostName.equals(newHost.getHostName()))) {
+				&& oldServiceName.equals(newService.getServiceName()) && oldHostName.equals(newHost.getHostName()))) {
 
 			try {
-				serviceInstances.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment);
-				throw new ServiceInstanceAlreadyExist(newService+ "/"
-														+ newEnvironment
-														+ "/"
-														+ newHost
-														+ "/"
-														+ serviceInstanceName);
-			} catch (ServiceInstanceNotFound e) {
+				serviceInstanceRepository.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment);
+				throw new ServiceInstanceAlreadyExist(
+						newService + "/" + newEnvironment + "/" + newHost + "/" + serviceInstanceName);
+			}
+			catch (ServiceInstanceNotFound e) {
 				// wanted here
 			}
 		}
@@ -362,56 +319,49 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.setInformation(information);
 				oldServiceInstance.incrementVersion();
 				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
-			} else {
+			}
+			else {
 				throw new AlreadyModified(oldServiceInstance.toString());
 			}
 
-		} else {
+		}
+		else {
 			throw new ServiceInstanceNotFound(oldServiceInstanceName, oldServiceName, oldHostName, oldEnvironmentName);
 		}
 	}
 
-	public void removeServiceInstance(	Actor actor,
-										String serviceNameString,
-										String environmentNameString,
-										String hostNameString,
-										String serviceInstanceNameString) {
+	public void removeServiceInstance(Actor actor, String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString) {
 		securityAdmin.proofActorAdminAccess(actor);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
 		HostName hostName = new HostName(hostNameString);
 		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
 
-		Service service = services.getService(serviceName);
-		Environment environment = environments.getEnvironment(environmentName);
-		Host host = hosts.getHost(hostName);
-		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
-																				service,
-																				host,
-																				environment);
-		serviceInstances.removeServiceInstance(serviceInstance);
+		Service service = serviceRepository.getService(serviceName);
+		Environment environment = environmentRepository.getEnvironment(environmentName);
+		Host host = hostRepository.getHost(hostName);
+		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
+				host, environment);
+		serviceInstanceRepository.removeServiceInstance(serviceInstance);
 
 		removeAllUnusedElements();
 
 	}
 
-	public ServiceInstanceResponse getServiceInstance(	String serviceNameString,
-														String environmentNameString,
-														String hostNameString,
-														String serviceInstanceNameString) {
+	public ServiceInstanceResponse getServiceInstance(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString) {
 
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
 		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
 
-		Service service = services.getService(serviceName);
-		Environment environment = environments.getEnvironment(environmentName);
-		Host host = hosts.getHost(hostName);
-		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
-																				service,
-																				host,
-																				environment);
+		Service service = serviceRepository.getService(serviceName);
+		Environment environment = environmentRepository.getEnvironment(environmentName);
+		Host host = hostRepository.getHost(hostName);
+		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
+				host, environment);
 		if (serviceInstance != null) {
 			ServiceInstanceResponse response = new ServiceInstanceResponse();
 			response.setEnvironmentName(serviceInstance.getEnvironment().getEnvironmentName().toString());
@@ -439,7 +389,8 @@ public class ServiceInstanceAdmin {
 			}
 
 			return response;
-		} else {
+		}
+		else {
 			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
 		}
 	}
@@ -452,68 +403,46 @@ public class ServiceInstanceAdmin {
 		return path.getPath();
 	}
 
-	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
-															String environmentNameString,
-															String hostNameString,
-															String serviceInstanceNameString) {
-		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
-																				environmentNameString,
-																				hostNameString,
-																				serviceInstanceNameString);
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString) {
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString);
 		return convert(serviceInstances, serviceInstances.size());
 	}
 
-	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
-															String environmentNameString,
-															String hostNameString,
-															String serviceInstanceNameString,
-															OrderCondition order) {
-		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
-																				environmentNameString,
-																				hostNameString,
-																				serviceInstanceNameString,
-																				order);
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, OrderCondition order) {
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString, order);
 		return convert(serviceInstances, serviceInstances.size());
 	}
 
-	public ServiceInstanceOverviewList getServiceInstances(	String serviceNameString,
-															String environmentNameString,
-															String hostNameString,
-															String serviceInstanceNameString,
-															OrderCondition order,
-															PaginationCondition pagination) {
-		List<ServiceInstance> serviceInstances = engine.findServiceInstances(	serviceNameString,
-																				environmentNameString,
-																				hostNameString,
-																				serviceInstanceNameString,
-																				order,
-																				pagination);
-		return convert(	serviceInstances,
-						getNumElementsFound(serviceNameString,
-											environmentNameString,
-											hostNameString,
-											serviceInstanceNameString));
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, OrderCondition order,
+			PaginationCondition pagination) {
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString, order, pagination);
+		return convert(serviceInstances, getNumElementsFound(serviceNameString, environmentNameString, hostNameString,
+				serviceInstanceNameString));
 	}
 
 	/**
-	 * Returns the number of elements which are available in the current regex selection.
-	 * Differs to the size of the {@link ServiceInstanceOverviewList.serviceInstances} only if pagination is enabled.
-	 * If pagination is enabled the value is NOT the count of the current selection of the page, but the size of the
-	 * regex selection, thus the size of the regex selection is greater.
+	 * Returns the number of elements which are available in the current regex
+	 * selection. Differs to the size of the
+	 * {@link ServiceInstanceOverviewList.serviceInstances} only if pagination
+	 * is enabled. If pagination is enabled the value is NOT the count of the
+	 * current selection of the page, but the size of the regex selection, thus
+	 * the size of the regex selection is greater.
 	 */
-	private int getNumElementsFound(String serviceNameString,
-									String environmentNameString,
-									String hostNameString,
-									String serviceInstanceNameString) {
-		return engine.getNumElementsFound(	serviceNameString,
-											environmentNameString,
-											hostNameString,
-											serviceInstanceNameString);
+	private int getNumElementsFound(String serviceNameString, String environmentNameString, String hostNameString,
+			String serviceInstanceNameString) {
+		return searchEngine.getNumElementsFound(serviceNameString, environmentNameString, hostNameString,
+				serviceInstanceNameString);
 	}
 
 	private ServiceInstanceOverviewList convert(List<ServiceInstance> serviceInstances, int numElementsFound) {
 		ServiceInstanceOverviewList ovList = new ServiceInstanceOverviewList();
-		List<ServiceInstanceOverview> list = new ArrayList<ServiceInstanceOverview>();
+		List<ServiceInstanceOverview> list = new ArrayList<>();
 		for (ServiceInstance instance : serviceInstances) {
 			ServiceInstanceOverview ov = new ServiceInstanceOverview();
 			ov.setEnvironmentName(instance.getEnvironment().getEnvironmentName().toString());
@@ -530,29 +459,21 @@ public class ServiceInstanceAdmin {
 		return ovList;
 	}
 
-	public void performAction(	Actor actor,
-								String serviceNameString,
-								String environmentNameString,
-								String hostNameString,
-								String serviceInstanceNameString,
-								PerformAction perform) {
-		securityAdmin.proofPerformAction(	new EnvironmentName(environmentNameString),
-											new ServiceName(serviceNameString),
-											Action.valueOf(perform.getPerformAction()),
-											actor);
+	public void performAction(Actor actor, String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, PerformAction perform) {
+		securityAdmin.proofPerformAction(new EnvironmentName(environmentNameString), new ServiceName(serviceNameString),
+				Action.valueOf(perform.getPerformAction()), actor);
 
 		HostName hostName = new HostName(hostNameString);
 		ServiceName serviceName = new ServiceName(serviceNameString);
 		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
 		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
 
-		Service service = services.getService(serviceName);
-		Host host = hosts.getHost(hostName);
-		Environment environment = environments.getEnvironment(environmentName);
-		ServiceInstance serviceInstance = serviceInstances.getServiceInstance(	serviceInstanceName,
-																				service,
-																				host,
-																				environment);
+		Service service = serviceRepository.getService(serviceName);
+		Host host = hostRepository.getHost(hostName);
+		Environment environment = environmentRepository.getEnvironment(environmentName);
+		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
+				host, environment);
 		String status = serviceInstance.getStatus().name();
 		Script script = serviceInstance.getScript();
 		if (!checkScriptIfPathNotMissing(perform, script)) {
@@ -565,26 +486,30 @@ public class ServiceInstanceAdmin {
 				if (param.equals("start")) {
 					path = resolvePath(script.getPathStart());
 					serviceInstance.setStatus(Status.is_starting);
-				} else if (param.equals("stop")) {
+				}
+				else if (param.equals("stop")) {
 					path = resolvePath(script.getPathStop());
 					serviceInstance.setStatus(Status.is_stopping);
-				} else if (param.equals("restart")) {
+				}
+				else if (param.equals("restart")) {
 					path = resolvePath(script.getPathRestart());
 					serviceInstance.setStatus(Status.is_stopping);
 				}
-			} else {
-				throw new ActionInProgress(serviceInstance.toString()+ " "
-											+ status
-											+ " Cannot perform action while another action is in progress.");
 			}
-		} else if (param.equals("status")) {
-			path = resolvePath(script.getPathStatus());
-		} else {
-			throw new WrongParam(perform.getPerformAction()
-									+ " -- Use only this action commands: start, stop, restart, status");
+			else {
+				throw new ActionInProgress(serviceInstance.toString() + " " + status
+						+ " Cannot perform action while another action is in progress.");
+			}
 		}
-		// TODO execute method on server with the path as parameter
-		executeCommand(path);
+		else if (param.equals("status")) {
+			path = resolvePath(script.getPathStatus());
+		}
+		else {
+			throw new WrongParam(
+					perform.getPerformAction() + " -- Use only this action commands: start, stop, restart, status");
+		}
+
+		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path); //note: this is asynchronously executed
 	}
 
 	private boolean checkScriptIfPathNotMissing(PerformAction action, Script script) {
@@ -593,26 +518,26 @@ public class ServiceInstanceAdmin {
 		}
 		switch (action.getPerformAction()) {
 			case "start":
-				if (script.getPathStart() == null|| script.getPathStart().getPath() == null
-					|| script.getPathStart().getPath().equals("")) {
+				if (script.getPathStart() == null || script.getPathStart().getPath() == null
+						|| script.getPathStart().getPath().equals("")) {
 					return false;
 				}
 				break;
 			case "stop":
-				if (script.getPathStop() == null|| script.getPathStop().getPath() == null
-					|| script.getPathStop().getPath().equals("")) {
+				if (script.getPathStop() == null || script.getPathStop().getPath() == null
+						|| script.getPathStop().getPath().equals("")) {
 					return false;
 				}
 				break;
 			case "restart":
-				if (script.getPathRestart() == null|| script.getPathRestart().getPath() == null
-					|| script.getPathRestart().getPath().equals("")) {
+				if (script.getPathRestart() == null || script.getPathRestart().getPath() == null
+						|| script.getPathRestart().getPath().equals("")) {
 					return false;
 				}
 				break;
 			case "status":
-				if (script.getPathStatus() == null|| script.getPathStatus().getPath() == null
-					|| script.getPathStatus().getPath().equals("")) {
+				if (script.getPathStatus() == null || script.getPathStatus().getPath() == null
+						|| script.getPathStatus().getPath().equals("")) {
 					return false;
 				}
 				break;
@@ -629,23 +554,24 @@ public class ServiceInstanceAdmin {
 	}
 
 	public List<String> getAllEnvironments() {
-		List<String> environmentList = new LinkedList<String>();
-		for (Environment env : environments.getAllEnvironments()) {
+		List<String> environmentList = new LinkedList<>();
+		for (Environment env : environmentRepository.getAllEnvironments()) {
 			environmentList.add(env.getEnvironmentName().getName());
 		}
 		return environmentList;
 	}
 
 	public List<String> getServicesByEnvironmentName(String environmentName) {
-		List<String> serviceList = new LinkedList<String>();
+		List<String> serviceList = new LinkedList<>();
 		if (environmentName.equals("*")) {
-			for (Service service : services.getAllServices()) {
+			for (Service service : serviceRepository.getAllServices()) {
 				if (!serviceList.contains(service.getServiceName().getName())) {
 					serviceList.add(service.getServiceName().getName());
 				}
 			}
-		} else {
-			for (ServiceInstance instance : serviceInstances.getAllInstances()) {
+		}
+		else {
+			for (ServiceInstance instance : serviceInstanceRepository.getAllInstances()) {
 				if (instance.getEnvironment().getEnvironmentName().getName().equals(environmentName)) {
 					if (!serviceList.contains(instance.getService().getServiceName().getName())) {
 						serviceList.add(instance.getService().getServiceName().getName());
@@ -654,26 +580,5 @@ public class ServiceInstanceAdmin {
 			}
 		}
 		return serviceList;
-	}
-	
-	private int executeCommand(String path) {
-		if (!path.equals("")) {
-			throw new EmptyField("Empty path");
-		}
-		List<String> command = new ArrayList<String>();
-		command.add(path);
-		ProcessBuilder processBuilder = new ProcessBuilder(command);
-		Process process;
-		try {
-			process = processBuilder.start();
-			int errorCode = process.waitFor();
-			System.out.println(errorCode);
-			return errorCode;
-		} catch (IOException e) { //TODO ErrorHandling somewhere else 
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		return -1;
 	}
 }
