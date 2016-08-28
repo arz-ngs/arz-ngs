@@ -23,6 +23,9 @@ import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.EmptyField;
 
+/**
+* Follows the design patter of http://www.adam-bien.com/roller/abien/entry/conveniently_transactionally_and_legally_starting
+*/
 @Stateless
 public class ScriptExecutor {
 
