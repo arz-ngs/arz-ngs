@@ -1,13 +1,13 @@
-error message login 
-script data with curl -> remove noch prog
+done - error message login 
+script data inserts with curl -> remove noch prog
 intervall über property file einstellbar
 über rest statusupdates möglich machen
 bei status unknown einfügen
-ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
+teil done - returncodes noch implementieren - ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
 test .bat oder .sh datei schreiben, die returncodes liefert
 ripple restart ???
 
-facescontext aus actioncontroller bei anderen auch übernehmen?
+done - facescontext aus actioncontroller bei anderen auch übernehmen?
 
 http://docs.oracle.com/javaee/6/tutorial/doc/gkncy.html
 http://www.tutorialspoint.com/ejb/ejb_annotations.htm

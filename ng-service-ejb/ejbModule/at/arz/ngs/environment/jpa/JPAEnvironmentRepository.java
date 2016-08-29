@@ -70,6 +70,6 @@ public class JPAEnvironmentRepository
 	public void removeUnusedEnvironments() {
 		Query query = entityManager
 				.createQuery("DELETE FROM Environment e WHERE e NOT IN (SELECT i.environment FROM ServiceInstance i)");
-		int count = query.executeUpdate();
+		query.executeUpdate();
 	}
 }

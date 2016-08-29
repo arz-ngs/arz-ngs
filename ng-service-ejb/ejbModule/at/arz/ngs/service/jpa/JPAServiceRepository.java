@@ -70,6 +70,6 @@ public class JPAServiceRepository
 	public void removeUnusedServices() {
 		Query query = entityManager
 				.createQuery("DELETE FROM Service s WHERE s NOT IN (SELECT i.service FROM ServiceInstance i)");
-		int count = query.executeUpdate();
+		query.executeUpdate();
 	}
 }

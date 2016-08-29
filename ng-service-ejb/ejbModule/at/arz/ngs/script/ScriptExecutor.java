@@ -1,6 +1,7 @@
 package at.arz.ngs.script;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -24,8 +25,9 @@ import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.EmptyField;
 
 /**
-* Follows the design patter of http://www.adam-bien.com/roller/abien/entry/conveniently_transactionally_and_legally_starting
-*/
+ * Follows the design patter of
+ * http://www.adam-bien.com/roller/abien/entry/conveniently_transactionally_and_legally_starting
+ */
 @Stateless
 public class ScriptExecutor {
 
@@ -70,7 +72,7 @@ public class ScriptExecutor {
 				 * PersitenceContext and now we have our (new) transaction
 				 * again. If we change something from the new SI instance, this
 				 * changes are monitored and thus, saved to DB like we want the
-				 * appliction to.
+				 * application to.
 				 */
 				Host host = hostRepository.getHost(hostName);
 				Environment environment = environmentRepository.getEnvironment(environmentName);
@@ -84,6 +86,8 @@ public class ScriptExecutor {
 				Process process;
 				try {
 					process = processBuilder.start();
+					InputStream inputStream = process.getInputStream(); //TODO link streams
+					InputStream errorStream = process.getErrorStream();
 					int errorCode = process.waitFor();
 					System.out.println(errorCode);
 

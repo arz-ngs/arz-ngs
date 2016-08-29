@@ -12,14 +12,17 @@ public class ErrorCollection {
 	private boolean showPopup;
 
 	public ErrorCollection() {
-		errors = new ArrayList<Error>();
+		errors = new ArrayList<>();
 		messages = "";
+		headerInformation = "";
+		headerInformation.toString();
 	}
 
 	public String getHeaderInformation() {
 		if (count == 1) {
 			return "1 Error ist aufgetreten!";
-		} else {
+		}
+		else {
 			return count + " Errors sind aufgetreten!";
 		}
 	}
@@ -27,7 +30,6 @@ public class ErrorCollection {
 	public void setHeaderInformation(String headerInformation) {
 		this.headerInformation = headerInformation;
 	}
-
 
 	public void addError(Error ec) {
 		errors.add(ec);
@@ -61,6 +63,5 @@ public class ErrorCollection {
 	public void setShowPopup(boolean showPopup) {
 		this.showPopup = showPopup;
 	}
-	
 
 }

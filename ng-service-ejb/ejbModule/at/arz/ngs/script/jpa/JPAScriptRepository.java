@@ -74,6 +74,6 @@ public class JPAScriptRepository
 	public void removeUnusedScripts() {
 		Query query = entityManager
 				.createQuery("DELETE FROM Script s WHERE s NOT IN (SELECT i.script FROM ServiceInstance i)");
-		int count = query.executeUpdate();
+		query.executeUpdate();
 	}
 }

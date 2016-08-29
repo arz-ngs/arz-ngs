@@ -91,4 +91,7 @@ jpa: queries and generators: generator is not defined in the persistence unit: i
 -Die Datei ejb\lib\conf-files\security_authentication.properties nach wildfly\standalone\configuration\security_authentication.properties kopieren
 
 -lib/async_thread-pool_setup-wildfly.txt lesen und machen
+
+-lib/conf-files/ngs-application.properties nach
+wildfly\standalone\configuration\ngs-application.properties kopieren und das Intervall (in Minuten) ggf. einstellen. Default ist 5 Minuten.
   

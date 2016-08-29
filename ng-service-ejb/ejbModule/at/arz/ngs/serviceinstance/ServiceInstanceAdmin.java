@@ -143,7 +143,7 @@ public class ServiceInstanceAdmin {
 		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript, information);
 	}
 
-	private Host getOrCreateNewHost(HostName hostName) { // TODO exchange for multithreading: start with adding host,
+	private Host getOrCreateNewHost(HostName hostName) {
 		// then getHost if AlreadyExists!!!!
 		if (hostName == null || hostName.getName() == null || hostName.getName().equals("")) {
 			throw new EmptyField("HostName");

@@ -68,6 +68,6 @@ public class JPAHostRepository
 	public void removeUnusedHosts() {
 		Query query = entityManager
 				.createQuery("DELETE FROM Host h WHERE h NOT IN (SELECT i.host FROM ServiceInstance i)");
-		int count = query.executeUpdate();
+		query.executeUpdate();
 	}
 }
