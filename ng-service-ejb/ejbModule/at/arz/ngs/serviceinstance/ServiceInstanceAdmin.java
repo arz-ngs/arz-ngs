@@ -144,10 +144,6 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) {
-		// then getHost if AlreadyExists!!!!
-		if (hostName == null || hostName.getName() == null || hostName.getName().equals("")) {
-			throw new EmptyField("HostName");
-		}
 		try {
 			return hostRepository.getHost(hostName);
 		}
@@ -158,9 +154,6 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Service getOrCreateNewService(ServiceName serviceName) {
-		if (serviceName == null || serviceName.getName() == null || serviceName.getName().equals("")) {
-			throw new EmptyField("ServiceName");
-		}
 		try {
 			return serviceRepository.getService(serviceName);
 		}
@@ -171,9 +164,6 @@ public class ServiceInstanceAdmin {
 	}
 
 	private Environment getOrCreateNewEnvironment(EnvironmentName environmentName) {
-		if (environmentName == null || environmentName.getName() == null || environmentName.getName().equals("")) {
-			throw new EmptyField("EnvironmentName");
-		}
 		try {
 			return environmentRepository.getEnvironment(environmentName);
 		}
