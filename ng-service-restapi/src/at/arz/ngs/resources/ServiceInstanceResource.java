@@ -23,9 +23,10 @@ import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
+import at.arz.ngs.serviceinstance.commands.update.UpdateStatus;
 
 @Path("instances")
-@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ServiceInstanceResource {
 
 	@Inject
@@ -36,75 +37,79 @@ public class ServiceInstanceResource {
 		return new Actor("admin");
 	}
 
+	/**
+	 * Need Administrator rights.
+	 * 
+	 * @param command
+	 * @return
+	 */
 	@PUT
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
 		instanceAdmin.createNewServiceInstance(getAdminActor(), command);
 
-		String path = command.getServiceName()+ "/"
-						+ command.getEnvironmentName()
-						+ "/"
-						+ command.getHostName()
-						+ "/"
-						+ command.getInstanceName();
+		String path = command.getServiceName() + "/" + command.getEnvironmentName() + "/" + command.getHostName() + "/"
+				+ command.getInstanceName();
 
 		URI location = URI.create("/instances/" + path);
 		return Response.ok().status(Status.CREATED).location(location).build();
 	}
 
 	/**
-	 * Must be exactly specified with the parameters of the old data. The new data relies in the JSON/XML object
+	 * Must be exactly specified with the parameters of the old data. The new
+	 * data relies in the JSON/XML object.
 	 * 
-	 * @param serviceName The old Param.
-	 * @param environmentName The old Param.
-	 * @param hostName The old Param.
-	 * @param instanceName The old Param.
-	 * @param command Object with the new data.
+	 * Need Administrator rights.
+	 * 
+	 * @param serviceName
+	 *            The old Param.
+	 * @param environmentName
+	 *            The old Param.
+	 * @param hostName
+	 *            The old Param.
+	 * @param instanceName
+	 *            The old Param.
+	 * @param command
+	 *            Object with the new data.
 	 * @return Returns a HTTP status if the operation was successul or not.
 	 */
 	@POST
 	@Path("{service}/{environment}/{host}/{name}")
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public Response updateServiceInstance(	@PathParam("service") String serviceName,
-											@PathParam("environment") String environmentName,
-											@PathParam("host") String hostName,
-											@PathParam("name") String instanceName,
-											UpdateServiceInstance command) {
-		instanceAdmin.updateServiceInstance(getAdminActor(),
-											command,
-											serviceName,
-											environmentName,
-											hostName,
-											instanceName);
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public Response updateServiceInstance(@PathParam("service") String serviceName,
+			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
+			@PathParam("name") String instanceName, UpdateServiceInstance command) {
+		instanceAdmin.updateServiceInstance(getAdminActor(), command, serviceName, environmentName, hostName,
+				instanceName);
 
-		String path = command.getServiceName()+ "/"
-						+ command.getEnvironmentName()
-						+ "/"
-						+ command.getHostName()
-						+ "/"
-						+ command.getInstanceName();
+		String path = command.getServiceName() + "/" + command.getEnvironmentName() + "/" + command.getHostName() + "/"
+				+ command.getInstanceName();
 
 		URI location = URI.create("/instances/" + path);
 		return Response.ok().status(Status.OK).location(location).build();
 	}
 
 	/**
-	 * The params must be set for exactly specifying which instance should be deleted.
+	 * The params must be set for exactly specifying which instance should be
+	 * deleted.
+	 * 
+	 * Need Administrator rights.
 	 * 
 	 * @param serviceName
 	 * @param environmentName
 	 * @param hostName
 	 * @param instanceName
-	 * @param command Additional information for deletion. Must be set, especially the version tag.
+	 * @param command
+	 *            Additional information for deletion. Must be set, especially
+	 *            the version tag.
 	 */
 	@DELETE
 	@Path("{service}/{environment}/{host}/{name}")
-	public void deleteServiceInstance(	@PathParam("service") String serviceName,
-										@PathParam("environment") String environmentName,
-										@PathParam("host") String hostName,
-										@PathParam("name") String instanceName) {
+	public void deleteServiceInstance(@PathParam("service") String serviceName,
+			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
+			@PathParam("name") String instanceName) {
 
 		instanceAdmin.removeServiceInstance(getAdminActor(), serviceName, environmentName, hostName, instanceName);
 	}
@@ -119,12 +124,12 @@ public class ServiceInstanceResource {
 	 */
 	@GET
 	@Path("{service}/{environment}/{host}/{name}")
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public ServiceInstanceResponse getServiceInstance(	@PathParam("service") String serviceName,
-														@PathParam("environment") String environmentName,
-														@PathParam("host") String hostName,
-														@PathParam("name") String instanceName) {
-		ServiceInstanceResponse serviceInstance = instanceAdmin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public ServiceInstanceResponse getServiceInstance(@PathParam("service") String serviceName,
+			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
+			@PathParam("name") String instanceName) {
+		ServiceInstanceResponse serviceInstance = instanceAdmin.getServiceInstance(serviceName, environmentName,
+				hostName, instanceName);
 		return serviceInstance;
 	}
 
@@ -138,11 +143,10 @@ public class ServiceInstanceResource {
 	 * @return All ServiceInstances which match the query-param-regex.
 	 */
 	@GET
-	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
-	public ServiceInstanceOverviewList getServiceInstances(	@QueryParam("serviceName") String serviceName,
-															@QueryParam("environmentName") String environmentName,
-															@QueryParam("hostName") String hostName,
-															@QueryParam("instanceName") String instanceName) {
+	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public ServiceInstanceOverviewList getServiceInstances(@QueryParam("serviceName") String serviceName,
+			@QueryParam("environmentName") String environmentName, @QueryParam("hostName") String hostName,
+			@QueryParam("instanceName") String instanceName) {
 
 		if (serviceName == null || serviceName.equals("")) {
 			serviceName = "*";
@@ -162,28 +166,49 @@ public class ServiceInstanceResource {
 	// @Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 
 	/**
-	 * Unique specifying the targeted serviceInstance. Then perform the chosen action on it.
+	 * Unique specifying the targeted serviceInstance. Then perform the chosen
+	 * action on it.
 	 * 
 	 * @param serviceName
 	 * @param environmentName
 	 * @param hostName
 	 * @param instanceName
-	 * @param performAction Action to be performed. Available actions: start, stop, restart
+	 * @param performAction
+	 *            Action to be performed. Available actions: start, stop,
+	 *            restart
 	 * @return
 	 */
 	@POST
 	@Path("{service}/{environment}/{host}/{name}/action")
-	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public void performStartStopRestart(@PathParam("service") String serviceName,
-										@PathParam("environment") String environmentName,
-										@PathParam("host") String hostName,
-										@PathParam("name") String instanceName,
-										PerformAction performAction) {
-		instanceAdmin.performAction(getAdminActor(),
-									serviceName,
-									environmentName,
-									hostName,
-									instanceName,
-									performAction);
+			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
+			@PathParam("name") String instanceName, PerformAction performAction) {
+		instanceAdmin.performAction(getAdminActor(), serviceName, environmentName, hostName, instanceName,
+				performAction);
 	}
+
+	/**
+	 * Unique specifying the targeted serviceInstance. Then update the status of
+	 * the selected instance.
+	 * 
+	 * Need Administrator rights.
+	 * 
+	 * @param serviceName
+	 * @param environmentName
+	 * @param hostName
+	 * @param instanceName
+	 * @param command
+	 *            {@link UpdateStatus}
+	 */
+	@POST
+	@Path("{service}/{environment}/{host}/{name}/action")
+	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	public void updateStatus(@PathParam("service") String serviceName, @PathParam("environment") String environmentName,
+			@PathParam("host") String hostName, @PathParam("name") String instanceName, UpdateStatus command) {
+
+		instanceAdmin.updateServiceInstanceStatus(getAdminActor(), serviceName, environmentName, hostName, instanceName,
+				command);
+	}
+
 }

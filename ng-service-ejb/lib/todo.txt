@@ -1,7 +1,8 @@
 done - error message login 
 script data inserts with curl -> remove noch prog
-intervall über property file einstellbar
+done - intervall über property file einstellbar
 über rest statusupdates möglich machen
+serviceInstanceAdmin überarbeiten - checkings auf null; code in methoden auslagern und logik überprüfen
 bei status unknown einfügen
 teil done - returncodes noch implementieren - ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
 test .bat oder .sh datei schreiben, die returncodes liefert
