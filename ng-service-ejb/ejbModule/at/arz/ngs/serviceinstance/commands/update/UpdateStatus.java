@@ -12,10 +12,6 @@ public class UpdateStatus {
 	@XmlElement(required = true)
 	private String status;
 
-	public UpdateStatus(String status) {
-		this.status = status;
-	}
-
 	public String getStatus() {
 		return status;
 	}

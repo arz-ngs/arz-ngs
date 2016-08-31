@@ -202,7 +202,7 @@ public class ServiceInstanceResource {
 	 *            {@link UpdateStatus}
 	 */
 	@POST
-	@Path("{service}/{environment}/{host}/{name}/action")
+	@Path("{service}/{environment}/{host}/{name}/status")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public void updateStatus(@PathParam("service") String serviceName, @PathParam("environment") String environmentName,
 			@PathParam("host") String hostName, @PathParam("name") String instanceName, UpdateStatus command) {

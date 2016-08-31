@@ -8,14 +8,14 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 
 /**
- * This exception will be thrown, if an expected ServiceInstance wasn't found in the database.
+ * This exception will be thrown, if an expected ServiceInstance wasn't found in
+ * the database.
  * 
- * @author dani 
+ * @author dani
  *
  */
 @ApplicationException(rollback = true)
-public class ServiceInstanceNotFound
-		extends RuntimeException {
+public class ServiceInstanceNotFound extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
@@ -24,20 +24,19 @@ public class ServiceInstanceNotFound
 	private HostName hostName;
 	private ServiceInstanceName serviceInstanceName;
 
-	public ServiceInstanceNotFound(	ServiceInstanceName serviceInstanceName,
-									ServiceName serviceName,
-									HostName hostName,
-									EnvironmentName environmentName) {
-		super(serviceName.toString()+ "/"
-				+ environmentName.toString()
-				+ "/"
-				+ hostName.toString()
-				+ "/"
+	public ServiceInstanceNotFound(ServiceInstanceName serviceInstanceName, ServiceName serviceName, HostName hostName,
+			EnvironmentName environmentName) {
+		super(serviceName.toString() + "/" + environmentName.toString() + "/" + hostName.toString() + "/"
 				+ serviceInstanceName.toString());
 		this.serviceName = serviceName;
 		this.environmentName = environmentName;
 		this.hostName = hostName;
 		this.serviceInstanceName = serviceInstanceName;
+	}
+
+	public ServiceInstanceNotFound(String serviceInstance, String service, String host, String environment) {
+		this(new ServiceInstanceName(serviceInstance), new ServiceName(service), new HostName(host),
+				new EnvironmentName(environment));
 	}
 
 	public ServiceName getServiceName() {
@@ -57,13 +56,8 @@ public class ServiceInstanceNotFound
 	}
 
 	public String getServiceInstance() {
-		return serviceName.toString()+ "/"
-				+ environmentName.toString()
-				+ "/"
-				+ hostName.toString()
-				+ "/"
+		return serviceName.toString() + "/" + environmentName.toString() + "/" + hostName.toString() + "/"
 				+ serviceInstanceName.toString();
 	}
-
 
 }

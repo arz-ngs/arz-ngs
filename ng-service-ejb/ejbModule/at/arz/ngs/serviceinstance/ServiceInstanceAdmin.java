@@ -126,9 +126,69 @@ public class ServiceInstanceAdmin {
 
 		String scriptNameString = scriptData.getScriptName();
 
-		Service newService = getOrCreateNewService(serviceName);
-		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
-		Host newHost = getOrCreateNewHost(hostName);
+		Service service = getOrCreateNewService(serviceName);
+		Environment environment = getOrCreateNewEnvironment(environmentName);
+		Host host = getOrCreateNewHost(hostName);
+
+		ScriptName scriptName = null;
+		if (scriptNameString == null || scriptNameString.trim().equals("")) {
+			scriptName = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName);
+		}
+		else {
+			scriptName = new ScriptName(scriptNameString);
+		}
+		Script script = getOrCreateNewScript(scriptName, getPathStart(scriptData.getPathStart()),
+				getPathStop(scriptData.getPathStop()), getPathRestart(scriptData.getPathRestart()),
+				getPathStatus(scriptData.getPathStatus()));
+
+		if (information == null) {
+			information = "";
+		}
+
+		try {
+			serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host, environment);
+			throw new ServiceInstanceAlreadyExist(
+					service.getServiceName().toString() + "/" + host.getHostName().toString() + "/"
+							+ environment.getEnvironmentName().toString() + "/" + serviceInstanceName);
+		}
+		catch (ServiceInstanceNotFound e) {
+			// wanted
+		}
+		serviceInstanceRepository.addServiceInstance(host, service, environment, script, serviceInstanceName,
+				Status.not_active, information);
+	}
+
+	public void updateServiceInstanceStatus(Actor actor, String service, String environment, String host,
+			String serviceInstance, UpdateStatus command) {
+		securityAdmin.proofActorAdminAccess(actor);
+
+		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
+		si.setStatus(convertToStatus(command.getStatus()));
+	}
+
+	public void updateServiceInstance(Actor actor, UpdateServiceInstance command, String oldServiceNameString,
+			String oldEnvironmentNameString, String oldHostNameString, String oldServiceInstanceNameString) {
+		securityAdmin.proofActorAdminAccess(actor);
+
+		ServiceName oldServiceName = getServiceName(oldServiceNameString);
+		EnvironmentName oldEnvironmentName = getEnvironmentName(oldEnvironmentNameString);
+		HostName oldHostName = getHostName(oldHostNameString);
+		ServiceInstanceName oldServiceInstanceName = getServiceInstanceName(oldServiceInstanceNameString);
+
+		ScriptData scriptData = command.getScript();
+		String information = command.getInformation();
+		long version = command.getVersion();
+
+		HostName hostName = getHostName(command.getHostName());
+		ServiceName serviceName = getServiceName(command.getServiceName());
+		EnvironmentName environmentName = getEnvironmentName(command.getEnvironmentName());
+		ServiceInstanceName serviceInstanceName = getServiceInstanceName(command.getInstanceName());
+
+		String scriptNameString = scriptData.getScriptName();
+
+		if (information == null) {
+			information = "";
+		}
 
 		ScriptName scriptName = null;
 		if (scriptNameString == null || scriptNameString.trim().equals("")) {
@@ -140,7 +200,207 @@ public class ServiceInstanceAdmin {
 		Script newScript = getOrCreateNewScript(scriptName, getPathStart(scriptData.getPathStart()),
 				getPathStop(scriptData.getPathStop()), getPathRestart(scriptData.getPathRestart()),
 				getPathStatus(scriptData.getPathStatus()));
-		createNewServiceInstance(serviceInstanceName, newService, newHost, newEnvironment, newScript, information);
+
+		ServiceInstance oldServiceInstance = getServiceInstance(oldServiceName, oldEnvironmentName, oldHostName,
+				oldServiceInstanceName);
+
+		Service newService = getOrCreateNewService(serviceName);
+		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
+		Host newHost = getOrCreateNewHost(hostName);
+
+		if (!(oldServiceInstanceName.equals(serviceInstanceName)
+				&& oldEnvironmentName.equals(newEnvironment.getEnvironmentName())
+				&& oldServiceName.equals(newService.getServiceName()) && oldHostName.equals(newHost.getHostName()))) {
+
+			try {
+				serviceInstanceRepository.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment);
+				throw new ServiceInstanceAlreadyExist(
+						newService + "/" + newEnvironment + "/" + newHost + "/" + serviceInstanceName);
+			}
+			catch (ServiceInstanceNotFound e) {
+				// wanted here
+			}
+		}
+		if (oldServiceInstance != null) {
+			if (version == oldServiceInstance.getVersion()) {
+				oldServiceInstance.setEnvironment(newEnvironment);
+				oldServiceInstance.setHost(newHost);
+				oldServiceInstance.setScript(newScript);
+				oldServiceInstance.setService(newService);
+				oldServiceInstance.renameServiceInstance(serviceInstanceName);
+				oldServiceInstance.setInformation(information);
+				oldServiceInstance.incrementVersion();
+				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
+			}
+			else {
+				throw new AlreadyModified(oldServiceInstance.toString());
+			}
+
+		}
+		else {
+			throw new ServiceInstanceNotFound(oldServiceInstanceName, oldServiceName, oldHostName, oldEnvironmentName);
+		}
+
+		removeAllUnusedElements();
+	}
+
+	public void removeServiceInstance(Actor actor, String service, String environment, String host,
+			String serviceInstance) {
+		securityAdmin.proofActorAdminAccess(actor);
+
+		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
+
+		serviceInstanceRepository.removeServiceInstance(si);
+
+		removeAllUnusedElements();
+	}
+
+	public ServiceInstanceResponse getServiceInstance(String service, String environment, String host,
+			String serviceInstance) {
+
+		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
+
+		if (si != null) {
+			ServiceInstanceResponse response = new ServiceInstanceResponse();
+			response.setEnvironmentName(si.getEnvironment().getEnvironmentName().toString());
+			response.setServiceName(si.getService().getServiceName().toString());
+			response.setHostName(si.getHost().getHostName().toString());
+			response.setInstanceName(si.getServiceInstanceName().toString());
+			response.setStatus(si.getStatus());
+			response.setVersion(si.getVersion());
+			response.setInformation(si.getInformation());
+
+			Script script = si.getScript();
+			if (script != null) {
+				String scriptName = script.getScriptName().getName();
+				String pathStart = getPath(script.getPathStart());
+				String pathStop = getPath(script.getPathStop());
+				String pathRestart = getPath(script.getPathRestart());
+				String pathStatus = getPath(script.getPathStatus());
+				ScriptData scriptData = new ScriptData();
+				scriptData.setScriptName(scriptName);
+				scriptData.setPathStart(pathStart);
+				scriptData.setPathStop(pathStop);
+				scriptData.setPathRestart(pathRestart);
+				scriptData.setPathStatus(pathStatus);
+				response.setScript(scriptData);
+			}
+
+			return response;
+		}
+		else {
+			throw new ServiceInstanceNotFound(serviceInstance, serviceInstance, host, environment);
+		}
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString) {
+
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString);
+
+		return convert(serviceInstances, serviceInstances.size());
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, OrderCondition order) {
+
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString, order);
+
+		return convert(serviceInstances, serviceInstances.size());
+	}
+
+	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, OrderCondition order,
+			PaginationCondition pagination) {
+
+		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
+				environmentNameString, hostNameString, serviceInstanceNameString, order, pagination);
+
+		return convert(serviceInstances, getNumElementsFound(serviceNameString, environmentNameString, hostNameString,
+				serviceInstanceNameString));
+	}
+
+	public void performAction(Actor actor, String serviceNameString, String environmentNameString,
+			String hostNameString, String serviceInstanceNameString, PerformAction perform) {
+
+		securityAdmin.proofPerformAction(new EnvironmentName(environmentNameString), new ServiceName(serviceNameString),
+				Action.valueOf(perform.getPerformAction()), actor);
+
+		HostName hostName = getHostName(hostNameString);
+		ServiceName serviceName = getServiceName(serviceNameString);
+		EnvironmentName environmentName = getEnvironmentName(environmentNameString);
+		ServiceInstanceName serviceInstanceName = getServiceInstanceName(serviceInstanceNameString);
+
+		ServiceInstance serviceInstance = getServiceInstance(serviceName, environmentName, hostName,
+				serviceInstanceName);
+
+		String status = serviceInstance.getStatus().name();
+		Script script = serviceInstance.getScript();
+		if (!checkScriptIfPathNotMissing(perform, script)) {
+			throw new EmptyField("Script must be set to perform an action on an instance!");
+		}
+		String param = perform.getPerformAction().toLowerCase();
+		String path = "";
+		if (param.equals("start") || param.equals("stop") || param.equals("restart")) {
+			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
+				if (param.equals("start")) {
+					path = resolvePath(script.getPathStart());
+					serviceInstance.setStatus(Status.is_starting);
+				}
+				else if (param.equals("stop")) {
+					path = resolvePath(script.getPathStop());
+					serviceInstance.setStatus(Status.is_stopping);
+				}
+				else if (param.equals("restart")) {
+					path = resolvePath(script.getPathRestart());
+					serviceInstance.setStatus(Status.is_stopping);
+				}
+			}
+			else {
+				throw new ActionInProgress(serviceInstance.toString() + " " + status
+						+ " Cannot perform action while another action is in progress.");
+			}
+		}
+		else if (param.equals("status")) {
+			path = resolvePath(script.getPathStatus());
+		}
+		else {
+			throw new WrongParam(
+					perform.getPerformAction() + " -- Only use this action commands: start, stop, restart, status");
+		}
+
+		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path); //note: this is asynchronously executed
+	}
+
+	public List<String> getAllEnvironments() {
+		List<String> environmentList = new LinkedList<>();
+		for (Environment env : environmentRepository.getAllEnvironments()) {
+			environmentList.add(env.getEnvironmentName().getName());
+		}
+		return environmentList;
+	}
+
+	public List<String> getServicesByEnvironmentName(String environmentName) {
+		List<String> serviceList = new LinkedList<>();
+		if (environmentName.equals("*")) {
+			for (Service service : serviceRepository.getAllServices()) {
+				if (!serviceList.contains(service.getServiceName().getName())) {
+					serviceList.add(service.getServiceName().getName());
+				}
+			}
+		}
+		else {
+			for (ServiceInstance instance : serviceInstanceRepository.getAllInstances()) {
+				if (instance.getEnvironment().getEnvironmentName().getName().equals(environmentName)) {
+					if (!serviceList.contains(instance.getService().getServiceName().getName())) {
+						serviceList.add(instance.getService().getServiceName().getName());
+					}
+				}
+			}
+		}
+		return serviceList;
 	}
 
 	private Host getOrCreateNewHost(HostName hostName) {
@@ -217,30 +477,6 @@ public class ServiceInstanceAdmin {
 			return new PathStatus("");
 		}
 		return new PathStatus(pathStatus);
-	}
-
-	private void createNewServiceInstance(ServiceInstanceName serviceInstanceName, Service service, Host host,
-			Environment environment, Script script, String information) {
-		if (serviceInstanceName == null || serviceInstanceName.getName() == null
-				|| serviceInstanceName.getName().equals("")) {
-			throw new EmptyField("ServiceInstanceName");
-		}
-
-		if (information == null) {
-			information = "";
-		}
-
-		try {
-			serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host, environment);
-			throw new ServiceInstanceAlreadyExist(
-					service.getServiceName().toString() + "/" + host.getHostName().toString() + "/"
-							+ environment.getEnvironmentName().toString() + "/" + serviceInstanceName);
-		}
-		catch (ServiceInstanceNotFound e) {
-			// wanted
-		}
-		serviceInstanceRepository.addServiceInstance(host, service, environment, script, serviceInstanceName,
-				Status.not_active, information);
 	}
 
 	/**
@@ -322,14 +558,6 @@ public class ServiceInstanceAdmin {
 		return serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host, environment);
 	}
 
-	public void updateServiceInstanceStatus(Actor actor, String service, String environment, String host,
-			String serviceInstance, UpdateStatus command) {
-		securityAdmin.proofActorAdminAccess(actor);
-
-		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
-		si.setStatus(convertToStatus(command.getStatus()));
-	}
-
 	private Status convertToStatus(String status) {
 		switch (status) {
 			case "active":
@@ -347,178 +575,12 @@ public class ServiceInstanceAdmin {
 		}
 	}
 
-	public void updateServiceInstance(Actor actor, UpdateServiceInstance command, String oldServiceNameString,
-			String oldEnvironmentNameString, String oldHostNameString, String oldServiceInstanceNameString) {
-		securityAdmin.proofActorAdminAccess(actor);
-
-		ServiceName oldServiceName = getServiceName(oldServiceNameString);
-		EnvironmentName oldEnvironmentName = getEnvironmentName(oldEnvironmentNameString);
-		HostName oldHostName = getHostName(oldHostNameString);
-		ServiceInstanceName oldServiceInstanceName = getServiceInstanceName(oldServiceInstanceNameString);
-
-		ScriptData scriptData = command.getScript();
-		String information = command.getInformation();
-		long version = command.getVersion();
-
-		HostName hostName = getHostName(command.getHostName());
-		ServiceName serviceName = getServiceName(command.getServiceName());
-		EnvironmentName environmentName = getEnvironmentName(command.getEnvironmentName());
-		ServiceInstanceName serviceInstanceName = getServiceInstanceName(command.getInstanceName());
-
-		String scriptNameString = scriptData.getScriptName();
-
-		if (information == null) {
-			information = "";
-		}
-
-		ScriptName scriptName = null;
-		if (scriptNameString == null || scriptNameString.trim().equals("")) {
-			scriptName = new ScriptName(environmentName, serviceInstanceName, hostName, serviceName);
-		}
-		else {
-			scriptName = new ScriptName(scriptNameString);
-		}
-		Script newScript = getOrCreateNewScript(scriptName, getPathStart(scriptData.getPathStart()),
-				getPathStop(scriptData.getPathStop()), getPathRestart(scriptData.getPathRestart()),
-				getPathStatus(scriptData.getPathStatus()));
-
-		ServiceInstance oldServiceInstance = getServiceInstance(oldServiceName, oldEnvironmentName, oldHostName,
-				oldServiceInstanceName);
-
-		Service newService = getOrCreateNewService(serviceName);
-		Environment newEnvironment = getOrCreateNewEnvironment(environmentName);
-		Host newHost = getOrCreateNewHost(hostName);
-
-		if (!(oldServiceInstanceName.equals(serviceInstanceName)
-				&& oldEnvironmentName.equals(newEnvironment.getEnvironmentName())
-				&& oldServiceName.equals(newService.getServiceName()) && oldHostName.equals(newHost.getHostName()))) {
-
-			try {
-				serviceInstanceRepository.getServiceInstance(serviceInstanceName, newService, newHost, newEnvironment);
-				throw new ServiceInstanceAlreadyExist(
-						newService + "/" + newEnvironment + "/" + newHost + "/" + serviceInstanceName);
-			}
-			catch (ServiceInstanceNotFound e) {
-				// wanted here
-			}
-		}
-		if (oldServiceInstance != null) {
-			if (version == oldServiceInstance.getVersion()) {
-				oldServiceInstance.setEnvironment(newEnvironment);
-				oldServiceInstance.setHost(newHost);
-				oldServiceInstance.setScript(newScript);
-				oldServiceInstance.setService(newService);
-				oldServiceInstance.renameServiceInstance(serviceInstanceName);
-				oldServiceInstance.setInformation(information);
-				oldServiceInstance.incrementVersion();
-				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
-			}
-			else {
-				throw new AlreadyModified(oldServiceInstance.toString());
-			}
-
-		}
-		else {
-			throw new ServiceInstanceNotFound(oldServiceInstanceName, oldServiceName, oldHostName, oldEnvironmentName);
-		}
-
-		removeAllUnusedElements();
-	}
-
-	public void removeServiceInstance(Actor actor, String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString) {
-		securityAdmin.proofActorAdminAccess(actor);
-		ServiceName serviceName = new ServiceName(serviceNameString);
-		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
-		HostName hostName = new HostName(hostNameString);
-		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
-
-		Service service = serviceRepository.getService(serviceName);
-		Environment environment = environmentRepository.getEnvironment(environmentName);
-		Host host = hostRepository.getHost(hostName);
-		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
-				host, environment);
-		serviceInstanceRepository.removeServiceInstance(serviceInstance);
-
-		removeAllUnusedElements();
-
-	}
-
-	public ServiceInstanceResponse getServiceInstance(String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString) {
-
-		HostName hostName = new HostName(hostNameString);
-		ServiceName serviceName = new ServiceName(serviceNameString);
-		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
-		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
-
-		Service service = serviceRepository.getService(serviceName);
-		Environment environment = environmentRepository.getEnvironment(environmentName);
-		Host host = hostRepository.getHost(hostName);
-		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
-				host, environment);
-		if (serviceInstance != null) {
-			ServiceInstanceResponse response = new ServiceInstanceResponse();
-			response.setEnvironmentName(serviceInstance.getEnvironment().getEnvironmentName().toString());
-			response.setServiceName(serviceInstance.getService().getServiceName().toString());
-			response.setHostName(serviceInstance.getHost().getHostName().toString());
-			response.setInstanceName(serviceInstance.getServiceInstanceName().toString());
-			response.setStatus(serviceInstance.getStatus());
-			response.setVersion(serviceInstance.getVersion());
-			response.setInformation(serviceInstance.getInformation());
-
-			Script script = serviceInstance.getScript();
-			if (script != null) {
-				String scriptName = script.getScriptName().getName();
-				String pathStart = getPath(script.getPathStart());
-				String pathStop = getPath(script.getPathStop());
-				String pathRestart = getPath(script.getPathRestart());
-				String pathStatus = getPath(script.getPathStatus());
-				ScriptData scriptData = new ScriptData();
-				scriptData.setScriptName(scriptName);
-				scriptData.setPathStart(pathStart);
-				scriptData.setPathStop(pathStop);
-				scriptData.setPathRestart(pathRestart);
-				scriptData.setPathStatus(pathStatus);
-				response.setScript(scriptData);
-			}
-
-			return response;
-		}
-		else {
-			throw new ServiceInstanceNotFound(serviceInstanceName, serviceName, hostName, environmentName);
-		}
-	}
-
 	private String getPath(Path path) {
 		if (path == null) {
 			return null;
 		}
 
 		return path.getPath();
-	}
-
-	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString) {
-		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
-				environmentNameString, hostNameString, serviceInstanceNameString);
-		return convert(serviceInstances, serviceInstances.size());
-	}
-
-	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString, OrderCondition order) {
-		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
-				environmentNameString, hostNameString, serviceInstanceNameString, order);
-		return convert(serviceInstances, serviceInstances.size());
-	}
-
-	public ServiceInstanceOverviewList getServiceInstances(String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString, OrderCondition order,
-			PaginationCondition pagination) {
-		List<ServiceInstance> serviceInstances = searchEngine.findServiceInstances(serviceNameString,
-				environmentNameString, hostNameString, serviceInstanceNameString, order, pagination);
-		return convert(serviceInstances, getNumElementsFound(serviceNameString, environmentNameString, hostNameString,
-				serviceInstanceNameString));
 	}
 
 	/**
@@ -531,6 +593,7 @@ public class ServiceInstanceAdmin {
 	 */
 	private int getNumElementsFound(String serviceNameString, String environmentNameString, String hostNameString,
 			String serviceInstanceNameString) {
+
 		return searchEngine.getNumElementsFound(serviceNameString, environmentNameString, hostNameString,
 				serviceInstanceNameString);
 	}
@@ -554,59 +617,6 @@ public class ServiceInstanceAdmin {
 		return ovList;
 	}
 
-	public void performAction(Actor actor, String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString, PerformAction perform) {
-		securityAdmin.proofPerformAction(new EnvironmentName(environmentNameString), new ServiceName(serviceNameString),
-				Action.valueOf(perform.getPerformAction()), actor);
-
-		HostName hostName = new HostName(hostNameString);
-		ServiceName serviceName = new ServiceName(serviceNameString);
-		EnvironmentName environmentName = new EnvironmentName(environmentNameString);
-		ServiceInstanceName serviceInstanceName = new ServiceInstanceName(serviceInstanceNameString);
-
-		Service service = serviceRepository.getService(serviceName);
-		Host host = hostRepository.getHost(hostName);
-		Environment environment = environmentRepository.getEnvironment(environmentName);
-		ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service,
-				host, environment);
-		String status = serviceInstance.getStatus().name();
-		Script script = serviceInstance.getScript();
-		if (!checkScriptIfPathNotMissing(perform, script)) {
-			throw new EmptyField("Script must be set to perform an action on an instance!");
-		}
-		String param = perform.getPerformAction().toLowerCase();
-		String path = "";
-		if (param.equals("start") || param.equals("stop") || param.equals("restart")) {
-			if (!status.equals("is_starting") && !status.equals("is_stopping")) {
-				if (param.equals("start")) {
-					path = resolvePath(script.getPathStart());
-					serviceInstance.setStatus(Status.is_starting);
-				}
-				else if (param.equals("stop")) {
-					path = resolvePath(script.getPathStop());
-					serviceInstance.setStatus(Status.is_stopping);
-				}
-				else if (param.equals("restart")) {
-					path = resolvePath(script.getPathRestart());
-					serviceInstance.setStatus(Status.is_stopping);
-				}
-			}
-			else {
-				throw new ActionInProgress(serviceInstance.toString() + " " + status
-						+ " Cannot perform action while another action is in progress.");
-			}
-		}
-		else if (param.equals("status")) {
-			path = resolvePath(script.getPathStatus());
-		}
-		else {
-			throw new WrongParam(
-					perform.getPerformAction() + " -- Use only this action commands: start, stop, restart, status");
-		}
-
-		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path); //note: this is asynchronously executed
-	}
-
 	private boolean checkScriptIfPathNotMissing(PerformAction action, Script script) {
 		if (script == null) {
 			return false;
@@ -617,27 +627,28 @@ public class ServiceInstanceAdmin {
 						|| script.getPathStart().getPath().equals("")) {
 					return false;
 				}
-				break;
+				return true;
 			case "stop":
 				if (script.getPathStop() == null || script.getPathStop().getPath() == null
 						|| script.getPathStop().getPath().equals("")) {
 					return false;
 				}
-				break;
+				return true;
 			case "restart":
 				if (script.getPathRestart() == null || script.getPathRestart().getPath() == null
 						|| script.getPathRestart().getPath().equals("")) {
 					return false;
 				}
-				break;
+				return true;
 			case "status":
 				if (script.getPathStatus() == null || script.getPathStatus().getPath() == null
 						|| script.getPathStatus().getPath().equals("")) {
 					return false;
 				}
-				break;
+				return true;
+			default:
+				return false;
 		}
-		return true;
 	}
 
 	private String resolvePath(Path path) {
@@ -646,34 +657,5 @@ public class ServiceInstanceAdmin {
 			throw new EmptyField("To perform an action a valid path must be set!");
 		}
 		return p;
-	}
-
-	public List<String> getAllEnvironments() {
-		List<String> environmentList = new LinkedList<>();
-		for (Environment env : environmentRepository.getAllEnvironments()) {
-			environmentList.add(env.getEnvironmentName().getName());
-		}
-		return environmentList;
-	}
-
-	public List<String> getServicesByEnvironmentName(String environmentName) {
-		List<String> serviceList = new LinkedList<>();
-		if (environmentName.equals("*")) {
-			for (Service service : serviceRepository.getAllServices()) {
-				if (!serviceList.contains(service.getServiceName().getName())) {
-					serviceList.add(service.getServiceName().getName());
-				}
-			}
-		}
-		else {
-			for (ServiceInstance instance : serviceInstanceRepository.getAllInstances()) {
-				if (instance.getEnvironment().getEnvironmentName().getName().equals(environmentName)) {
-					if (!serviceList.contains(instance.getService().getServiceName().getName())) {
-						serviceList.add(instance.getService().getServiceName().getName());
-					}
-				}
-			}
-		}
-		return serviceList;
 	}
 }

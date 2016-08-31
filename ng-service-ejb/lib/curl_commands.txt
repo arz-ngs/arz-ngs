@@ -12,6 +12,8 @@ Update:
 
 curl -H "Content-Type: application/json" -X POST -d '{"environmentName":"pebk123", "hostName":"lnx00100", "serviceName":"arctis", "instanceName":"arctis_1","version":"1", "script": {"pathStart":"init.d/arctis start", "pathStop":"stop"}}' http://localhost:8080/ngs/api/v1/instances/arctis/pebk123/lnx0050/arctis_1
 
+Update Status:
+curl -H "Content-Type: application/json" -X POST -d '{"status":"not_active"}' http://localhost:8080/ngs/api/v1/instances/service1/env1/host1/instance1/status
 
 
 Create:
