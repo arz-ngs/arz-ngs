@@ -1,11 +1,11 @@
 done - error message login 
-script data inserts with curl -> remove noch prog
+done - script data inserts with curl -> remove noch prog
 done - intervall über property file einstellbar
-über rest statusupdates möglich machen
-serviceInstanceAdmin überarbeiten - checkings auf null; code in methoden auslagern und logik überprüfen
-bei status unknown einfügen
-teil done - returncodes noch implementieren - ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
-test .bat oder .sh datei schreiben, die returncodes liefert
+done - über rest statusupdates möglich machen
+done - serviceInstanceAdmin überarbeiten - checkings auf null; code in methoden auslagern und logik überprüfen
+done - bei status unknown einfügen
+done - returncodes noch implementieren - ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
+teil done - test .bat oder .sh datei schreiben, die returncodes liefert - input shell scripts sollen den Dateipfad automatisch bei den erzeugten instanzen (in den scripten) einfügen und mit default werten belegen
 ripple restart ???
 
 done - facescontext aus actioncontroller bei anderen auch übernehmen?
@@ -20,3 +20,6 @@ http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
 
 buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist
 
+
+@dani: schau da des an!! methode 2! und nimm da timestamp!
+http://www.developerscrappad.com/228/java/java-ee/ejb3-jpa-dealing-with-date-time-and-timestamp/

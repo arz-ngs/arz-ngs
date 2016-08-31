@@ -2,8 +2,8 @@ package at.arz.ngs.api.exception;
 
 import javax.ejb.ApplicationException;
 
-@ApplicationException(rollback = true)
-public class ExecuteAction extends RuntimeException{
+@ApplicationException(rollback = false)
+public class ExecuteAction extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 

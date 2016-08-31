@@ -2,8 +2,7 @@ package at.arz.ngs.script;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Scanner;
 import java.util.concurrent.Executor;
 
 import javax.ejb.Stateless;
@@ -23,9 +22,6 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.EmptyField;
-import at.arz.ngs.api.exception.ExecuteAction;
-import at.arz.ngs.api.exception.Unknown;
-import at.arz.ngs.api.exception.UnknownAction;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
@@ -84,47 +80,60 @@ public class ScriptExecutor {
 				ServiceInstance serviceInstance = serviceInstanceRepository.getServiceInstance(serviceInstanceName,
 						service, host, environment);
 
-				List<String> command = new ArrayList<>();
-				command.add(path);
+				String[] command = path.split(" ");
 				ProcessBuilder processBuilder = new ProcessBuilder(command);
 				Process process;
 				try {
 					process = processBuilder.start();
-					InputStream inputStream = process.getInputStream(); //TODO link streams
-					InputStream errorStream = process.getErrorStream();
+					InputStream stdout = process.getInputStream(); //TODO link streams
+					InputStream stderr = process.getErrorStream();
+
 					int errorCode = process.waitFor();
-					System.out.println(errorCode);
+
+					System.out.println("Script stdout:");
+					printStream(stdout); //TODO send them to ui
+					System.out.println("Script stderr:");
+					printStream(stderr);
+
 					String action = perform.getPerformAction().toLowerCase();
 					if (!action.equals("status")) {
-						switch(errorCode) {
-						case 0: 
-							if (serviceInstance.getStatus().name().equals("is_starting")) {
-								serviceInstance.setStatus(Status.active);
-							} else if (serviceInstance.getStatus().name().equals("is_stopping")) {
-								serviceInstance.setStatus(Status.not_active);
-							}
-							break;
-						case 1:
-							serviceInstance.setStatus(Status.failed);
-							throw new ExecuteAction(action, serviceInstance.toString());
-						case 2:
-							serviceInstance.setStatus(Status.failed);
-							throw new UnknownAction(action);
-						default:
-							serviceInstance.setStatus(Status.failed);
-							throw new Unknown(action, serviceInstance.toString());
+						switch (errorCode) {
+							case 0:
+								if (serviceInstance.getStatus().name().equals("is_starting")) {
+									serviceInstance.setStatus(Status.active);
+								}
+								else if (serviceInstance.getStatus().name().equals("is_stopping")) {
+									serviceInstance.setStatus(Status.not_active);
+								}
+								break;
+							case 1:
+								serviceInstance.setStatus(Status.failed);
+								//								throw new ExecuteAction(action, serviceInstance.toString());
+								break;
+							case 2:
+								serviceInstance.setStatus(Status.failed);
+								//								throw new UnknownAction(action);
+								break;
+							default:
+								serviceInstance.setStatus(Status.failed);
+								//								throw new Unknown(action, serviceInstance.toString());
 						}
-						return;
-					} else {
+					}
+					else {
 						if (errorCode == 0) {
 							serviceInstance.setStatus(Status.active);
-						} else if (errorCode == 3 || errorCode == 17) {
+						}
+						else if (errorCode == 3 || errorCode == 17) {
 							serviceInstance.setStatus(Status.not_active);
-						} else if (errorCode == 8) {
+						}
+						else if (errorCode == 8) {
 							serviceInstance.setStatus(Status.is_starting);
 						}
-						//TODO No ErrorCode for is_stopping?
+						else {
+							serviceInstance.setStatus(Status.unknown);
+						}
 					}
+					return;
 				}
 				catch (IOException e) {
 					e.printStackTrace();
@@ -133,10 +142,17 @@ public class ScriptExecutor {
 					e.printStackTrace();
 				}
 
-				//TODO set real status dependent from returning status-code
-				serviceInstance.setStatus(Status.failed);
+				serviceInstance.setStatus(Status.unknown);
 			}
 		};
 		executor.execute(command);
+	}
+
+	private void printStream(InputStream is) {
+		Scanner c = new Scanner(is);
+		while (c.hasNextLine()) {
+			System.out.println(c.nextLine());
+		}
+		c.close();
 	}
 }

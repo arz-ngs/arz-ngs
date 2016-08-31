@@ -2,7 +2,6 @@ package at.arz.ngs.time.onstartup;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.Executor;
@@ -58,9 +57,11 @@ public class StartupService {
 			public void run() {
 				while (!destroyInProgress) { //never ending until destroy in progress is true
 					try {
-						int interval = getInterval();
-						for (int i = 0; i < interval; i++) { //server shutdown can take up to one minute
-							TimeUnit.MINUTES.sleep(1);
+						int lookForDestroySeconds = 10;
+						int interval = getInterval() * 60 / lookForDestroySeconds;
+
+						for (int i = 0; i < interval; i++) { //server shutdown can take up to $lookForDestroySeconds seconds
+							TimeUnit.SECONDS.sleep(lookForDestroySeconds);
 
 							if (destroyInProgress) {
 								return;
@@ -87,6 +88,11 @@ public class StartupService {
 		};
 	}
 
+	/**
+	 * Sequential fetching serviceInstance status!
+	 * 
+	 * @return
+	 */
 	private Runnable getFetcher() {
 		return new Runnable() {
 			@Override
@@ -103,8 +109,7 @@ public class StartupService {
 						continue;
 					}
 
-					List<String> command = new ArrayList<>();
-					command.add(pathStatus.getPath());
+					String[] command = pathStatus.getPath().split(" ");
 					ProcessBuilder processBuilder = new ProcessBuilder(command);
 					Process process;
 					try {
@@ -114,18 +119,21 @@ public class StartupService {
 
 						int errorCode = process.waitFor();
 
-						System.out.println(errorCode);
-
-						System.out.println("status retrieved");
 						if (errorCode == 0) {
 							si.setStatus(Status.active);
-						} else if (errorCode == 3 || errorCode == 17) {
+						}
+						else if (errorCode == 3 || errorCode == 17) {
 							si.setStatus(Status.not_active);
-						} else if (errorCode == 8) {
+						}
+						else if (errorCode == 8) {
 							si.setStatus(Status.is_starting);
+						}
+						else {
+							si.setStatus(Status.unknown);
 						}
 					}
 					catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 
