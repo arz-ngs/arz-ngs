@@ -23,6 +23,10 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.EmptyField;
+import at.arz.ngs.api.exception.ExecuteAction;
+import at.arz.ngs.api.exception.Unknown;
+import at.arz.ngs.api.exception.UnknownAction;
+import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
  * Follows the design patter of
@@ -50,7 +54,7 @@ public class ScriptExecutor {
 	}
 
 	public void executeScript(ServiceName serviceName, EnvironmentName environmentName, HostName hostName,
-			ServiceInstanceName serviceInstanceName, String path) {
+			ServiceInstanceName serviceInstanceName, String path, PerformAction perform) {
 
 		Runnable command = new Runnable() {
 
@@ -90,10 +94,37 @@ public class ScriptExecutor {
 					InputStream errorStream = process.getErrorStream();
 					int errorCode = process.waitFor();
 					System.out.println(errorCode);
-
-					//TODO set real status dependent from returning status-code
-					serviceInstance.setStatus(Status.active);
-					return;
+					String action = perform.getPerformAction().toLowerCase();
+					if (!action.equals("status")) {
+						switch(errorCode) {
+						case 0: 
+							if (serviceInstance.getStatus().name().equals("is_starting")) {
+								serviceInstance.setStatus(Status.active);
+							} else if (serviceInstance.getStatus().name().equals("is_stopping")) {
+								serviceInstance.setStatus(Status.not_active);
+							}
+							break;
+						case 1:
+							serviceInstance.setStatus(Status.failed);
+							throw new ExecuteAction(action, serviceInstance.toString());
+						case 2:
+							serviceInstance.setStatus(Status.failed);
+							throw new UnknownAction(action);
+						default:
+							serviceInstance.setStatus(Status.failed);
+							throw new Unknown(action, serviceInstance.toString());
+						}
+						return;
+					} else {
+						if (errorCode == 0) {
+							serviceInstance.setStatus(Status.active);
+						} else if (errorCode == 3 || errorCode == 17) {
+							serviceInstance.setStatus(Status.not_active);
+						} else if (errorCode == 8) {
+							serviceInstance.setStatus(Status.is_starting);
+						}
+						//TODO No ErrorCode for is_stopping?
+					}
 				}
 				catch (IOException e) {
 					e.printStackTrace();

@@ -371,7 +371,7 @@ public class ServiceInstanceAdmin {
 					perform.getPerformAction() + " -- Only use this action commands: start, stop, restart, status");
 		}
 
-		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path); //note: this is asynchronously executed
+		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path, perform); //note: this is asynchronously executed
 	}
 
 	public List<String> getAllEnvironments() {
