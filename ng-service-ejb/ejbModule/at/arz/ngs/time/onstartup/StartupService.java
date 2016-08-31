@@ -116,9 +116,14 @@ public class StartupService {
 
 						System.out.println(errorCode);
 
-						//TODO set real status dependent from returning status-code
 						System.out.println("status retrieved");
-						si.setStatus(Status.active);
+						if (errorCode == 0) {
+							si.setStatus(Status.active);
+						} else if (errorCode == 3 || errorCode == 17) {
+							si.setStatus(Status.not_active);
+						} else if (errorCode == 8) {
+							si.setStatus(Status.is_starting);
+						}
 					}
 					catch (Exception e) {
 					}

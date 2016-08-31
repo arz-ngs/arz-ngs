@@ -9,7 +9,7 @@ import at.arz.ngs.api.exception.ActionInProgress;
 import at.arz.ngs.resources.NgsApiError;
 
 @Provider
-public class AlreadyPerformMapper
+public class ActionInProgressMapper
 		implements ExceptionMapper<ActionInProgress> {
 
 	@Override
