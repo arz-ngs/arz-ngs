@@ -108,6 +108,12 @@ public class SecurityAdmin {
 
 		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
 			// productional stage
+			//Replaces InitalInserts
+//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
+//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
+//			User u = userRepository.getUser(new UserName("admin"));
+//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
+//			userRoleRepository.addUser_Role(u, r, true);
 			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
 

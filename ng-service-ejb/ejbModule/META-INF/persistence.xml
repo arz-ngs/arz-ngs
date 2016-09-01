@@ -25,6 +25,7 @@
 		<class>at.arz.ngs.converter.jpa.ServiceInstanceNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.ServiceNameConverter</class>
 		<class>at.arz.ngs.converter.jpa.UserNameConverter</class>
+		<class>at.arz.ngs.journal.JournalEntry</class>
 		<class>at.arz.ngs.security.Permission</class>
 		<class>at.arz.ngs.security.Role</class>
 		<class>at.arz.ngs.security.User</class>
