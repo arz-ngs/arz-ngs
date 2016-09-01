@@ -38,5 +38,7 @@ public interface ServiceInstanceRepository {
 							String information);
 
 	void removeServiceInstance(ServiceInstance serviceInstance);
+	
+	ServiceInstance getServiceInstanceByOid(long oid);
 
 }

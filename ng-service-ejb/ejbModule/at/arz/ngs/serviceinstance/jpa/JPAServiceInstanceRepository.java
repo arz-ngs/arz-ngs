@@ -122,4 +122,17 @@ public class JPAServiceInstanceRepository
 	public void removeServiceInstance(ServiceInstance serviceInstance) {
 			entityManager.remove(serviceInstance);
 	}
+
+	@Override
+	public ServiceInstance getServiceInstanceByOid(long oid) {
+		try {
+			TypedQuery<ServiceInstance> getServiceInstance = entityManager.createNamedQuery(ServiceInstance.QUERY_BY_OID, ServiceInstance.class);
+			getServiceInstance.setParameter("oid", oid);
+			return getServiceInstance.getSingleResult();
+		} catch (NoResultException e) {
+			throw new ServiceInstanceNotFound(oid);
+		}
+	}
+	
+	
 }

@@ -12,4 +12,6 @@ public interface RoleRepository {
 	void addRole(RoleName roleName);
 	
 	void removeRole(Role role);
+	
+	Role getRoleByOid(long oid);
 }

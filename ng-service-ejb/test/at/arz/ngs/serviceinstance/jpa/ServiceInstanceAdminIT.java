@@ -27,6 +27,8 @@ import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
+import at.arz.ngs.journal.JPAJournalRepository;
+import at.arz.ngs.journal.JournalRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.PermissionRepository;
@@ -63,6 +65,7 @@ public class ServiceInstanceAdminIT
 	private RoleRepository roleRepository;
 	private UserRepository userRepository;
 	private User_RoleRepository userRoleRepository;
+	private JournalRepository journalRepository;
 
 	private Actor actor;
 
@@ -77,14 +80,16 @@ public class ServiceInstanceAdminIT
 		roleRepository = new JPARoleRepository(getEntityManager());
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository);
+		journalRepository = new JPAJournalRepository(getEntityManager());
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalRepository);
 		admin = new ServiceInstanceAdmin(	services,
 											hosts,
 											environments,
 											instances,
 											scripts,
 											new SearchEngine(getEntityManager()),
-											securityAdmin);
+											securityAdmin,
+											journalRepository);
 
 
 		String environmentName = "environment1";
@@ -692,5 +697,7 @@ public class ServiceInstanceAdminIT
 		d9.executeUpdate();
 		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
 		d6.executeUpdate();
+		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
+		d11.executeUpdate();
 	}
 }

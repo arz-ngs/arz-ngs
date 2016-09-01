@@ -33,7 +33,8 @@ import at.arz.ngs.converter.jpa.ServiceInstanceNameConverter;
 		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT, query = "SELECT si "
 				+ "FROM ServiceInstance si " + "WHERE si.service = :service AND " + "si.environment = :environment"),
 		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE, query = "SELECT si " + "FROM ServiceInstance si "
-				+ "WHERE si.service = :service")})
+				+ "WHERE si.service = :service"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_OID, query = "SELECT si " + "FROM ServiceInstance si " + "WHERE si.oid = :oid")})
 public class ServiceInstance {
 
 	public static final String QUERY_ALL = "ServiceInstance.getAll";
@@ -41,6 +42,7 @@ public class ServiceInstance {
 	public static final String QUERY_BY_SERVICE_ENVIRONMENT_HOST = "ServiceInstance.findByServiceAndEnvironmentAndHost";
 	public static final String QUERY_BY_SERVICE_ENVIRONMENT = "ServiceInstance.findByServiceAndEnvironment";
 	public static final String QUERY_BY_SERVICE = "ServiceInstance.findByService";
+	public static final String QUERY_BY_OID = "ServiceInstance.finyByOid";
 
 	@Id
 	@GeneratedValue(generator = "ngs.serviceinstance", strategy = GenerationType.TABLE)

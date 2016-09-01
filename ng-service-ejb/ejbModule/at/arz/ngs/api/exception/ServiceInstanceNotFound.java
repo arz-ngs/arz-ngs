@@ -38,6 +38,10 @@ public class ServiceInstanceNotFound extends RuntimeException {
 		this(new ServiceInstanceName(serviceInstance), new ServiceName(service), new HostName(host),
 				new EnvironmentName(environment));
 	}
+	
+	public ServiceInstanceNotFound(long oid) {
+		super("SerivceInstance with object ID " + oid + " couldn't be found");
+	}
 
 	public ServiceName getServiceName() {
 		return serviceName;

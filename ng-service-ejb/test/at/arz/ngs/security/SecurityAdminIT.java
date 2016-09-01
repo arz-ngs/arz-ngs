@@ -26,6 +26,8 @@ import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.NoPermission;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
+import at.arz.ngs.journal.JPAJournalRepository;
+import at.arz.ngs.journal.JournalRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.commands.Actor;
@@ -58,6 +60,7 @@ public class SecurityAdminIT
 	private RoleRepository roleRepository;
 	private UserRepository userRepository;
 	private User_RoleRepository userRoleRepository;
+	private JournalRepository journalRepository;
 
 	@Before
 	public void setUpBeforeClass() {
@@ -70,14 +73,15 @@ public class SecurityAdminIT
 		roleRepository = new JPARoleRepository(getEntityManager());
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository);
+		journalRepository = new JPAJournalRepository(getEntityManager());
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalRepository);
 		serviceAdmin = new ServiceInstanceAdmin(serviceRepository,
 												hostRepository,
 												environmentRepository,
 												instanceRepository,
 												scriptRepository,
 												new SearchEngine(getEntityManager()),
-												securityAdmin);
+												securityAdmin, journalRepository);
 
 		ScriptData scriptData = new ScriptData();
 		scriptData.setPathStart("start");
@@ -323,6 +327,8 @@ public class SecurityAdminIT
 		d9.executeUpdate();
 		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
 		d6.executeUpdate();
+		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
+		d11.executeUpdate();
 	}
 
 }

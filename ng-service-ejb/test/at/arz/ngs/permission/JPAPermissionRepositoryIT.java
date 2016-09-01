@@ -87,5 +87,7 @@ public class JPAPermissionRepositoryIT
 		d9.executeUpdate();
 		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
 		d6.executeUpdate();
+		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
+		d11.executeUpdate();
 	}
 }

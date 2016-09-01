@@ -29,6 +29,7 @@ import at.arz.ngs.api.ScriptName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.ActionInProgress;
 import at.arz.ngs.api.exception.AlreadyModified;
 import at.arz.ngs.api.exception.EmptyField;
@@ -39,6 +40,8 @@ import at.arz.ngs.api.exception.ServiceInstanceAlreadyExist;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.api.exception.WrongParam;
+import at.arz.ngs.journal.JournalEntry;
+import at.arz.ngs.journal.JournalRepository;
 import at.arz.ngs.script.ScriptExecutor;
 import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
@@ -86,6 +89,9 @@ public class ServiceInstanceAdmin {
 
 	@Inject
 	private ScriptExecutor scriptExecutor;
+	
+	@Inject
+	private JournalRepository journalRepository;
 
 	/**
 	 * Only for JUnit Tests
@@ -99,13 +105,14 @@ public class ServiceInstanceAdmin {
 	 */
 	public ServiceInstanceAdmin(ServiceRepository services, HostRepository hosts, EnvironmentRepository environments,
 			ServiceInstanceRepository serviceInstances, ScriptRepository scripts, SearchEngine engine,
-			SecurityAdmin securityAdmin) {
+			SecurityAdmin securityAdmin, JournalRepository journal) {
 		this.serviceRepository = services;
 		this.hostRepository = hosts;
 		this.environmentRepository = environments;
 		this.serviceInstanceRepository = serviceInstances;
 		this.scriptRepository = scripts;
 		this.searchEngine = engine;
+		this.journalRepository = journal;
 		this.securityAdmin = securityAdmin;
 	}
 
@@ -156,6 +163,8 @@ public class ServiceInstanceAdmin {
 		}
 		serviceInstanceRepository.addServiceInstance(host, service, environment, script, serviceInstanceName,
 				Status.not_active, information);
+		ServiceInstance si = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host, environment);
+		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", si.getOid(), "create"));
 	}
 
 	public void updateServiceInstanceStatus(Actor actor, String service, String environment, String host,
@@ -164,6 +173,9 @@ public class ServiceInstanceAdmin {
 
 		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
 		si.setStatus(convertToStatus(command.getStatus()));
+		//TODO probably add the changed information to the journalEntry?
+		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", si.getOid(), "updateStatus"));
+
 	}
 
 	public void updateServiceInstance(Actor actor, UpdateServiceInstance command, String oldServiceNameString,
@@ -230,6 +242,7 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.renameServiceInstance(serviceInstanceName);
 				oldServiceInstance.setInformation(information);
 				oldServiceInstance.incrementVersion();
+				journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", oldServiceInstance.getOid(), "update"));
 				// oldServiceInstance.setStatus(Status.not_active); //current status should not be overwritten
 			}
 			else {
@@ -250,8 +263,9 @@ public class ServiceInstanceAdmin {
 
 		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
 
+		//TODO somehow saving the information of the deleted serivceInstance
 		serviceInstanceRepository.removeServiceInstance(si);
-
+		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", si.getOid(), "remove " + si.toString()));
 		removeAllUnusedElements();
 	}
 
@@ -348,14 +362,19 @@ public class ServiceInstanceAdmin {
 				if (param.equals("start")) {
 					path = resolvePath(script.getPathStart());
 					serviceInstance.setStatus(Status.is_starting);
+					journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", serviceInstance.getOid(), "start"));
 				}
 				else if (param.equals("stop")) {
 					path = resolvePath(script.getPathStop());
 					serviceInstance.setStatus(Status.is_stopping);
+					journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", serviceInstance.getOid(), "stop"));
+
 				}
 				else if (param.equals("restart")) {
 					path = resolvePath(script.getPathRestart());
 					serviceInstance.setStatus(Status.is_stopping);
+					journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "ServiceInstance", serviceInstance.getOid(), "restart"));
+
 				}
 			}
 			else {
@@ -370,7 +389,6 @@ public class ServiceInstanceAdmin {
 			throw new WrongParam(
 					perform.getPerformAction() + " -- Only use this action commands: start, stop, restart, status");
 		}
-
 		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path, perform); //note: this is asynchronously executed
 	}
 

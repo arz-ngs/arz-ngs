@@ -24,11 +24,13 @@ import at.arz.ngs.converter.jpa.RoleNameConverter;
 @Entity
 @Table(name = "ROLE")
 @NamedQueries({@NamedQuery(name = Role.QUERY_ALL, query = "SELECT r FROM Role r"),
-		@NamedQuery(name = Role.QUERY_BY_ROLENAME, query = "SELECT r FROM Role r WHERE r.roleName = :rname")})
+		@NamedQuery(name = Role.QUERY_BY_ROLENAME, query = "SELECT r FROM Role r WHERE r.roleName = :rname"),
+		@NamedQuery(name = Role.QUERY_BY_OID, query = "SELECT r FROM Role r WHERE r.oid = :oid")})
 public class Role {
 
 	public static final String QUERY_ALL = "Role.getAll";
 	public static final String QUERY_BY_ROLENAME = "Role.findByUniqueKey";
+	public static final String QUERY_BY_OID = "Role.findByOID";
 
 	@Id
 	@GeneratedValue(generator = "ngs.role", strategy = GenerationType.TABLE)

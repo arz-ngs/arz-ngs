@@ -12,5 +12,9 @@ public class RoleNotFound extends RuntimeException{
 	public RoleNotFound(RoleName roleName) {
 		super(roleName.toString());
 	}
+	
+	public RoleNotFound(long oid) {
+		super("Role with object ID " + oid + " couldn't be found!");
+	}
 
 }

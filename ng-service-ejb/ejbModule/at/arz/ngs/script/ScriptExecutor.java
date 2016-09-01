@@ -21,7 +21,9 @@ import at.arz.ngs.api.HostName;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.EmptyField;
+import at.arz.ngs.journal.JournalEntry;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
@@ -45,7 +47,7 @@ public class ScriptExecutor {
 
 	@Inject
 	private EnvironmentRepository environmentRepository;
-
+	
 	protected ScriptExecutor() {
 	}
 
@@ -146,6 +148,7 @@ public class ScriptExecutor {
 			}
 		};
 		executor.execute(command);
+
 	}
 
 	private void printStream(InputStream is) {

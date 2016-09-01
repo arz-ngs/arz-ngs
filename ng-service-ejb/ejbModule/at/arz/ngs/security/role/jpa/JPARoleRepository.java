@@ -3,6 +3,7 @@ package at.arz.ngs.security.role.jpa;
 import java.util.List;
 
 import javax.enterprise.context.Dependent;
+import javax.management.relation.RoleNotFoundException;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -63,6 +64,17 @@ public class JPARoleRepository
 	@Override
 	public void removeRole(Role role) {
 		entityManager.remove(role);
+	}
+
+	@Override
+	public Role getRoleByOid(long oid) {
+		try {
+			TypedQuery<Role> role = entityManager.createNamedQuery(Role.QUERY_BY_OID, Role.class);
+			role.setParameter("oid", oid);
+			return role.getSingleResult();
+		} catch(NoResultException e) {
+			throw new RoleNotFound(oid);
+		}
 	}
 
 }
