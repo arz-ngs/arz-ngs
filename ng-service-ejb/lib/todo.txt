@@ -1,3 +1,8 @@
+TX hat immer timeout - in StartupService!! aber kann auch bei ScriptExecutor sein wenn das Starten von mehreren Services zu lange dauert!!- 
+(nach den default 300 Sekunden, fragen was man da am besten machen kann!!!)
+
+
+
 done - error message login 
 done - script data inserts with curl -> remove noch prog
 done - intervall über property file einstellbar
@@ -18,7 +23,7 @@ jpql inner join tex:  http://stackoverflow.com/questions/2844019/how-do-i-write-
 
 http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
 
-buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist
+teil done - buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist - funktioniert schon mit ausgrauen wenn kein Pfad aber noch ohne Berechtigung
 
 
 @dani: schau da des an!! methode 2! und nimm da timestamp!

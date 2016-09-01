@@ -267,3 +267,8 @@ tbody tr:hover {
 	top: 0px;
 	width: 100%;
 }
+
+.commandButtonDisabled {
+	background-color: grey !important;
+	border-color: grey !important;
+}

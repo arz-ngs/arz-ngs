@@ -2,9 +2,9 @@ package at.arz.ngs.time.onstartup;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.PostConstruct;
@@ -17,6 +17,7 @@ import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.api.PathStatus;
 import at.arz.ngs.api.Status;
+import at.arz.ngs.infrastructure.executors.NGSExecutor;
 
 @Singleton
 @Startup
@@ -27,7 +28,7 @@ public class StartupService {
 	private static boolean destroyInProgress = false;
 
 	@Inject
-	private Executor executor;
+	private NGSExecutor executor;
 
 	@Inject
 	private ServiceInstanceRepository serviceInstanceRepository;
@@ -61,7 +62,7 @@ public class StartupService {
 						int interval = getInterval() * 60 / lookForDestroySeconds;
 
 						for (int i = 0; i < interval; i++) { //server shutdown can take up to $lookForDestroySeconds seconds
-							TimeUnit.SECONDS.sleep(lookForDestroySeconds);
+							TimeUnit.SECONDS.sleep(lookForDestroySeconds); //TODO ask to set Timeout of transaction to a higher value in order to throwing an exception with TX timeouts
 
 							if (destroyInProgress) {
 								return;
@@ -97,6 +98,9 @@ public class StartupService {
 		return new Runnable() {
 			@Override
 			public void run() {
+				System.out
+						.println("Start fetching all services at: " + new Date(System.currentTimeMillis()).toString());
+
 				List<ServiceInstance> allInstances = serviceInstanceRepository.getAllInstances();
 				for (ServiceInstance si : allInstances) {
 					if (destroyInProgress) {
@@ -112,6 +116,7 @@ public class StartupService {
 					String[] command = pathStatus.getPath().split(" ");
 					ProcessBuilder processBuilder = new ProcessBuilder(command);
 					Process process;
+
 					try {
 						process = processBuilder.start();
 						InputStream inputStream = process.getInputStream(); //TODO link streams
@@ -132,11 +137,10 @@ public class StartupService {
 							si.setStatus(Status.unknown);
 						}
 					}
-					catch (Exception e) {
+					catch (Exception e) { //catch exception and proceed with loop -> no rollback
 						e.printStackTrace();
 					}
 				}
-
 				fetchInProgress = false;
 			}
 		};

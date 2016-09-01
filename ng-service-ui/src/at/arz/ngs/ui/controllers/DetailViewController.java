@@ -4,18 +4,19 @@ import java.io.Serializable;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
-import javax.enterprise.context.RequestScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
+import at.arz.ngs.ui.data_collections.CommandButtonCollection;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 
-@RequestScoped
+@ViewScoped
 @Named("serviceInstanceDetail")
 public class DetailViewController
 		implements Serializable {
@@ -40,6 +41,8 @@ public class DetailViewController
 	private String pathRestart;
 	private String pathStatus;
 
+	private CommandButtonCollection commandButtonCollection;
+
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -48,15 +51,17 @@ public class DetailViewController
 
 		Map<String, String> params = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap();
 		showDetail(params.get("instance"), params.get("service"), params.get("env"), params.get("host"));
+		validateCommandButtons();
 	}
 
-	private String showDetail(String instance, String service, String environment, String host) {
+	private void showDetail(String instance, String service, String environment, String host) {
 		ServiceInstanceResponse response = null;
 
 		errorCollection = new ErrorCollection();
 		try {
 			response = admin.getServiceInstance(service, environment, host, instance);
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e.getClass().getSimpleName(), e.getMessage(), e.getStackTrace()));
 			errorCollection.setShowPopup(true);
 		}
@@ -77,7 +82,30 @@ public class DetailViewController
 			pathRestart = scriptData.getPathRestart();
 			pathStatus = scriptData.getPathStatus();
 		}
-		return "detailview";
+	}
+
+	private void validateCommandButtons() {
+		commandButtonCollection = new CommandButtonCollection(); //reset the collection to defaults
+		if (pathEmpty(pathStart)) {
+			commandButtonCollection.setStartCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
+			commandButtonCollection.setStartDisabled(true);
+		}
+		if (pathEmpty(pathStop)) {
+			commandButtonCollection.setStopCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
+			commandButtonCollection.setStopDisabled(true);
+		}
+		if (pathEmpty(pathRestart)) {
+			commandButtonCollection.setRestartCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
+			commandButtonCollection.setRestartDisabled(true);
+		}
+		if (pathEmpty(pathStatus)) {
+			commandButtonCollection.setStatusCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
+			commandButtonCollection.setStatusDisabled(true);
+		}
+	}
+
+	private boolean pathEmpty(String path) {
+		return path == null || path.trim().equals("");
 	}
 
 	public String getCompleteName() {
@@ -190,6 +218,14 @@ public class DetailViewController
 
 	public void setInformation(String information) {
 		this.information = information;
+	}
+
+	public CommandButtonCollection getCommandButtonCollection() {
+		return commandButtonCollection;
+	}
+
+	public void setCommandButtonCollection(CommandButtonCollection commandButtonCollection) {
+		this.commandButtonCollection = commandButtonCollection;
 	}
 
 }

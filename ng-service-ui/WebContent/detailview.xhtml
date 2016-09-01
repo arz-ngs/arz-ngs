@@ -58,20 +58,24 @@
 						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
 							id="buttonFormSubmit" action="#{serviceinstance.formSubmit()}">
 						</h:commandButton>
-						<h:commandButton value="Start" class="btn btn-primary" 
+						<h:commandButton value="Start" class="btn btn-primary #{serviceInstanceDetail.commandButtonCollection.startCSSClass}" 
 							id="buttonStart"
+							disabled="#{serviceInstanceDetail.commandButtonCollection.startDisabled}"
 							action="#{actionController.startSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
 						</h:commandButton>
-						<h:commandButton value="Stop" class="btn btn-primary"
+						<h:commandButton value="Stop" class="btn btn-primary #{serviceInstanceDetail.commandButtonCollection.stopCSSClass}"
 							id="buttonStop"
+							disabled="#{serviceInstanceDetail.commandButtonCollection.stopDisabled}"
 							action="#{actionController.stopSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
 						</h:commandButton>
-						<h:commandButton value="Restart" class="btn btn-primary"
+						<h:commandButton value="Restart" class="btn btn-primary #{serviceInstanceDetail.commandButtonCollection.restartCSSClass}"
 							id="buttonRestart"
+							disabled="#{serviceInstanceDetail.commandButtonCollection.restartDisabled}"
 							action="#{actionController.restartSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
 						</h:commandButton>
-						<h:commandButton value="Status" class="btn btn-primary"
+						<h:commandButton value="Status" class="btn btn-primary #{serviceInstanceDetail.commandButtonCollection.statusCSSClass}"
 							id="buttonStatus"
+							disabled="#{serviceInstanceDetail.commandButtonCollection.statusDisabled}"
 							action="#{actionController.statusSingle(serviceInstanceDetail.service, serviceInstanceDetail.environment, serviceInstanceDetail.host, serviceInstanceDetail.instance)}">
 						</h:commandButton>
 					</div>
