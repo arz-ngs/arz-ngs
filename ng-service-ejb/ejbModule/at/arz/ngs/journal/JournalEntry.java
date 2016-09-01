@@ -48,7 +48,7 @@ public class JournalEntry {
 	}
 	
 	public JournalEntry(UserName userName, String targetObject_class, long targetObject_oid, String action) {
-		this.timestamp = new Date(System.currentTimeMillis() / 1000);
+		this.timestamp = new Date(System.currentTimeMillis());
 		this.userName = userName;
 		this.targetObject_class = targetObject_class;
 		this.targetObject_oid = targetObject_oid;

@@ -82,6 +82,10 @@
 	width: 650px;
 }
 
+.tblJournal {
+	margin-top: 20px;
+}
+
 .createRole {
 	margin-top: 20px;
 }
@@ -130,5 +134,17 @@
 
 .dpList {
 	font-size: 16px;
+}
+
+.journalTime, .journalAction {
+	width: 250px;
+}
+
+.journalObject {
+	width: 300px;
+}
+
+.journalUser, .journalObjectClass {
+	width: 200px;
 }
 

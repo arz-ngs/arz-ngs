@@ -9,7 +9,7 @@
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
-	<title>Rollendetailansicht</title>
+	<title>Aktivitätenprotokoll</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
 	<link href="css/main_style-AS.css" rel="stylesheet"></link>
 	<link href="css/main_style-DT.css" rel="stylesheet"></link>
@@ -57,52 +57,43 @@
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div>
-					<h2>#{roleDetail.currentRole}</h2>
-				</div>
-				<h:panelGroup layout="block" rendered="#{user.renderAdminOnlyElements}">
-					<h:selectOneMenu onchange="submit()" valueChangeListener="#{roleDetail.envIDchanged}"
-						value="#{roleDetail.chosenEnvID}" class="addPermission_leftElem">
-						<f:selectItems value="#{roleDetail.availableEnvIDs}" />
-					</h:selectOneMenu>
-					<h:selectOneMenu disabled="#{roleDetail.serviceDisabled}" value="#{roleDetail.chosenService}"
-						class="addPermission #{roleDetail.serviceCSSclass}">
-						<f:selectItems value="#{roleDetail.availableServices}" />
-					</h:selectOneMenu>
-					<h:selectOneMenu value="#{roleDetail.chosenAction}"
-						class="addPermission">
-						<f:selectItems value="#{roleDetail.availableActions}" />
-					</h:selectOneMenu>
-					<h:commandLink value="Hinzufügen"
-						class="btn btn-primary addPermission" action="#{roleDetail.addPermission()}">
-					</h:commandLink>
-				</h:panelGroup>
-				<h:dataTable id="roleDetailTable"
-					columnClasses="colPermissionEnv, colPermissionService, colPermissionAction"
-					headerClass="columnCenter" value="#{roleDetail.permissions}" var="permission"
-					class="tblPermission table-responsive table-bordered table-hover">
-					<h:column>
-						<f:facet name="header">EnvId
-						</f:facet>
-						<h:outputText value="#{permission.environmentName}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Service
-						</f:facet>
-						<h:outputText value="#{permission.serviceName}" />
-					</h:column>
-					<h:column>
-						<f:facet name="header">Aktion
-						</f:facet>
-						<h:outputText value="#{permission.action}" />
-					</h:column>
-					<h:column rendered="#{user.renderAdminOnlyElements}">
-						<f:facet name="header"><h:outputText class="delRow" value="Löschen" />
+					<div class="useroverviewHeader">
+						<h:outputText value="Aktivitätenprotokoll"
+							styleClass="h1"></h:outputText>
+					</div>
+					<h:dataTable columnClasses="journalTime, journalUser, journalAction, journalObjectClass, journalObject"
+						headerClass="columnCenter" value="#{journal.response}"
+						var="response"
+						class="tblJournal table-responsive table-bordered table-hover">
+						<h:column>
+							<f:facet name="header">Zeitpunkt
 							</f:facet>
-						<h:commandLink action="#{roleDetail.removePermission(permission)}" type="button" styleClass="btn deletePermission ">
-							<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>
-						</h:commandLink>
-					</h:column>
-				</h:dataTable>
+							<h:outputText value="#{response.timestamp}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">User
+							</f:facet>
+							<h:outputText value="#{response.userName}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">Aktion
+							</f:facet>
+							<h:outputText value="#{response.action}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">Objekt
+							</f:facet>
+							<h:outputText value="#{response.targetObject_class}"/>
+						</h:column>
+						<h:column>
+							<f:facet name="header">Objektname
+							</f:facet>
+							<h:outputText value="#{response.targetObject}"/>
+						</h:column>
+						
+						
+					</h:dataTable>
+				</div>
 			</div>
 			<div id="user-col" class="col-md-2">
 				<div class="dropdown">
@@ -119,21 +110,21 @@
 				</div>
 			</div>
 		</div>
-		<h:outputScript
-			rendered="#{roleDetail.errorCollection.showPopup}">
-    	 BootstrapDialog.show({
-            title: '#{roleDetail.errorCollection.headerInformation}',
-            message: '#{roleDetail.errorCollection.messages}',
-            closable: false,
-            buttons: [{
-            	label: 'Schließen',
-            	action: function(dialogRef) {
-            		dialogRef.close();
-            		console.log("test");
-            	}
-            }]
-        });
-		</h:outputScript>
+		<!-- TODO UserName null -->
+<!-- 		<h:outputScript rendered="#{userDetail.errorCollection.showPopup}"> -->
+<!--     	 BootstrapDialog.show({ -->
+<!--             title: '#{userDetail.errorCollection.headerInformation}', -->
+<!--             message: '#{userDetail.errorCollection.messages}', -->
+<!--             closable: false, -->
+<!--             buttons: [{ -->
+<!--             	label: 'Schließen', -->
+<!--             	action: function(dialogRef) { -->
+<!--             		dialogRef.close(); -->
+<!--             		console.log("test"); -->
+<!--             	} -->
+<!--             }] -->
+<!--         }); -->
+<!-- 		</h:outputScript> -->
 	</h:form>
 </body>
 </html>

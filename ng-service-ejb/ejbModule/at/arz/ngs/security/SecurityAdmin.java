@@ -127,9 +127,17 @@ public class SecurityAdmin {
 	 * NoPermission Exception is thrown.
 	 */
 	public void proofPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
+		if (isAuthorizedToPerformAction(env, service, action, actor)) {
+			return;
+		}
+		throw new NoPermission("The actor " + actor + " does not have permission to perform an action in environment "
+				+ env.getName() + " on service " + service.getName() + "!");
+	}
+	
+	public boolean isAuthorizedToPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
 		try {
 			proofActorAdminAccess(actor);
-			return;
+			return true;
 		}
 		catch (NoPermission e) {
 			User user = userRepository.getUser(new UserName(actor.getUserName()));
@@ -143,13 +151,12 @@ public class SecurityAdmin {
 					if ((envName.equals(env) || envName.getName().equals("*"))
 							&& (serviceName.equals(service) || serviceName.getName().equals("*"))
 							&& (act.equals(action) || act.name().equals("all"))) {
-						return;
+						return true;
 					}
 				}
 			}
 		}
-		throw new NoPermission("The actor " + actor + " does not have permission to perform an action in environment "
-				+ env.getName() + " on service " + service.getName() + "!");
+		return false;
 	}
 
 	/**

@@ -39,6 +39,7 @@ public class JournalAdmin {
 			jr.setTimestamp(je.getTimestamp());
 			jr.setUserName(je.getUserName().getName());
 			jr.setTargetObject_class(je.getTargetObject_class());
+			jr.setAction(je.getAction());
 			if (je.getTargetObject_class().equals("ServiceInstance")) {
 				ServiceInstance si = serviceInstanceRepository.getServiceInstanceByOid(je.getTargetObject_oid());
 				jr.setTargetObject(si.toString());

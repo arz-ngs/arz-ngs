@@ -29,8 +29,7 @@
 				<div>
 					<h1>
 						<h:commandLink id="ebk-title"
-								action="#{serviceinstance.goToOverview()}"
-								value="ebk" />	
+							action="#{serviceinstance.goToOverview()}" value="ebk" />
 					</h1>
 				</div>
 				<div class="navigation navbar-collapse full-width "
@@ -38,18 +37,22 @@
 					<ul class="nav navbar-nav full-width">
 						<li class="active nav-list full-width"><h:commandLink
 								action="#{serviceinstance.goToOverview()}"
-								value="Service Übersicht" />	
-						</li>
-						<li class="nav-list full-width dropdown"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown">Berechtigungen<b class="caret"></b></a>
+								value="Service Übersicht" /></li>
+						<li class="nav-list full-width dropdown"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
+								class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
 								<li class="nav-list dpList"><h:commandLink
-								action="#{useroverview.goToUserOverview()}"
-								value="Benutzerübersicht" /></li>
+										action="#{journal.goToJournal()}"
+										value="Aktivitätenprotokoll" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{roleoverview.goToRoleOverview()}"
-								value="Rollenübersicht" /></li>
+										action="#{useroverview.goToUserOverview()}"
+										value="Benutzerübersicht" /></li>
+								<li class="nav-list dpList"><h:commandLink
+										action="#{roleoverview.goToRoleOverview()}"
+										value="Rollenübersicht" /></li>
 							</ul></li>
+						
 					</ul>
 				</div>
 			</div>
@@ -57,7 +60,8 @@
 				<div class="row">
 					<div class="col-md-10 menutop1">
 						<h:commandButton value="enterFormSubmit" class="btn btn-primary"
-							id="buttonFormSubmit" action="#{serviceinstance.enterFormSubmit()}">
+							id="buttonFormSubmit"
+							action="#{serviceinstance.enterFormSubmit()}">
 						</h:commandButton>
 						<h:commandButton value="Start" class="btn btn-primary"
 							id="buttonStart"
@@ -99,7 +103,7 @@
 							<h:inputText id="serviceRegex" class="searchService"
 								a:placeholder="Suche nach Services..."
 								value="#{serviceinstance.serviceRegex}">
-<!-- 								<f:ajax event="keyup" onevent="typeServiceInput()" render="overviewTable" execute="#{serviceinstance.formSubmit()}"/> -->
+								<!-- 								<f:ajax event="keyup" onevent="typeServiceInput()" render="overviewTable" execute="#{serviceinstance.formSubmit()}"/> -->
 							</h:inputText>
 						</f:facet>
 						<h:outputText
@@ -174,7 +178,9 @@
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="true">
-						<h:outputText value="#{user.userData.first_name} #{user.userData.last_name}" /> <span class="caret"></span>
+						<h:outputText
+							value="#{user.userData.first_name} #{user.userData.last_name}" />
+						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
@@ -183,7 +189,8 @@
 			</div>
 			<div id="settings_col" class="col-md-2">
 				<!-- bottom settings: new instance, pagination, elements per page -->
-				<h:commandLink type="button" rendered="#{user.renderAdminOnlyElements}"
+				<h:commandLink type="button"
+					rendered="#{user.renderAdminOnlyElements}"
 					styleClass="btn btn-primary btn-lg float_right"
 					id="addNew_ServiceInstanceButton"
 					action="#{newServiceInstance.addNewServiceInstance()}">
