@@ -5,7 +5,7 @@ done - über rest statusupdates möglich machen
 done - serviceInstanceAdmin überarbeiten - checkings auf null; code in methoden auslagern und logik überprüfen
 done - bei status unknown einfügen
 done - returncodes noch implementieren - ausführen von shell/cmd commands soll von java aus möglich sein. Dieses Script oder Programm führt dann die aktion aus und gibt den returncode unserem programm zurück
-teil done - test .bat oder .sh datei schreiben, die returncodes liefert - input shell scripts sollen den Dateipfad automatisch bei den erzeugten instanzen (in den scripten) einfügen und mit default werten belegen
+done - test .bat oder .sh datei schreiben, die returncodes liefert - input shell scripts sollen den Dateipfad automatisch bei den erzeugten instanzen (in den scripten) einfügen und mit default werten belegen
 ripple restart ???
 
 done - facescontext aus actioncontroller bei anderen auch übernehmen?

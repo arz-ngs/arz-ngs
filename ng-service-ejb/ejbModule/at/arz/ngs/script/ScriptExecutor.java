@@ -101,11 +101,14 @@ public class ScriptExecutor {
 					if (!action.equals("status")) {
 						switch (errorCode) {
 							case 0:
-								if (serviceInstance.getStatus().name().equals("is_starting")) {
+								if (action.equals("start")) {
 									serviceInstance.setStatus(Status.active);
 								}
-								else if (serviceInstance.getStatus().name().equals("is_stopping")) {
+								else if (action.equals("stop")) {
 									serviceInstance.setStatus(Status.not_active);
+								}
+								else if (action.equals("restart")) {
+									serviceInstance.setStatus(Status.active);
 								}
 								break;
 							case 1:
