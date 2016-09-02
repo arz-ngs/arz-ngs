@@ -30,9 +30,7 @@ import at.arz.ngs.converter.jpa.ServiceNameConverter;
 		@UniqueConstraint(columnNames = {"ENVIRONMENT_NAME", "SERVICE_NAME", "ACTION"})})
 @NamedQueries({
 		@NamedQuery(name = Permission.QUERY_BY_ENVIRONMENTandSERVICEandACTION, query = "SELECT p FROM Permission p "
-									+ "WHERE p.environmentName = :ename "
-									+ "AND p.serviceName = :sname "
-									+ "AND p.action = :action") })
+				+ "WHERE p.environmentName = :ename " + "AND p.serviceName = :sname " + "AND p.action = :action")})
 public class Permission {
 
 	public static final String QUERY_BY_ENVIRONMENTandSERVICEandACTION = "Permission.findByUniqueKey";
@@ -124,12 +122,14 @@ public class Permission {
 		if (environmentName == null) {
 			if (other.environmentName != null)
 				return false;
-		} else if (!environmentName.equals(other.environmentName))
+		}
+		else if (!environmentName.equals(other.environmentName))
 			return false;
 		if (serviceName == null) {
 			if (other.serviceName != null)
 				return false;
-		} else if (!serviceName.equals(other.serviceName))
+		}
+		else if (!serviceName.equals(other.serviceName))
 			return false;
 		return true;
 	}
@@ -140,5 +140,10 @@ public class Permission {
 
 	public void removeRole(Role role) {
 		this.roles.remove(role);
+	}
+
+	@Override
+	public String toString() {
+		return environmentName.getName() + "/" + serviceName.getName() + "/" + action.name();
 	}
 }

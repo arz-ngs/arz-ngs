@@ -110,4 +110,8 @@ public class Role {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return roleName.getName();
+	}
 }

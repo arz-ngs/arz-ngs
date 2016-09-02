@@ -1,4 +1,4 @@
-package at.arz.ngs.journal;
+package at.arz.ngs.journal.commands.get;
 
 import java.util.Date;
 
@@ -12,7 +12,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class JournalResponse {
 
 	@XmlElement(required = true)
-	private Date timestamp;
+	private Date time;
 
 	@XmlElement(required = true)
 	private String userName;
@@ -21,13 +21,13 @@ public class JournalResponse {
 	private String targetObject_class;
 
 	@XmlElement(required = true)
-	private String targetObject;
+	private String targetObject_uniqueKey;
 
 	@XmlElement(required = true)
 	private String action;
 
-	public Date getTimestamp() {
-		return timestamp;
+	public Date getTime() {
+		return time;
 	}
 
 	public String getUserName() {
@@ -38,12 +38,8 @@ public class JournalResponse {
 		return targetObject_class;
 	}
 
-	public String getTargetObject() {
-		return targetObject;
-	}
-
-	public void setTimestamp(Date timestamp) {
-		this.timestamp = timestamp;
+	public void setTime(Date time) {
+		this.time = time;
 	}
 
 	public void setUserName(String userName) {
@@ -54,10 +50,6 @@ public class JournalResponse {
 		this.targetObject_class = targetObject_class;
 	}
 
-	public void setTargetObject(String targetObject) {
-		this.targetObject = targetObject;
-	}
-
 	public String getAction() {
 		return action;
 	}
@@ -65,7 +57,12 @@ public class JournalResponse {
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
 
-	
+	public String getTargetObject_uniqueKey() {
+		return targetObject_uniqueKey;
+	}
+
+	public void setTargetObject_uniqueKey(String targetObject_uniqueKey) {
+		this.targetObject_uniqueKey = targetObject_uniqueKey;
+	}
 }

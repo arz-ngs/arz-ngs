@@ -17,11 +17,10 @@ import javax.persistence.UniqueConstraint;
 import at.arz.ngs.converter.jpa.BooleanTFConverter;
 
 @Entity
-@Table(name = "USER_ROLE", uniqueConstraints = { @UniqueConstraint(columnNames = { "USER_OID", "ROLE_OID" }) })
-@NamedQueries({ @NamedQuery(name = User_Role.QUERY_BY_USER_ROLE,
-							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole"),
-				@NamedQuery(name = User_Role.QUERY_BY_USER,
-							query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser")})
+@Table(name = "USER_ROLE", uniqueConstraints = {@UniqueConstraint(columnNames = {"USER_OID", "ROLE_OID"})})
+@NamedQueries({
+		@NamedQuery(name = User_Role.QUERY_BY_USER_ROLE, query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser AND ur.role = :urrole"),
+		@NamedQuery(name = User_Role.QUERY_BY_USER, query = "SELECT ur FROM User_Role ur WHERE ur.user = :uruser")})
 public class User_Role {
 
 	public static final String QUERY_BY_USER_ROLE = "User_Role.findbyUniqueKey";
@@ -113,5 +112,10 @@ public class User_Role {
 		else if (!user.equals(other.user))
 			return false;
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return role.getRoleName().getName() + "/" + user.getUserName().getName();
 	}
 }

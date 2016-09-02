@@ -5,51 +5,66 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import at.arz.ngs.ServiceInstance;
-import at.arz.ngs.ServiceInstanceRepository;
-import at.arz.ngs.security.Role;
-import at.arz.ngs.security.RoleRepository;
+import at.arz.ngs.api.UserName;
+import at.arz.ngs.api.exception.EmptyField;
+import at.arz.ngs.journal.commands.get.JournalResponse;
+import at.arz.ngs.security.commands.Actor;
 
 public class JournalAdmin {
-	
+
 	@Inject
 	private JournalRepository journalRepositoy;
-	
-	@Inject
-	private ServiceInstanceRepository serviceInstanceRepository;
-	
-	@Inject
-	private RoleRepository roleRepository;
-	
+
 	protected JournalAdmin() {
 		//ejb constructor
 	}
-	
-	public JournalAdmin(JournalRepository journalRepository, ServiceInstanceRepository serviceInstanceRepository, RoleRepository roleRepository) {
+
+	/**
+	 * Only for JUnit Test!!
+	 * 
+	 * @param journalRepository
+	 * @param serviceInstanceRepository
+	 * @param roleRepository
+	 */
+	public JournalAdmin(JournalRepository journalRepository) {
 		this.journalRepositoy = journalRepository;
-		this.serviceInstanceRepository = serviceInstanceRepository;
-		this.roleRepository = roleRepository;
 	}
-	
-	public List<JournalResponse>getAllJournalEntries() {
+
+	public List<JournalResponse> getAllJournalEntries() {
 		List<JournalEntry> entries = journalRepositoy.getAllJournalEntries();
-		List<JournalResponse> response = new LinkedList<JournalResponse>();
-		for (JournalEntry je : entries) {
-			JournalResponse jr = new JournalResponse();
-			jr.setTimestamp(je.getTimestamp());
-			jr.setUserName(je.getUserName().getName());
-			jr.setTargetObject_class(je.getTargetObject_class());
-			jr.setAction(je.getAction());
-			if (je.getTargetObject_class().equals("ServiceInstance")) {
-				ServiceInstance si = serviceInstanceRepository.getServiceInstanceByOid(je.getTargetObject_oid());
-				jr.setTargetObject(si.toString());
-			} else if (je.getTargetObject_class().equals("Role")) {
-				Role role = roleRepository.getRoleByOid(je.getTargetObject_oid());
-				jr.setTargetObject(role.getRoleName().getName());
-			}
-			response.add(jr);
-			}
+		List<JournalResponse> response = new LinkedList<>();
+		for (JournalEntry entry : entries) {
+			JournalResponse res = new JournalResponse();
+			res.setTime(entry.getTime());
+			res.setUserName(entry.getUserName().getName());
+			res.setTargetObject_class(entry.getTargetObject_class());
+			res.setAction(entry.getAction());
+			res.setTargetObject_uniqueKey(entry.getTargetObject_uniqueKey());
+
+			response.add(res);
+		}
 		return response;
 	}
 
+	public void addJournalEntry(Actor actor, Class<?> targetObject_class, long targetObject_oid,
+			String targetObject_uniqueKey, String action) {
+		if (actor == null || actor.getUserName().trim().equals("")) {
+			throw new EmptyField("To add an journal entry an actor must be set!");
+		}
+		if (targetObject_class == null) {
+			throw new EmptyField("To add an journal entry a targetObject-class must be set!");
+		}
+		if (targetObject_uniqueKey == null || targetObject_uniqueKey.trim().equals("")) {
+			throw new EmptyField("To add an journal entry a targetObject-uniqueKey must be set!");
+		}
+		if (action == null || action.trim().equals("")) {
+			throw new EmptyField("To add an journal entry an action must be set!");
+		}
+
+		String clazz = targetObject_class.getSimpleName(); //can be changed to persist full name
+
+		JournalEntry entry = new JournalEntry(new UserName(actor.getUserName()), clazz, targetObject_oid,
+				targetObject_uniqueKey, action);
+		journalRepositoy.addJournalEntry(entry);
+	}
 }

@@ -9,10 +9,10 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import at.arz.ngs.api.Action;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.commands.getSIDetailPermissions.PerformActionPermissions;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
@@ -29,10 +29,10 @@ public class DetailViewController
 
 	@Inject
 	private ServiceInstanceAdmin admin;
-	
+
 	@Inject
 	private SecurityAdmin securityAdmin;
-	
+
 	@Inject
 	private UserController userController;
 
@@ -95,27 +95,26 @@ public class DetailViewController
 	}
 
 	private void validateCommandButtons() {
+		PerformActionPermissions permissions = securityAdmin.isAuthorizedToPerformActions(
+				new EnvironmentName(this.environment), new ServiceName(this.service), userController.getCurrentActor());
+
 		commandButtonCollection = new CommandButtonCollection(); //reset the collection to defaults
-		if (pathEmpty(pathStart) || !isAuthorized(Action.start)) {
+		if (pathEmpty(pathStart) || !permissions.isAbleToStart()) {
 			commandButtonCollection.setStartCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
 			commandButtonCollection.setStartDisabled(true);
 		}
-		if (pathEmpty(pathStop) || !isAuthorized(Action.stop)) {
+		if (pathEmpty(pathStop) || !permissions.isAbleToStop()) {
 			commandButtonCollection.setStopCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
 			commandButtonCollection.setStopDisabled(true);
 		}
-		if (pathEmpty(pathRestart) || !isAuthorized(Action.restart)) {
+		if (pathEmpty(pathRestart) || !permissions.isAbleToRestart()) {
 			commandButtonCollection.setRestartCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
 			commandButtonCollection.setRestartDisabled(true);
 		}
-		if (pathEmpty(pathStatus) || !isAuthorized(Action.status)) {
+		if (pathEmpty(pathStatus) || !permissions.isAbleToStatus()) {
 			commandButtonCollection.setStatusCSSClass(CommandButtonCollection.DISABLED_CSS_CLASS);
 			commandButtonCollection.setStatusDisabled(true);
 		}
-	}
-	
-	private boolean isAuthorized(Action action) {
-		return securityAdmin.isAuthorizedToPerformAction(new EnvironmentName(this.environment), new ServiceName(this.service), action, userController.getCurrentActor());
 	}
 
 	private boolean pathEmpty(String path) {

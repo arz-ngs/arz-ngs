@@ -23,8 +23,7 @@ jpql inner join tex:  http://stackoverflow.com/questions/2844019/how-do-i-write-
 
 http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
 
-teil done - buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist - funktioniert schon mit ausgrauen wenn kein Pfad aber noch ohne Berechtigung
+done - buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist 
 
 
-@dani: schau da des an!! methode 2! und nimm da timestamp!
-http://www.developerscrappad.com/228/java/java-ee/ejb3-jpa-dealing-with-date-time-and-timestamp/
+journal test noch fixen

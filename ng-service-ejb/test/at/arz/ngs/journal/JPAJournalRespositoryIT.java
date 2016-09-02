@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
 import at.arz.ngs.api.UserName;
+import at.arz.ngs.journal.jpa.JPAJournalRepository;
 
 public class JPAJournalRespositoryIT extends AbstractJpaIT{
 	

@@ -27,8 +27,8 @@ import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.api.exception.ServiceNotFound;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
-import at.arz.ngs.journal.JPAJournalRepository;
-import at.arz.ngs.journal.JournalRepository;
+import at.arz.ngs.journal.JournalAdmin;
+import at.arz.ngs.journal.jpa.JPAJournalRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.PermissionRepository;
@@ -49,8 +49,7 @@ import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 
-public class ServiceInstanceAdminIT
-		extends AbstractJpaIT {
+public class ServiceInstanceAdminIT extends AbstractJpaIT {
 
 	private ServiceInstanceAdmin admin;
 
@@ -65,7 +64,7 @@ public class ServiceInstanceAdminIT
 	private RoleRepository roleRepository;
 	private UserRepository userRepository;
 	private User_RoleRepository userRoleRepository;
-	private JournalRepository journalRepository;
+	private JournalAdmin journalAdmin;
 
 	private Actor actor;
 
@@ -80,17 +79,11 @@ public class ServiceInstanceAdminIT
 		roleRepository = new JPARoleRepository(getEntityManager());
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		journalRepository = new JPAJournalRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalRepository);
-		admin = new ServiceInstanceAdmin(	services,
-											hosts,
-											environments,
-											instances,
-											scripts,
-											new SearchEngine(getEntityManager()),
-											securityAdmin,
-											journalRepository);
-
+		journalAdmin = new JournalAdmin(new JPAJournalRepository(getEntityManager()));
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
+				journalAdmin);
+		admin = new ServiceInstanceAdmin(services, hosts, environments, instances, scripts,
+				new SearchEngine(getEntityManager()), securityAdmin, journalAdmin);
 
 		String environmentName = "environment1";
 		String hostName = "host1";
@@ -140,10 +133,8 @@ public class ServiceInstanceAdminIT
 		command.setServiceName(serviceName);
 		admin.createNewServiceInstance(actor, command);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment2", response.getEnvironmentName());
 		assertEquals("host2", response.getHostName());
 		assertEquals("service2", response.getServiceName());
@@ -179,7 +170,8 @@ public class ServiceInstanceAdminIT
 		try {
 			admin.createNewServiceInstance(actor, command);
 			fail();
-		} catch (EmptyField e) {
+		}
+		catch (EmptyField e) {
 			// ok
 		}
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
@@ -210,7 +202,8 @@ public class ServiceInstanceAdminIT
 		try {
 			admin.createNewServiceInstance(actor, command);
 			fail();
-		} catch (EmptyField e) {
+		}
+		catch (EmptyField e) {
 			// ok
 		}
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
@@ -266,10 +259,8 @@ public class ServiceInstanceAdminIT
 
 		admin.createNewServiceInstance(actor, command);
 
-		ServiceInstanceResponse serviceInstance = admin.getServiceInstance(	serviceName,
-																			environmentName,
-																			hostName,
-																			instanceName);
+		ServiceInstanceResponse serviceInstance = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertTrue(serviceInstance.getScript().getPathStop().equals("stop"));
 		assertTrue(serviceInstance.getScript().getScriptName().contains("@@"));
 		assertEquals(2, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
@@ -289,7 +280,8 @@ public class ServiceInstanceAdminIT
 		try {
 			admin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
 			fail();
-		} catch (ServiceNotFound e) {
+		}
+		catch (ServiceNotFound e) {
 			// ok
 		}
 
@@ -325,10 +317,8 @@ public class ServiceInstanceAdminIT
 
 		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment2", response.getEnvironmentName());
 		assertEquals("host2", response.getHostName());
 		assertEquals("service2", response.getServiceName());
@@ -368,10 +358,8 @@ public class ServiceInstanceAdminIT
 
 		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment2", response.getEnvironmentName());
 		assertEquals("host2", response.getHostName());
 		assertEquals("service1", response.getServiceName());
@@ -412,10 +400,8 @@ public class ServiceInstanceAdminIT
 		String oldInstanceName = "instance1";
 		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment1", response.getEnvironmentName());
 		assertEquals("host1", response.getHostName());
 		assertEquals("service1", response.getServiceName());
@@ -456,24 +442,19 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(actor,
-										command,
-										oldServiceName,
-										oldEnvironmentName,
-										oldHostName,
-										oldInstanceName);
+			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
+					oldInstanceName);
 			fail();
-		} catch (AlreadyModified e) {
+		}
+		catch (AlreadyModified e) {
 			// ok
 		}
 
 		command.setVersion(0);
 		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment2", response.getEnvironmentName());
 		assertEquals("host2", response.getHostName());
 		assertEquals("service1", response.getServiceName());
@@ -512,24 +493,19 @@ public class ServiceInstanceAdminIT
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(actor,
-										command,
-										oldServiceName,
-										oldEnvironmentName,
-										oldHostName,
-										oldInstanceName);
+			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
+					oldInstanceName);
 			fail();
-		} catch (AlreadyModified e) {
+		}
+		catch (AlreadyModified e) {
 		}
 
 		command.setVersion(0);
 
 		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
-		ServiceInstanceResponse response = admin.getServiceInstance(serviceName,
-																	environmentName,
-																	hostName,
-																	instanceName);
+		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
+				instanceName);
 		assertEquals("environment1", response.getEnvironmentName());
 		assertEquals("host1", response.getHostName());
 		assertEquals("service1", response.getServiceName());
@@ -567,14 +543,11 @@ public class ServiceInstanceAdminIT
 		String oldInstanceName = "instance1";
 
 		try {
-			admin.updateServiceInstance(actor,
-										command,
-										oldServiceName,
-										oldEnvironmentName,
-										oldHostName,
-										oldInstanceName);
+			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
+					oldInstanceName);
 			fail();
-		} catch (EmptyField e) {
+		}
+		catch (EmptyField e) {
 			// ok
 		}
 
@@ -655,11 +628,7 @@ public class ServiceInstanceAdminIT
 		command3.setServiceName(serviceName3);
 		admin.createNewServiceInstance(actor, command3);
 		assertEquals(2, hosts.getAllHosts().size());
-		admin.removeServiceInstance(actor,
-									serviceName3,
-									environmentName3,
-									hostName3,
-									instanceName3);
+		admin.removeServiceInstance(actor, serviceName3, environmentName3, hostName3, instanceName3);
 		assertEquals(1, hosts.getAllHosts().size());
 		admin.removeServiceInstance(actor, serviceName, environmentName, hostName, instanceName);
 		assertEquals(1, hosts.getAllHosts().size());

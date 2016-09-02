@@ -26,9 +26,9 @@ import at.arz.ngs.api.exception.RoleNotFound;
 import at.arz.ngs.api.exception.UserAlreadyHasRole;
 import at.arz.ngs.api.exception.UserNotFound;
 import at.arz.ngs.api.exception.User_RoleNotFound;
-import at.arz.ngs.journal.JournalEntry;
-import at.arz.ngs.journal.JournalRepository;
+import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.security.commands.Actor;
+import at.arz.ngs.security.commands.getSIDetailPermissions.PerformActionPermissions;
 import at.arz.ngs.security.commands.login.Login;
 import at.arz.ngs.security.commands.login.LoginResponse;
 import at.arz.ngs.security.permission.commands.PermissionData;
@@ -59,9 +59,9 @@ public class SecurityAdmin {
 
 	@Inject
 	private User_RoleRepository userRoleRepository;
-	
+
 	@Inject
-	private JournalRepository journalRepository;
+	private JournalAdmin journalAdmin;
 
 	public static final String ADMIN = "Administrator";
 
@@ -81,12 +81,12 @@ public class SecurityAdmin {
 	 * @param userRepository
 	 */
 	public SecurityAdmin(PermissionRepository permissionRepository, RoleRepository roleRepository,
-			UserRepository userRepository, User_RoleRepository userRoleRepository, JournalRepository journalRepository) {
+			UserRepository userRepository, User_RoleRepository userRoleRepository, JournalAdmin journalAdmin) {
 		this.permissionRepository = permissionRepository;
 		this.roleRepository = roleRepository;
 		this.userRepository = userRepository;
 		this.userRoleRepository = userRoleRepository;
-		this.journalRepository = journalRepository;
+		this.journalAdmin = journalAdmin;
 		isJunitTest = true;
 	}
 
@@ -109,11 +109,11 @@ public class SecurityAdmin {
 		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
 			// productional stage
 			//Replaces InitalInserts
-//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
-//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
-//			User u = userRepository.getUser(new UserName("admin"));
-//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
-//			userRoleRepository.addUser_Role(u, r, true);
+			//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
+			//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
+			//			User u = userRepository.getUser(new UserName("admin"));
+			//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
+			//			userRoleRepository.addUser_Role(u, r, true);
 			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
 		}
 
@@ -133,26 +133,36 @@ public class SecurityAdmin {
 		throw new NoPermission("The actor " + actor + " does not have permission to perform an action in environment "
 				+ env.getName() + " on service " + service.getName() + "!");
 	}
-	
-	public boolean isAuthorizedToPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
-		try {
-			proofActorAdminAccess(actor);
+
+	public PerformActionPermissions isAuthorizedToPerformActions(EnvironmentName env, ServiceName service,
+			Actor actor) {
+		PerformActionPermissions res = new PerformActionPermissions();
+
+		res.setAbleToStart(isAuthorizedToPerformAction(env, service, Action.start, actor));
+		res.setAbleToStop(isAuthorizedToPerformAction(env, service, Action.stop, actor));
+		res.setAbleToRestart(isAuthorizedToPerformAction(env, service, Action.restart, actor));
+		res.setAbleToStatus(isAuthorizedToPerformAction(env, service, Action.status, actor));
+
+		return res;
+	}
+
+	private boolean isAuthorizedToPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
+		if (isAdmin(actor)) {
 			return true;
 		}
-		catch (NoPermission e) {
-			User user = userRepository.getUser(new UserName(actor.getUserName()));
-			for (User_Role ur : user.getUser_roles()) {
-				Role role = ur.getRole();
-				//				System.err.println("PROOFPERMISSION: ROLLE " + role.getRoleName().getName());
-				for (Permission permission : role.getPermissions()) {
-					EnvironmentName envName = permission.getEnvironmentName();
-					ServiceName serviceName = permission.getServiceName();
-					Action act = permission.getAction();
-					if ((envName.equals(env) || envName.getName().equals("*"))
-							&& (serviceName.equals(service) || serviceName.getName().equals("*"))
-							&& (act.equals(action) || act.name().equals("all"))) {
-						return true;
-					}
+
+		User user = userRepository.getUser(new UserName(actor.getUserName()));
+		for (User_Role ur : user.getUser_roles()) {
+			Role role = ur.getRole();
+			//				System.err.println("PROOFPERMISSION: ROLLE " + role.getRoleName().getName());
+			for (Permission permission : role.getPermissions()) {
+				EnvironmentName envName = permission.getEnvironmentName();
+				ServiceName serviceName = permission.getServiceName();
+				Action act = permission.getAction();
+				if ((envName.equals(env) || envName.getName().equals("*"))
+						&& (serviceName.equals(service) || serviceName.getName().equals("*"))
+						&& (act.equals(action) || act.name().equals("all"))) {
+					return true;
 				}
 			}
 		}
@@ -237,7 +247,11 @@ public class SecurityAdmin {
 		}
 		catch (User_RoleNotFound e) {
 			userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
-			journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", roleToAdd.getOid(), "assign to " + userToAddTo.getUserName().getName()));
+			User_Role user_Role = userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
+
+			journalAdmin.addJournalEntry(actor, user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
+					userToAddTo.getUserName().getName() + " hat die Rolle " + roleToAdd.getRoleName().getName()
+							+ " erhalten");
 		}
 	}
 
@@ -269,11 +283,12 @@ public class SecurityAdmin {
 	private void removeRoleFromUser(Role role, User user, Actor actor) {
 		User_Role user_Role = userRoleRepository.getUser_Role(user, role);
 		userRoleRepository.removeUser_Role(user_Role);
-		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", role.getOid(), "remove from " + user.getUserName().getName()));
 
-		// remove user if no role is set. If removal did not succeed, because of references go further
+		journalAdmin.addJournalEntry(actor, user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
+				user_Role.getUser().getUserName().getName() + " wurde die Rolle "
+						+ user_Role.getRole().getRoleName().getName() + " entzogen");
+
 		try {
-
 			user.removeUser_Role(user_Role);
 			role.removeUser_Role(user_Role);
 		}
@@ -299,7 +314,9 @@ public class SecurityAdmin {
 		RoleName roleName = new RoleName(command.getRoleName());
 		roleRepository.addRole(roleName);
 		Role role = roleRepository.getRole(roleName);
-		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", role.getOid(), "create"));
+
+		journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(),
+				"Rolle " + role.getRoleName().getName() + " wurde neu erstellt");
 	}
 
 	public void removeRole(Actor actor, RemoveRole command) {
@@ -323,6 +340,10 @@ public class SecurityAdmin {
 				// this user did not have this role -> continue
 			}
 		}
+
+		long role_oid = role.getOid();
+		String uniqueName = role.toString();
+
 		List<Permission> permToDelete = role.getPermissions();
 		roleRepository.removeRole(role);
 		for (Permission p : permToDelete) {
@@ -334,7 +355,9 @@ public class SecurityAdmin {
 			catch (RuntimeException e) {
 			}
 		}
-		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", role.getOid(), "remove"));
+
+		journalAdmin.addJournalEntry(actor, Role.class, role_oid, uniqueName,
+				"Rolle " + uniqueName + " wurde gelöscht");
 	}
 
 	public RolesResponse getAllRoles() {
@@ -387,8 +410,9 @@ public class SecurityAdmin {
 		if (!role.getPermissions().contains(permission) && !permission.getRoles().contains(role)) {
 			role.addPermission(permission);
 			permission.addRole(role);
-			journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", role.getOid(), "assign " + permission.getServiceName() + "/" + permission.getEnvironmentName() + "/" + permission.getAction().name()));
 
+			journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(), "Permission "
+					+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " hinzugefügt");
 		}
 		else {
 			throw new RoleAlreadyHasPermission(role.getRoleName().getName(), permission.getEnvironmentName().getName()
@@ -470,11 +494,12 @@ public class SecurityAdmin {
 				new ServiceName(servName), convert(action));
 		permission.removeRole(role);
 		role.removePermission(permission);
-		journalRepository.addJournalEntry(new JournalEntry(new UserName(actor.getUserName()), "Role", role.getOid(), "remove " + permission.getServiceName() + "/" + permission.getEnvironmentName() + "/" + permission.getAction().name()));
 
+		journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(), "Permission "
+				+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " entzogen");
 
-		// try to remove permission if not used anymore, if exception this permission is used
 		try {
+			// try to remove permission if not used anymore, if exception this permission is used
 			permissionRepository.removePermission(permission);
 		}
 		catch (RuntimeException e) {

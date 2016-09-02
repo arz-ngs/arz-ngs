@@ -61,14 +61,14 @@
 						<h:outputText value="Aktivitätenprotokoll"
 							styleClass="h1"></h:outputText>
 					</div>
-					<h:dataTable columnClasses="journalTime, journalUser, journalAction, journalObjectClass, journalObject"
+					<h:dataTable id="journalTable" columnClasses="journalTime, journalUser, journalAction, journalObjectClass, journalObject"
 						headerClass="columnCenter" value="#{journal.response}"
 						var="response"
 						class="tblJournal table-responsive table-bordered table-hover">
 						<h:column>
 							<f:facet name="header">Zeitpunkt
 							</f:facet>
-							<h:outputText value="#{response.timestamp}"/>
+							<h:outputText value="#{response.time}"/>
 						</h:column>
 						<h:column>
 							<f:facet name="header">User
@@ -88,7 +88,7 @@
 						<h:column>
 							<f:facet name="header">Objektname
 							</f:facet>
-							<h:outputText value="#{response.targetObject}"/>
+							<h:outputText value="#{response.targetObject_uniqueKey}"/>
 						</h:column>
 						
 						

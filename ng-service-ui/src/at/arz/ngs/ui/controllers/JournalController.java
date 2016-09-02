@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import at.arz.ngs.journal.JournalAdmin;
-import at.arz.ngs.journal.JournalResponse;
+import at.arz.ngs.journal.commands.get.JournalResponse;
 
 @RequestScoped
 @Named("journal")

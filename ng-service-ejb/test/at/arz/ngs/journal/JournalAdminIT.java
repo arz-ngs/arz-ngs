@@ -23,6 +23,8 @@ import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
+import at.arz.ngs.journal.commands.get.JournalResponse;
+import at.arz.ngs.journal.jpa.JPAJournalRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.PermissionRepository;

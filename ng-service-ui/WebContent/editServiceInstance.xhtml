@@ -28,8 +28,7 @@
 				<div>
 					<h1>
 						<h:commandLink id="ebk-title"
-								action="#{serviceinstance.goToOverview()}"
-								value="ebk" />	
+							action="#{serviceinstance.goToOverview()}" value="ebk" />
 					</h1>
 				</div>
 				<div class="navigation navbar-collapse full-width "
@@ -37,20 +36,19 @@
 					<ul class="nav navbar-nav full-width">
 						<li class="active nav-list full-width"><h:commandLink
 								action="#{serviceinstance.goToOverview()}"
-								value="Service Übersicht" />	
-						</li>
-						<li class="nav-list full-width dropdown"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown">Berechtigungen<b class="caret"></b></a>
+								value="Service Übersicht" /></li>
+						<li class="nav-list full-width dropdown"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
+								class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
 								<li class="nav-list dpList"><h:commandLink
-								action="#{journal.goToJournal()}"
-								value="Aktivitätenprotokoll" /></li>
+										action="#{journal.goToJournal()}" value="Aktivitätenprotokoll" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{useroverview.goToUserOverview()}"
-								value="Benutzerübersicht" /></li>
+										action="#{useroverview.goToUserOverview()}"
+										value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{roleoverview.goToRoleOverview()}"
-								value="Rollenübersicht" /></li>
+										action="#{roleoverview.goToRoleOverview()}"
+										value="Rollenübersicht" /></li>
 							</ul></li>
 					</ul>
 				</div>
@@ -151,7 +149,8 @@
 						<h2>Zusätzliche Informationen</h2>
 						<div class="form-group">
 							<h:inputTextarea class="form-control" rows="5"
-								id="additionalInformation" value="#{editServiceInstance.oldInformation}"
+								id="additionalInformation"
+								value="#{editServiceInstance.oldInformation}"
 								p:placeholder="Zusätzliche Informationen zur Intanz eines Services..."></h:inputTextarea>
 						</div>
 					</div>
@@ -180,7 +179,9 @@
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="true">
-						<h:outputText value="#{user.userData.first_name} #{user.userData.last_name}" /> <span class="caret"></span>
+						<h:outputText
+							value="#{user.userData.first_name} #{user.userData.last_name}" />
+						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
@@ -188,9 +189,9 @@
 				</div>
 			</div>
 		</div>
-		
+
 		<h:outputScript
-			rendered="#{editServiceInstance.errorCollection.showPopup}">
+			rendered="#{editServiceInstance.errorCollection.showPopup}"> 
     	 BootstrapDialog.show({
             title: '#{editServiceInstance.errorCollection.headerInformation}',
             message: '#{editServiceInstance.errorCollection.messages}',

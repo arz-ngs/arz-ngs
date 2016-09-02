@@ -201,6 +201,10 @@ tbody tr:hover {
 	border-color: blue;
 }
 
+#ngs-form\:journalTable tbody tr:hover {
+	border: none;
+}
+
 #user-col {
 	z-index: 2; /*overlap other things whose index is 0 like the nav-bar*/
 	margin-top: 30px;
