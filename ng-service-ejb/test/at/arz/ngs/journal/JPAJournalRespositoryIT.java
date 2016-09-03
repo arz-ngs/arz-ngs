@@ -30,7 +30,7 @@ public class JPAJournalRespositoryIT extends AbstractJpaIT {
 		repository.addJournalEntry(new JournalEntry(new UserName("Daniel"), "ServiceInstance", 51, "test", "Start"));
 		assertEquals(2, repository.getAllJournalEntries().size());
 		try {
-			TimeUnit.MILLISECONDS.sleep(10);
+			TimeUnit.MILLISECONDS.sleep(100);
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();

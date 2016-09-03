@@ -25,5 +25,4 @@ http://docs.oracle.com/javaee/6/api/javax/persistence/EntityManager.html
 
 done - buttons ausgrauen, wenn man die berechtigung nicht dazu hat oder kein Pfad eingegeben ist 
 
-
-journal test noch fixen
+done - journal test noch fixen
