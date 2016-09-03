@@ -76,7 +76,8 @@ public class JournalAdminIT extends AbstractJpaIT{
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
 		journalRepository = new JPAJournalRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalRepository);
+		journalAdmin = new JournalAdmin(journalRepository);
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalAdmin);
 		admin = new ServiceInstanceAdmin(	services,
 											hosts,
 											environments,
@@ -84,8 +85,7 @@ public class JournalAdminIT extends AbstractJpaIT{
 											scripts,
 											new SearchEngine(getEntityManager()),
 											securityAdmin,
-											journalRepository);
-		journalAdmin = new JournalAdmin(journalRepository, instances, roleRepository);
+											journalAdmin);
 
 		String environmentName = "environment1";
 		String hostName = "host1";
@@ -117,14 +117,14 @@ public class JournalAdminIT extends AbstractJpaIT{
 		List<JournalResponse> response = journalAdmin.getAllJournalEntries();
 		JournalResponse jr = response.get(0);
 		assertEquals("admin", jr.getUserName());
-		assertEquals("Role", jr.getTargetObject_class());
-		assertEquals("Administrator", jr.getTargetObject());
+		assertEquals("User_Role", jr.getTargetObject_class());
+		assertEquals("Administrator/admin", jr.getTargetObject_uniqueKey()); //toString() of User_Role return Role/userName
 		
 		
 		JournalResponse jr2 = response.get(1);
 		assertEquals("admin", jr2.getUserName());
 		assertEquals("ServiceInstance", jr2.getTargetObject_class());
-		assertEquals("service1/environment1/host1/instance1", jr2.getTargetObject());
+		assertEquals("service1/environment1/host1/instance1", jr2.getTargetObject_uniqueKey());
 	}
 	
 	@After

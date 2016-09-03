@@ -2,8 +2,6 @@ package at.arz.ngs.journal;
 
 import static org.junit.Assert.*;
 
-import java.util.Date;
-
 import javax.persistence.Query;
 
 import org.junit.After;
@@ -11,6 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
+import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.journal.jpa.JPAJournalRepository;
 
@@ -21,13 +20,13 @@ public class JPAJournalRespositoryIT extends AbstractJpaIT{
 	@Before
 	public void setUpBefore() {
 		repository = new JPAJournalRepository(getEntityManager());
-		repository.addJournalEntry(new JournalEntry(new UserName("Daniel"), "ServiceInstance", 51, "Stop"));
+		repository.addJournalEntry(new JournalEntry(new UserName("Daniel"), ServiceInstance.class.getSimpleName(), 51, "service1/env1/host1/instance1", "Stop"));
 	}
 	
 	@Test
 	public void addJournalEntry() {
 		assertEquals(1, repository.getAllJournalEntries().size());
-		repository.addJournalEntry(new JournalEntry(new UserName("Daniel"), "ServiceInstance", 51, "Start"));
+		repository.addJournalEntry(new JournalEntry(new UserName("Daniel"), ServiceInstance.class.getSimpleName(), 51, "service1/env1/host1/instance1", "Start"));
 		assertEquals(2, repository.getAllJournalEntries().size());
 	}
 	
