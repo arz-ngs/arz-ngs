@@ -17,7 +17,8 @@ import at.arz.ngs.api.UserName;
 import at.arz.ngs.converter.jpa.UserNameConverter;
 
 @Entity
-@NamedQueries({@NamedQuery(name = JournalEntry.QUERY_ALL, query = "SELECT je FROM JournalEntry je")})
+@NamedQueries({
+		@NamedQuery(name = JournalEntry.QUERY_ALL, query = "SELECT je FROM JournalEntry je ORDER BY je.time DESC")})
 public class JournalEntry {
 
 	public static final String QUERY_ALL = "JournalEntry.getAll";

@@ -65,4 +65,10 @@ public class JournalResponse {
 	public void setTargetObject_uniqueKey(String targetObject_uniqueKey) {
 		this.targetObject_uniqueKey = targetObject_uniqueKey;
 	}
+
+	@Override
+	public String toString() {
+		return time.toString() + " - " + userName + " - " + targetObject_class + " - " + targetObject_uniqueKey + " - "
+				+ action;
+	}
 }

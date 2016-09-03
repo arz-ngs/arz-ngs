@@ -1,6 +1,6 @@
 package at.arz.ngs.journal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
@@ -44,7 +44,7 @@ import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
-public class JournalAdminIT extends AbstractJpaIT{
+public class JournalAdminIT extends AbstractJpaIT {
 
 	private ServiceInstanceAdmin admin;
 
@@ -63,9 +63,9 @@ public class JournalAdminIT extends AbstractJpaIT{
 	private JournalAdmin journalAdmin;
 
 	private Actor actor;
-	
+
 	@Before
-	public void setUpBefore(){
+	public void setUpBefore() {
 		services = new JPAServiceRepository(getEntityManager());
 		hosts = new JPAHostRepository(getEntityManager());
 		environments = new JPAEnvironmentRepository(getEntityManager());
@@ -76,16 +76,12 @@ public class JournalAdminIT extends AbstractJpaIT{
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
 		journalRepository = new JPAJournalRepository(getEntityManager());
-		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository, journalRepository);
-		admin = new ServiceInstanceAdmin(	services,
-											hosts,
-											environments,
-											instances,
-											scripts,
-											new SearchEngine(getEntityManager()),
-											securityAdmin,
-											journalRepository);
-		journalAdmin = new JournalAdmin(journalRepository, instances, roleRepository);
+		journalAdmin = new JournalAdmin(journalRepository);
+
+		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
+				journalAdmin);
+		admin = new ServiceInstanceAdmin(services, hosts, environments, instances, scripts,
+				new SearchEngine(getEntityManager()), securityAdmin, journalAdmin);
 
 		String environmentName = "environment1";
 		String hostName = "host1";
@@ -98,35 +94,38 @@ public class JournalAdminIT extends AbstractJpaIT{
 		scriptData.setPathStop("stop1");
 		scriptData.setPathRestart("restart1");
 		scriptData.setPathStatus("status1");
+
+		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
+
+		actor = new Actor("admin"); // preset admin
+		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
+		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
+		securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
+
 		CreateNewServiceInstance command = new CreateNewServiceInstance();
 		command.setEnvironmentName(environmentName);
 		command.setHostName(hostName);
 		command.setInstanceName(instanceName);
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
-		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
-		actor = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset admin
-		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
-		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
-		securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
 		admin.createNewServiceInstance(actor, command);
 	}
-	
+
 	@Test
 	public void checkServiceInstanceJournal() {
 		List<JournalResponse> response = journalAdmin.getAllJournalEntries();
-		JournalResponse jr = response.get(0);
+
+		JournalResponse jr = response.get(1); //the last element is the oldest one (chronologically)
 		assertEquals("admin", jr.getUserName());
-		assertEquals("Role", jr.getTargetObject_class());
-		assertEquals("Administrator", jr.getTargetObject());
-		
-		
-		JournalResponse jr2 = response.get(1);
+		assertEquals("User_Role", jr.getTargetObject_class());
+		assertEquals("Administrator/admin", jr.getTargetObject_uniqueKey());
+
+		JournalResponse jr2 = response.get(0);
 		assertEquals("admin", jr2.getUserName());
 		assertEquals("ServiceInstance", jr2.getTargetObject_class());
-		assertEquals("service1/environment1/host1/instance1", jr2.getTargetObject());
+		assertEquals("service1/environment1/host1/instance1", jr2.getTargetObject_uniqueKey());
 	}
-	
+
 	@After
 	public void cleanup() {
 		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");

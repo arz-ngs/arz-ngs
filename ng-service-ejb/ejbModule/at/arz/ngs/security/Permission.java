@@ -144,6 +144,7 @@ public class Permission {
 
 	@Override
 	public String toString() {
-		return environmentName.getName() + "/" + serviceName.getName() + "/" + action.name();
+		return environmentName.getName().replace("*", "alle") + "/" + serviceName.getName().replace("*", "alle") + "/"
+				+ action.name().replace("all", "alle");
 	}
 }

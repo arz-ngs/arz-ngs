@@ -83,7 +83,7 @@ public class ServiceInstanceController
 
 	/**
 	 * This method should be invoked when someone presses Enter on the overview
-	 * (sets the curret page to the first one)
+	 * (sets the current page to the first one)
 	 */
 	public void enterFormSubmit() {
 		pagination.setCurrentPage(1);

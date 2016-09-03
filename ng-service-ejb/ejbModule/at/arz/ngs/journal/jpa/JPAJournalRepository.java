@@ -36,7 +36,25 @@ public class JPAJournalRepository
 	@Override
 	public List<JournalEntry> getAllJournalEntries() {
 		TypedQuery<JournalEntry> entries = entityManager.createNamedQuery(JournalEntry.QUERY_ALL, JournalEntry.class);
+
 		return entries.getResultList();
+	}
+
+	@Override
+	public List<JournalEntry> getJournalEntries(int elementsPerPage, int startByElement) {
+		TypedQuery<JournalEntry> entries = entityManager.createNamedQuery(JournalEntry.QUERY_ALL, JournalEntry.class);
+
+		entries.setFirstResult(startByElement);
+		entries.setMaxResults(elementsPerPage);
+
+		return entries.getResultList();
+	}
+
+	@Override
+	public int getJournalEntryCount() {
+		TypedQuery<JournalEntry> entries = entityManager.createNamedQuery(JournalEntry.QUERY_ALL, JournalEntry.class);
+
+		return entries.getResultList().size();
 	}
 
 }
