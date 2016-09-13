@@ -1,4 +1,4 @@
-TX hat immer timeout - in StartupService!! aber kann auch bei ScriptExecutor sein wenn das Starten von mehreren Services zu lange dauert!!- 
+die exception tritt nur einmal auf, dann nie wieder... Danach funktioniert die Abfrage der Statis einwandfrei inkl. der passenden Transaktion!!!---TX hat immer timeout - in StartupService!! aber kann auch bei ScriptExecutor sein wenn das Starten von mehreren Services zu lange dauert!!- 
 (nach den default 300 Sekunden, fragen was man da am besten machen kann!!!)
 
 

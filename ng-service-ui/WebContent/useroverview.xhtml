@@ -38,52 +38,53 @@
 						<li class="nav-list full-width"><h:commandLink
 								action="#{serviceinstance.goToOverview()}"
 								value="Service Übersicht" /></li>
-						<li class="active nav-list full-width dropdown"><a href="#" class="dropdown-toggle"
-							data-toggle="dropdown">Berechtigungen<b class="caret"></b></a>
+						<li class="nav-list full-width"><h:commandLink
+								action="#{journal.goToJournal()}" value="Aktivitätenprotokoll" /></li>
+						<li class="nav-list full-width dropdown"><a href="#"
+							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
+								class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
 								<li class="nav-list dpList"><h:commandLink
-								action="#{journal.goToJournal()}"
-								value="Aktivitätenprotokoll" /></li>
+										action="#{useroverview.goToUserOverview()}"
+										value="Benutzerübersicht" /></li>
 								<li class="nav-list dpList"><h:commandLink
-								action="#{useroverview.goToUserOverview()}"
-								value="Benutzerübersicht" /></li>
-								<li class="nav-list dpList"><h:commandLink
-								action="#{roleoverview.goToRoleOverview()}"
-								value="Rollenübersicht" /></li>
+										action="#{roleoverview.goToRoleOverview()}"
+										value="Rollenübersicht" /></li>
 							</ul></li>
 					</ul>
 				</div>
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
 				<h3>Alle bisher eingeloggten User</h3>
-			
-				<h:dataTable id="userTable" columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
+
+				<h:dataTable id="userTable"
+					columnClasses="colUserOverviewName,colUserOverviewFirstName,colUserOverviewLastName"
 					headerClass="columnCenter" value="#{useroverview.userOverview}"
 					var="userItem"
 					class="tblRoleUser table-responsive table-bordered table-hover">
 					<h:column>
 						<f:facet name="header">Benutzer</f:facet>
-						<h:commandLink
-							value="#{userItem.userName}" action="#{useroverview.goToUserDetailView(userItem.userName)}"/>
+						<h:commandLink value="#{userItem.userName}"
+							action="#{useroverview.goToUserDetailView(userItem.userName)}" />
 					</h:column>
-				<h:column>
+					<h:column>
 						<f:facet name="header">Vorname</f:facet>
-						<h:outputText
-							value="#{userItem.first_name}" />
+						<h:outputText value="#{userItem.first_name}" />
 					</h:column>
 					<h:column>
 						<f:facet name="header">Nachname</f:facet>
-						<h:outputText
-							value="#{userItem.last_name}" />
+						<h:outputText value="#{userItem.last_name}" />
 					</h:column>
-				</h:dataTable>	
+				</h:dataTable>
 			</div>
 			<div id="user-col" class="col-md-2">
 				<div class="dropdown">
 					<button class="btn btn-default dropdown-toggle" type="button"
 						id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
 						aria-expanded="true">
-						<h:outputText value="#{user.userData.first_name} #{user.userData.last_name}" /> <span class="caret"></span>
+						<h:outputText
+							value="#{user.userData.first_name} #{user.userData.last_name}" />
+						<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
 						<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>

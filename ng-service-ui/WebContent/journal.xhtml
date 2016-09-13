@@ -38,12 +38,12 @@
 						<li class="nav-list full-width"><h:commandLink
 								action="#{serviceinstance.goToOverview()}"
 								value="Service Übersicht" /></li>
+						<li class="nav-list full-width"><h:commandLink
+								action="#{journal.goToJournal()}" value="Aktivitätenprotokoll" /></li>
 						<li class="active nav-list full-width dropdown"><a href="#"
 							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
 								class="caret"></b></a>
 							<ul class="dropdown-menu dropdownItem">
-								<li class="nav-list dpList"><h:commandLink
-										action="#{journal.goToJournal()}" value="Aktivitätenprotokoll" /></li>
 								<li class="nav-list dpList"><h:commandLink
 										action="#{useroverview.goToUserOverview()}"
 										value="Benutzerübersicht" /></li>
@@ -56,8 +56,7 @@
 			</div>
 			<div id="mid-col" class="col-md-8 secondcol">
 				<h:commandButton value="enterFormSubmit" class="btn btn-primary"
-							id="buttonFormSubmit"
-							action="#{journal.enterFormSubmit()}">
+					id="buttonFormSubmit" action="#{journal.enterFormSubmit()}">
 				</h:commandButton>
 				<div>
 					<div class="useroverviewHeader">
@@ -84,12 +83,12 @@
 							<h:outputText value="#{response.action}" />
 						</h:column>
 						<h:column>
-							<f:facet name="header">Objekt
+							<f:facet name="header">Objektklasse
 							</f:facet>
 							<h:outputText value="#{response.targetObject_class}" />
 						</h:column>
 						<h:column>
-							<f:facet name="header">Objektname
+							<f:facet name="header">Objekt
 							</f:facet>
 							<h:outputText value="#{response.targetObject_uniqueKey}" />
 						</h:column>
@@ -114,11 +113,10 @@
 			</div>
 			<div id="settings_col" class="col-md-2">
 				<div id="elemPerPageDiv" class="input-group float_right">
-					<span class="input-group-addon" id="basic-addon1">Einträge pro
-						Seite</span>
+					<span class="input-group-addon" id="basic-addon1">Einträge
+						pro Seite</span>
 					<h:inputText id="elemPerPage" type="text" class="form-control"
-						placeholder="50"
-						value="#{journal.pagination.elementsPerPage}"
+						placeholder="50" value="#{journal.pagination.elementsPerPage}"
 						aria-describedby="basic-addon1" />
 				</div>
 				<nav aria-label="Page navigation">
@@ -129,38 +127,32 @@
 								action="#{journal.performPagination('_lt')}"
 								disabled="#{journal.paginationCollection.leftCaretDisabled}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.firstElementClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.firstElementClass}"><h:commandLink
 								rendered="true"
 								value="#{journal.paginationCollection.firstElement}"
 								action="#{journal.performPagination(journal.paginationCollection.firstElement)}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.secondElementClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.secondElementClass}"><h:commandLink
 								rendered="#{journal.paginationCollection.showSecondElem}"
 								value="#{journal.paginationCollection.secondElement}"
 								action="#{journal.performPagination(journal.paginationCollection.secondElement)}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.thirdElementClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.thirdElementClass}"><h:commandLink
 								rendered="#{journal.paginationCollection.showThirdElem}"
 								value="#{journal.paginationCollection.thirdElement}"
 								action="#{journal.performPagination(journal.paginationCollection.thirdElement)}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.fourthElementClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.fourthElementClass}"><h:commandLink
 								rendered="#{journal.paginationCollection.showFourthElem}"
 								value="#{journal.paginationCollection.fourthElement}"
 								action="#{journal.performPagination(journal.paginationCollection.fourthElement)}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.fifthElementClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.fifthElementClass}"><h:commandLink
 								rendered="#{journal.paginationCollection.showFifthElem}"
 								value="#{journal.paginationCollection.fithElement}"
 								action="#{journal.performPagination(journal.paginationCollection.fithElement)}">
 							</h:commandLink></li>
-						<li
-							class="#{journal.paginationCollection.rightCaretClass}"><h:commandLink
+						<li class="#{journal.paginationCollection.rightCaretClass}"><h:commandLink
 								rendered="true" value="&gt;"
 								action="#{journal.performPagination('_gt')}"
 								disabled="#{journal.paginationCollection.rightCaretDisabled}">

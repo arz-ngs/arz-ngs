@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:a="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<h:head>
+	<meta http-equiv="Content-Type"
+		content="application/xhtml+xml; charset=UTF-8" />
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
+	<link href="css/main_style-AS.css" rel="stylesheet"></link>
+	<link href="css/main_style-DT.css" rel="stylesheet"></link>
+	<script src="js/main_js-AS.js"></script>
+	<script src="js/main_js-DT.js"></script>
+	<script src="js/jquery-1.11.3.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<link href="css/bootstrap-dialog.min.css" rel="stylesheet"
+		type="text/css" />
+	<script src="js/bootstrap-dialog.min.js"></script>
+</h:head>
+<body jsf:id="body" onload="onWindowLoad()"
+	onresize="adjustCollumnSizes()">
+	<h:form id="ngs-form">
+		<div class="row">
+			<ui:insert name="pageNav">
+				<ui:include src="/templates/pageNav.xhtml" />
+			</ui:insert>
+			<ui:insert name="mainContent">
+				<ui:include src="/templates/mainContent.xhtml" />
+			</ui:insert>
+			<ui:insert name="userActionPanel">
+				<ui:include src="/templates/userActionPanel.xhtml" />
+			</ui:insert>
+			<ui:insert name="settingsCol">
+				<ui:include src="/templates/settingsCol.xhtml" />
+			</ui:insert>
+			<ui:insert name="errorDisplayables">
+				<ui:include src="/templates/errorDisplayables.xhtml" />
+			</ui:insert>
+		</div>
+	</h:form>
+</body>
+</html>

@@ -400,8 +400,10 @@ public class ServiceInstanceAdmin {
 		}
 		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path, perform); //note: this is asynchronously executed
 
-		journalAdmin.addJournalEntry(actor, serviceInstance.getClass(), serviceInstance.getOid(),
-				serviceInstance.toString(), actionString);
+		if (!param.equals("status")) {
+			journalAdmin.addJournalEntry(actor, serviceInstance.getClass(), serviceInstance.getOid(),
+					serviceInstance.toString(), actionString);
+		}
 	}
 
 	public List<String> getAllEnvironments() {
