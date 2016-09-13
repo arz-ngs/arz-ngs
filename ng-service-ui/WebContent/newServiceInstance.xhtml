@@ -4,55 +4,17 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:jsf="http://xmlns.jcp.org/jsf"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
 <h:head>
 	<meta http-equiv="Content-Type"
 		content="application/xhtml+xml; charset=UTF-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+	<!-- 	<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta> -->
 	<title>Neue Service Instanz</title>
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"></link>
-	<link href="css/main_style-AS.css" rel="stylesheet"></link>
-	<link href="css/main_style-DT.css" rel="stylesheet"></link>
-	<script src="js/main_js-AS.js"></script>
-	<script src="js/main_js-DT.js"></script>
-	<script src="js/jquery-1.11.3.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<link href="css/bootstrap-dialog.min.css" rel="stylesheet"
-		type="text/css" />
-	<script src="js/bootstrap-dialog.min.js"></script>
 </h:head>
-<body jsf:id="body" onload="onWindowLoad()">
-	<h:form id="ngs-form">
-		<div class="row">
-			<div id="main_nav" class="col-md-2 navbar navbar-default">
-				<div>
-					<h1>
-						<h:commandLink id="ebk-title"
-							action="#{serviceinstance.goToOverview()}" value="ebk" />
-					</h1>
-				</div>
-				<div class="navigation navbar-collapse full-width "
-					id="nav-container">
-					<ul class="nav navbar-nav full-width">
-						<li class="nav-list full-width"><h:commandLink
-								action="#{serviceinstance.goToOverview()}"
-								value="Service Übersicht" /></li>
-						<li class="nav-list full-width"><h:commandLink
-								action="#{journal.goToJournal()}" value="Aktivitätenprotokoll" /></li>
-						<li class="active nav-list full-width dropdown"><a href="#"
-							class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
-								class="caret"></b></a>
-							<ul class="dropdown-menu dropdownItem">
-								<li class="nav-list dpList"><h:commandLink
-										action="#{useroverview.goToUserOverview()}"
-										value="Benutzerübersicht" /></li>
-								<li class="nav-list dpList"><h:commandLink
-										action="#{roleoverview.goToRoleOverview()}"
-										value="Rollenübersicht" /></li>
-							</ul></li>
-					</ul>
-				</div>
-			</div>
+<body jsf:id="body">
+	<ui:composition template="/templates/commonLayout.xhtml">
+		<ui:define name="mainContent">
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div class="row">
 					<div class="col-md-10 menutop1">
@@ -163,25 +125,13 @@
 					</div>
 				</div>
 			</div>
-			<div id="user-col" class="col-md-2 thirdcol">
-				<div id="user-col" class="col-md-2">
-					<div class="dropdown">
-						<button class="btn btn-default dropdown-toggle" type="button"
-							id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-							aria-expanded="true">
-							<h:outputText
-								value="#{user.userData.first_name} #{user.userData.last_name}" />
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-							<li><h:commandLink action="#{user.logout()}" value="Logout" /></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-		<h:outputScript
-			rendered="#{newServiceInstance.errorCollection.showPopup}">
+		</ui:define>
+
+		<ui:define name="settingsCol">
+		</ui:define>
+		<ui:define name="errorDisplayables">
+			<h:outputScript
+				rendered="#{newServiceInstance.errorCollection.showPopup}">
     	 BootstrapDialog.show({
             title: '#{newServiceInstance.errorCollection.headerInformation}',
             message: '#{newServiceInstance.errorCollection.messages}',
@@ -195,6 +145,7 @@
             }]
         });
 		</h:outputScript>
-	</h:form>
+		</ui:define>
+	</ui:composition>
 </body>
 </html>

@@ -13,36 +13,7 @@
 </h:head>
 <body jsf:id="body">
 	<ui:composition>
-		<h:outputScript
-			rendered="#{serviceinstance.errorCollection.showPopup}">
-    	 BootstrapDialog.show({
-            title: '#{serviceinstance.errorCollection.headerInformation}',
-            message: '#{serviceinstance.errorCollection.messages}',
-            closable: false,
-            buttons: [{
-            	label: 'Schließen',
-            	action: function(dialogRef) {
-            		dialogRef.close();
-            		console.log("test");
-            	}
-            }]
-        });
-		</h:outputScript>
-		<h:outputScript
-			rendered="#{actionController.errorCollection.showPopup}">
-    	 BootstrapDialog.show({
-            title: '#{actionController.errorCollection.headerInformation}',
-            message: '#{actionController.errorCollection.messages}',
-            closable: false,
-            buttons: [{
-            	label: 'Schließen',
-            	action: function(dialogRef) {
-            		dialogRef.close();
-            		console.log("test");
-            	}
-            }]
-        });
-		</h:outputScript>
+		<h1>error displayables should be overwritten normally!!</h1>
 	</ui:composition>
 </body>
 </html>
