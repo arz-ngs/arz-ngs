@@ -23,20 +23,20 @@
 			<div class="navigation navbar-collapse full-width "
 				id="nav-container">
 				<ul class="nav navbar-nav full-width">
-					<li class="nav-list full-width"><h:commandLink
-							action="#{serviceinstance.goToOverview()}"
+					<li class="nav-list full-width #{navigator.si_overviewCSS}"><h:commandLink
+							action="#{navigator.navigateToSIOverview()}"
 							value="Service Übersicht" /></li>
-					<li class="nav-list full-width"><h:commandLink
-							action="#{journal.goToJournal()}" value="Timeline" /></li>
-					<li class="active nav-list full-width dropdown"><a href="#"
+					<li class="nav-list full-width #{navigator.timelineCSS}"><h:commandLink
+							action="#{navigator.navigateToJournal()}" value="Timeline" /></li>
+					<li class="nav-list full-width dropdown #{navigator.permission_dropdownCSS}"><a href="#"
 						class="dropdown-toggle" data-toggle="dropdown">Berechtigungen<b
 							class="caret"></b></a>
 						<ul class="dropdown-menu dropdownItem">
-							<li class="nav-list dpList"><h:commandLink
-									action="#{useroverview.goToUserOverview()}"
+							<li class="nav-list dpList full-width #{navigator.userOverviewCSS}"><h:commandLink
+									action="#{navigator.navigateToUserOverview()}"
 									value="Benutzerübersicht" /></li>
-							<li class="nav-list dpList"><h:commandLink
-									action="#{roleoverview.goToRoleOverview()}"
+							<li class="nav-list dpList #{navigator.roleOverviewCSS}"><h:commandLink
+									action="#{navigator.navigateToRoleOverview()}"
 									value="Rollenübersicht" /></li>
 						</ul></li>
 				</ul>

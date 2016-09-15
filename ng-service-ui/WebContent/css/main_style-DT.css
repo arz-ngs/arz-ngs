@@ -134,6 +134,7 @@
 
 .dpList {
 	font-size: 16px;
+	padding-left: 0;
 }
 
 .journalTime, .journalAction {

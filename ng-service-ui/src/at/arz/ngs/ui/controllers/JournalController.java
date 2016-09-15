@@ -206,10 +206,6 @@ public class JournalController
 		return response;
 	}
 
-	public String goToJournal() {
-		return "journal";
-	}
-
 	public PaginationCollection getPaginationCollection() {
 		return paginationCollection;
 	}

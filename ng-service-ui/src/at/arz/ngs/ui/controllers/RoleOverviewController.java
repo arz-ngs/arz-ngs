@@ -34,16 +34,10 @@ public class RoleOverviewController
 	private String createRoleName;
 
 	private ErrorCollection errorCollection;
-	
+
 	@PostConstruct
 	public void init() {
 		refresh();
-	}
-
-	public String goToRoleOverview() {
-		createRoleName = "";
-		refresh();
-		return "roleoverview";
 	}
 
 	private void refresh() {
@@ -82,7 +76,8 @@ public class RoleOverviewController
 		errorCollection = new ErrorCollection();
 		try {
 			admin.removeRole(userController.getCurrentActor(), new RemoveRole(roleName));
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 		}
@@ -92,10 +87,9 @@ public class RoleOverviewController
 
 	public void goToRoleDetail(String role) {
 		try {
-			FacesContext.getCurrentInstance()
-						.getExternalContext()
-						.redirect("roledetail.xhtml?role=" + role);
-		} catch (IOException e) {
+			FacesContext.getCurrentInstance().getExternalContext().redirect("roledetail.xhtml?role=" + role);
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

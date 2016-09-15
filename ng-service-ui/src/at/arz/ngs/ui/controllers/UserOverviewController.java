@@ -39,10 +39,6 @@ public class UserOverviewController
 		}
 	}
 
-	public String goToUserOverview() {
-		return "useroverview";
-	}
-
 	public List<UserData> getUserOverview() {
 		return userOverview;
 	}
