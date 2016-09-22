@@ -23,7 +23,9 @@ import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.EmptyField;
+import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.journal.JournalEntry;
+import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
@@ -47,6 +49,9 @@ public class ScriptExecutor {
 
 	@Inject
 	private EnvironmentRepository environmentRepository;
+	
+	@Inject
+	private JournalAdmin journalAdmin;
 	
 	protected ScriptExecutor() {
 	}
@@ -98,6 +103,7 @@ public class ScriptExecutor {
 					printStream(stderr);
 
 					String action = perform.getPerformAction().toLowerCase();
+					saveStreamInJournal(stdout, serviceInstance, action);
 					if (!action.equals("status")) {
 						switch (errorCode) {
 							case 0:
@@ -161,4 +167,18 @@ public class ScriptExecutor {
 		}
 		c.close();
 	}
+	
+	private void saveStreamInJournal(InputStream is, ServiceInstance serviceInstance, String action) {
+		Scanner c = new Scanner(is);
+		String error ="";
+		while (c.hasNextLine()) {
+			error += c.nextLine() + " -- ";
+		}
+		error = error.substring(0, error.length()-4);
+		c.close();
+		
+		journalAdmin.addJournalEntry(new Actor("automatic script execution"), ServiceInstance.class, serviceInstance.getOid(), serviceInstance.toString(), action + " with Error " + error);
+	}
+	
+	
 }
