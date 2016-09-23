@@ -205,8 +205,9 @@ td {
 
 tbody tr:hover {
 	/*blue border when hovering a column for better user experience*/
-	border: groove;
-	border-color: blue;
+	/*border: groove;
+	border-color: blue;*/
+	background-color: lightgrey !important;
 }
 
 #ngs-form\:journalTable tbody tr:hover {
@@ -227,8 +228,6 @@ tbody tr:hover {
 	right: 0;
 	bottom: 0;
 	position: fixed;
-	position: fixed;
-	min-height: 200px;
 }
 
 #ngs-form\:addNew_ServiceInstanceButton {
