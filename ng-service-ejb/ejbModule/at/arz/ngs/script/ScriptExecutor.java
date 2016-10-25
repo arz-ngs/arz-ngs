@@ -27,7 +27,7 @@ import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
- * Follows the design patter of
+ * Follows the design pattern of
  * http://www.adam-bien.com/roller/abien/entry/conveniently_transactionally_and_legally_starting
  */
 @Stateless
@@ -75,7 +75,7 @@ public class ScriptExecutor {
 				 * like fetching FetchType.LAZY attributes and saving changes to
 				 * DB. To prevent that, we have to load the SI again from the
 				 * PersitenceContext and now we have our (new) transaction
-				 * again. If we change something from the new SI instance, this
+				 * again. If we change something from the new SI instance, these
 				 * changes are monitored and thus, saved to DB like we want the
 				 * application to.
 				 */

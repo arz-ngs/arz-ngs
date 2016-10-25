@@ -12,7 +12,7 @@ for the others to return to get processed. Default only 10 scripts can be execut
 Solution:
 Set the maximum number of thread in this thread pool to a higher count:
 
-in standalome.xml edit the count of 10 to e.g. 100 (make sure you editing the right subsystem!):
+in standalome.xml edit the count of 10 to e.g. 100 (make sure you edit the right subsystem!):
 
 <subsystem xmlns="urn:jboss:domain:ejb3:4.0">
     ...
