@@ -6,10 +6,18 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import at.arz.ngs.api.Action;
 import at.arz.ngs.api.JobId;
@@ -24,13 +32,28 @@ public class Job {
 	@Id
 	@GeneratedValue(generator = "ngs.job", strategy = GenerationType.TABLE)
 	private long oid;
+
+	@Column(name = "JOBID", nullable = false)
 	@Convert(converter = JobIdConverter.class)
-	@Column(name = "jobid", nullable = false)
 	private JobId jobId;
+
+	@Column(name = "ACTION")
+	@Enumerated(EnumType.STRING)
 	private Action action;
+
+	@OneToMany(mappedBy = "job", fetch = FetchType.LAZY)
 	private List<ServiceInstance> instances;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "CREATOR_OID")
 	private User creator;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TS_LAST_MODIFIED")
 	private Date tslastmodified;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name = "TS_CREATED")
 	private Date tscreated;
 
 	protected Job() {

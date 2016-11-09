@@ -70,7 +70,7 @@ public class JournalEntry {
 	}
 
 	public Date getTime() {
-		return time;
+		return new Date(time.getTime());
 	}
 
 	public void setTime(Date time) {

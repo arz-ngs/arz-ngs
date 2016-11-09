@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import at.arz.ngs.Job;
 import at.arz.ngs.api.Email;
 import at.arz.ngs.api.EmailConverter;
 import at.arz.ngs.api.FirstName;
@@ -55,6 +56,9 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	private List<User_Role> user_roles;
 
+	@OneToMany(mappedBy = "creator")
+	private List<Job> jobs;
+
 	protected User() {
 		//jpa constructor
 	}
@@ -86,32 +90,26 @@ public class User {
 		return Collections.unmodifiableList(user_roles);
 	}
 
-	
 	public FirstName getFirstName() {
 		return firstName;
 	}
 
-	
 	public void setFirstName(FirstName firstName) {
 		this.firstName = firstName;
 	}
 
-	
 	public LastName getLastName() {
 		return lastName;
 	}
 
-	
 	public void setLastName(LastName lastName) {
 		this.lastName = lastName;
 	}
 
-	
 	public Email getEmail() {
 		return email;
 	}
 
-	
 	public void setEmail(Email email) {
 		this.email = email;
 	}
@@ -136,7 +134,8 @@ public class User {
 		if (userName == null) {
 			if (other.userName != null)
 				return false;
-		} else if (!userName.equals(other.userName))
+		}
+		else if (!userName.equals(other.userName))
 			return false;
 		return true;
 	}

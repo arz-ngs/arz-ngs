@@ -26,7 +26,6 @@ public class JobScheduler {
 	@Inject
 	private ServiceInstanceRepository serviceInstanceRepo;
 
-	//TODO UUID in JobId packen.
 	public JobId scheduleAction(Action action, ServiceName service, EnvironmentName env,
 			ServiceInstanceLocation... locations) {
 		return scheduleAction(action, service, env, new HashSet<>(Arrays.asList(locations)));
@@ -62,8 +61,8 @@ public class JobScheduler {
 		return id;
 	}
 
-	public void notifyActionCompleted(JobId jobId, siUNI...){
-		
-	}
+	//	public void notifyActionCompleted(JobId jobId, siUNI...){
+	//		 //TODO
+	//	}
 
 }
