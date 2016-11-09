@@ -1,0 +1,4 @@
+<jboss-web>
+<!--        <security-domain>java:/jaas/LDAPAuth</security-domain> -->
+
+</jboss-web>

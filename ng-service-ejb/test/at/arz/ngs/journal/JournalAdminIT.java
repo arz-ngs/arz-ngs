@@ -30,6 +30,7 @@ import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.PermissionRepository;
 import at.arz.ngs.security.RoleRepository;
 import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.SessionContextMother;
 import at.arz.ngs.security.UserRepository;
 import at.arz.ngs.security.User_RoleRepository;
 import at.arz.ngs.security.commands.Actor;
@@ -79,7 +80,7 @@ public class JournalAdminIT extends AbstractJpaIT {
 		journalAdmin = new JournalAdmin(journalRepository);
 
 		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
-				journalAdmin);
+				journalAdmin, SessionContextMother.authenticatedAs("admin"));
 		admin = new ServiceInstanceAdmin(services, hosts, environments, instances, scripts,
 				new SearchEngine(getEntityManager()), securityAdmin, journalAdmin);
 

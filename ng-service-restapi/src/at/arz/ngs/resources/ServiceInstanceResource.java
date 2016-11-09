@@ -2,7 +2,9 @@ package at.arz.ngs.resources;
 
 import java.net.URI;
 
+import javax.enterprise.context.Dependent;
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -12,6 +14,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,16 +28,20 @@ import at.arz.ngs.serviceinstance.commands.get.ServiceInstanceResponse;
 import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateStatus;
 
-@Path("instances")
+@Dependent
+@Path("/instances")
 @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 public class ServiceInstanceResource {
 
 	@Inject
 	private ServiceInstanceAdmin instanceAdmin;
 
+	@Context
+	private HttpServletRequest request;
+
 	// TODO remove this method for security
 	private Actor getAdminActor() {
-		return new Actor("admin");
+		return new Actor(request.getUserPrincipal().getName());
 	}
 
 	/**

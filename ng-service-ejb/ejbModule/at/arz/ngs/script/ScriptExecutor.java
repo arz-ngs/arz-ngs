@@ -172,7 +172,8 @@ public class ScriptExecutor {
 		while (c.hasNextLine()) {
 			error += c.nextLine() + " -- ";
 		}
-		error = error.substring(0, error.length() - 4);
+		int toErr = error.length() > 4 ? error.length() - 4 : error.length();
+		error = error.substring(0, toErr);
 		c.close();
 
 		journalAdmin.addJournalEntry(new Actor("automatic script execution"), ServiceInstance.class,

@@ -73,8 +73,9 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
 		journalAdmin = new JournalAdmin(new JPAJournalRepository(getEntityManager()));
+
 		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
-				journalAdmin);
+				journalAdmin, SessionContextMother.authenticatedAs("admin"));
 		serviceAdmin = new ServiceInstanceAdmin(serviceRepository, hostRepository, environmentRepository,
 				instanceRepository, scriptRepository, new SearchEngine(getEntityManager()), securityAdmin,
 				journalAdmin);
@@ -157,17 +158,17 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
 
-		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.all, actor);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.all);
 		securityAdmin.proofActorAdminAccess(admin);
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.all, actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.all);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.all, actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.all);
 			fail();
 		}
 		catch (NoPermission e) {
@@ -191,36 +192,34 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.start.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
-		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start, actor);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
 		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.all, actor);
 		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.start, actor);
 		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.start, actor);
 		// securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("*"), Action.start, actor);
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start,
-					actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.start,
-					actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.start);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop, actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.stop, actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.stop);
 			fail();
 		}
 		catch (NoPermission e) {
@@ -252,8 +251,7 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
 		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start,
-					actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
 			fail();
 		}
 		catch (NoPermission e) {
@@ -265,12 +263,11 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		AddPermissionToRole addPermissionToRoleCommand2 = new AddPermissionToRole("entwickler", permissionData2);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand2);
 		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
-		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start, actor);
-		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop, actor);
-		securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start, actor);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
+		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop);
+		securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start);
 		try {
-			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.start,
-					actor);
+			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv2"), Action.start);
 			fail();
 		}
 		catch (NoPermission e) {

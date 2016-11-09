@@ -54,18 +54,18 @@ public class LoginController
 		if ((userName != null) && (!userName.equals("")) && (password != null) && (!password.equals(""))) {
 			Login loginData = new Login(userName, password);
 
-			if (admin.isApplicationUsingsLDAPauth()) {
-				HttpServletRequest httpRequest = getCurrentHttpRequest();
-				try {
-					httpRequest.login(loginData.getUserName(), loginData.getPassword());
-				}
-				catch (ServletException e) {
-					e.printStackTrace();
-					loginCollection = new LoginCollection(
-							"Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabedaten", true);
-					return null;
-				}
+			//			if (admin.isApplicationUsingsLDAPauth()) {
+			HttpServletRequest httpRequest = getCurrentHttpRequest();
+			try {
+				httpRequest.login(loginData.getUserName(), loginData.getPassword());
 			}
+			catch (ServletException e) {
+				e.printStackTrace();
+				loginCollection = new LoginCollection("Login fehlgeschlagen. Bitte überprüfen Sie Ihre Eingabedaten",
+						true);
+				return null;
+			}
+			//			}
 
 			try {
 				LoginResponse response = admin.login(loginData);
@@ -149,6 +149,7 @@ public class LoginController
 
 	public void logout() {
 		try {
+			getCurrentHttpRequest().getSession().invalidate();
 			getCurrentHttpRequest().logout();
 		}
 		catch (ServletException e) {

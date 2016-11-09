@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Properties;
 
+import javax.annotation.Resource;
+import javax.annotation.security.RolesAllowed;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -46,6 +49,7 @@ import at.arz.ngs.security.user.commands.get.UserResponse;
 import at.arz.ngs.security.user.commands.removeRole.RemoveRoleFromUser;
 
 @Stateless
+@RolesAllowed("User")
 public class SecurityAdmin {
 
 	@Inject
@@ -62,6 +66,9 @@ public class SecurityAdmin {
 
 	@Inject
 	private JournalAdmin journalAdmin;
+
+	@Resource
+	private SessionContext context;
 
 	public static final String ADMIN = "Administrator";
 
@@ -81,13 +88,15 @@ public class SecurityAdmin {
 	 * @param userRepository
 	 */
 	public SecurityAdmin(PermissionRepository permissionRepository, RoleRepository roleRepository,
-			UserRepository userRepository, User_RoleRepository userRoleRepository, JournalAdmin journalAdmin) {
+			UserRepository userRepository, User_RoleRepository userRoleRepository, JournalAdmin journalAdmin,
+			SessionContext context) {
 		this.permissionRepository = permissionRepository;
 		this.roleRepository = roleRepository;
 		this.userRepository = userRepository;
 		this.userRoleRepository = userRoleRepository;
 		this.journalAdmin = journalAdmin;
 		isJunitTest = true;
+		this.context = context;
 	}
 
 	public UserResponse getUserOverview() {
@@ -126,7 +135,8 @@ public class SecurityAdmin {
 	 * Checks if the actor has the rights to perfom an action. If not an
 	 * NoPermission Exception is thrown.
 	 */
-	public void proofPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
+	public void proofPerformAction(EnvironmentName env, ServiceName service, Action action) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
 		if (isAuthorizedToPerformAction(env, service, action, actor)) {
 			return;
 		}

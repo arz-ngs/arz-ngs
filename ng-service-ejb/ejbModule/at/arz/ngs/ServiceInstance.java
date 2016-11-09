@@ -34,7 +34,9 @@ import at.arz.ngs.converter.jpa.ServiceInstanceNameConverter;
 				+ "FROM ServiceInstance si " + "WHERE si.service = :service AND " + "si.environment = :environment"),
 		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE, query = "SELECT si " + "FROM ServiceInstance si "
 				+ "WHERE si.service = :service"),
-		@NamedQuery(name = ServiceInstance.QUERY_BY_OID, query = "SELECT si " + "FROM ServiceInstance si " + "WHERE si.oid = :oid")})
+		@NamedQuery(name = ServiceInstance.QUERY_BY_OID, query = "SELECT si " + "FROM ServiceInstance si "
+				+ "WHERE si.oid = :oid"),
+		@NamedQuery(name = ServiceInstance.QUERY_BY_SERVICE_NAME_AND_ENV_NAME, query = "SELECT i FROM ServiceInstance i WHERE i.environment.environmentName=:env AND i.service.serviceName=:service")})
 public class ServiceInstance {
 
 	public static final String QUERY_ALL = "ServiceInstance.getAll";
@@ -43,6 +45,7 @@ public class ServiceInstance {
 	public static final String QUERY_BY_SERVICE_ENVIRONMENT = "ServiceInstance.findByServiceAndEnvironment";
 	public static final String QUERY_BY_SERVICE = "ServiceInstance.findByService";
 	public static final String QUERY_BY_OID = "ServiceInstance.finyByOid";
+	public static final String QUERY_BY_SERVICE_NAME_AND_ENV_NAME = "ServiceInstance.findByEnvNameAndServiceName";
 
 	@Id
 	@GeneratedValue(generator = "ngs.serviceinstance", strategy = GenerationType.TABLE)
@@ -71,6 +74,10 @@ public class ServiceInstance {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "SCRIPT")
 	private Script script;
+
+	@ManyToOne
+	@JoinColumn(name = "JOB")
+	private Job job;
 
 	/**
 	 * version starting by 0
@@ -214,5 +221,13 @@ public class ServiceInstance {
 	public String toString() {
 		return service.getServiceName() + "/" + environment.getEnvironmentName() + "/" + host.getHostName() + "/"
 				+ serviceInstanceName.getName();
+	}
+
+	public void setJob(Job job) {
+		this.job = job;
+	}
+
+	public Job getJob() {
+		return job;
 	}
 }

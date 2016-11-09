@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="3.1" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+ <display-name>ng-service-restapi</display-name>
+ <login-config>
+  <auth-method>BASIC</auth-method>
+  <realm-name>ApplicationRealm</realm-name>
+ </login-config>
+ <security-constraint>
+  <display-name>SecurityConstraint</display-name>
+  <web-resource-collection>
+   <web-resource-name>WRCollection</web-resource-name>
+   <url-pattern>/v1/*</url-pattern>
+   <http-method>GET</http-method>
+   <http-method>PUT</http-method>
+   <http-method>POST</http-method>
+   <http-method>DELETE</http-method>
+  </web-resource-collection>
+  <auth-constraint>
+   <role-name>User</role-name>
+  </auth-constraint>
+  <user-data-constraint>
+   <transport-guarantee>NONE</transport-guarantee>
+  </user-data-constraint>
+ </security-constraint>
+</web-app>

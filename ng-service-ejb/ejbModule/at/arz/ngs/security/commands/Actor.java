@@ -1,7 +1,8 @@
 package at.arz.ngs.security.commands;
 
 /**
- * An actor is the person who perfoms an action or an update/add/remove of an ServiceInstance.
+ * An actor is the person who perfoms an action or an update/add/remove of an
+ * ServiceInstance.
  *
  */
 public class Actor {
@@ -16,7 +17,4 @@ public class Actor {
 		return userName;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
 }

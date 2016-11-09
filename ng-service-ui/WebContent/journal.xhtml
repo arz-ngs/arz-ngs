@@ -39,11 +39,6 @@
 							<h:outputText value="#{response.userName}" />
 						</h:column>
 						<h:column>
-							<f:facet name="header">Aktion
-							</f:facet>
-							<h:outputText value="#{response.action}" />
-						</h:column>
-						<h:column>
 							<f:facet name="header">Objektklasse
 							</f:facet>
 							<h:outputText value="#{response.targetObject_class}" />
@@ -52,6 +47,11 @@
 							<f:facet name="header">Objekt
 							</f:facet>
 							<h:outputText value="#{response.targetObject_uniqueKey}" />
+						</h:column>
+						<h:column>
+							<f:facet name="header">Aktion
+							</f:facet>
+							<h:outputText value="#{response.action}" />
 						</h:column>
 
 

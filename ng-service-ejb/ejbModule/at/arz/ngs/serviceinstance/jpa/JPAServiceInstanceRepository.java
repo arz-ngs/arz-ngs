@@ -14,7 +14,9 @@ import at.arz.ngs.Script;
 import at.arz.ngs.Service;
 import at.arz.ngs.ServiceInstance;
 import at.arz.ngs.ServiceInstanceRepository;
+import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.ServiceInstanceName;
+import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.ServiceInstanceNotFound;
 
@@ -40,40 +42,35 @@ public class JPAServiceInstanceRepository
 
 	@Override
 	public List<ServiceInstance> getAllInstances() {
-			TypedQuery<ServiceInstance> getAllInstances =
-														entityManager.createNamedQuery(	ServiceInstance.QUERY_ALL,
-																							ServiceInstance.class);
+		TypedQuery<ServiceInstance> getAllInstances = entityManager.createNamedQuery(ServiceInstance.QUERY_ALL,
+				ServiceInstance.class);
 		return getAllInstances.getResultList();
 	}
 
 	@Override
-	public ServiceInstance getServiceInstance(	ServiceInstanceName serviceInstanceName,
-												Service service,
-												Host host,
-												Environment environment) {
+	public ServiceInstance getServiceInstance(ServiceInstanceName serviceInstanceName, Service service, Host host,
+			Environment environment) {
 
 		try {
-			TypedQuery<ServiceInstance> getInstance =
-													entityManager.createNamedQuery(	ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST_SERVICEINSTANCENAME,
-																							ServiceInstance.class);
+			TypedQuery<ServiceInstance> getInstance = entityManager.createNamedQuery(
+					ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST_SERVICEINSTANCENAME, ServiceInstance.class);
 			getInstance.setParameter("siname", serviceInstanceName);
 			getInstance.setParameter("host", host);
 			getInstance.setParameter("service", service);
 			getInstance.setParameter("environment", environment);
 
 			return getInstance.getSingleResult();
-		} catch (NoResultException e) {
-			throw new ServiceInstanceNotFound(	serviceInstanceName,
-												service.getServiceName(),
-												host.getHostName(),
-												environment.getEnvironmentName());
+		}
+		catch (NoResultException e) {
+			throw new ServiceInstanceNotFound(serviceInstanceName, service.getServiceName(), host.getHostName(),
+					environment.getEnvironmentName());
 		}
 	}
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service, Environment environment, Host host) {
-		TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST,
-																						ServiceInstance.class);
+		TypedQuery<ServiceInstance> getInstances = entityManager
+				.createNamedQuery(ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT_HOST, ServiceInstance.class);
 
 		getInstances.setParameter("host", host);
 		getInstances.setParameter("service", service);
@@ -83,8 +80,8 @@ public class JPAServiceInstanceRepository
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service, Environment environment) {
-		TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT,
-																						ServiceInstance.class);
+		TypedQuery<ServiceInstance> getInstances = entityManager
+				.createNamedQuery(ServiceInstance.QUERY_BY_SERVICE_ENVIRONMENT, ServiceInstance.class);
 
 		getInstances.setParameter("service", service);
 		getInstances.setParameter("environment", environment);
@@ -93,46 +90,43 @@ public class JPAServiceInstanceRepository
 
 	@Override
 	public List<ServiceInstance> getServiceInstances(Service service) {
-		TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(	ServiceInstance.QUERY_BY_SERVICE,
-																						ServiceInstance.class);
-			getInstances.setParameter("service", service);
+		TypedQuery<ServiceInstance> getInstances = entityManager.createNamedQuery(ServiceInstance.QUERY_BY_SERVICE,
+				ServiceInstance.class);
+		getInstances.setParameter("service", service);
 		return getInstances.getResultList();
 	}
 
 	@Override
-	public void addServiceInstance(	Host host,
-									Service service,
-									Environment environment,
-									Script script,
-									ServiceInstanceName serviceInstanceName,
-									Status status,
-									String information) {
+	public void addServiceInstance(Host host, Service service, Environment environment, Script script,
+			ServiceInstanceName serviceInstanceName, Status status, String information) {
 
-			ServiceInstance instance = new ServiceInstance(	serviceInstanceName,
-															service,
-															host,
-															environment,
-															script,
-															status);
+		ServiceInstance instance = new ServiceInstance(serviceInstanceName, service, host, environment, script, status);
 		instance.setInformation(information);
-			entityManager.persist(instance);
+		entityManager.persist(instance);
 	}
 
 	@Override
 	public void removeServiceInstance(ServiceInstance serviceInstance) {
-			entityManager.remove(serviceInstance);
+		entityManager.remove(serviceInstance);
 	}
 
 	@Override
 	public ServiceInstance getServiceInstanceByOid(long oid) {
 		try {
-			TypedQuery<ServiceInstance> getServiceInstance = entityManager.createNamedQuery(ServiceInstance.QUERY_BY_OID, ServiceInstance.class);
+			TypedQuery<ServiceInstance> getServiceInstance = entityManager
+					.createNamedQuery(ServiceInstance.QUERY_BY_OID, ServiceInstance.class);
 			getServiceInstance.setParameter("oid", oid);
 			return getServiceInstance.getSingleResult();
-		} catch (NoResultException e) {
+		}
+		catch (NoResultException e) {
 			throw new ServiceInstanceNotFound(oid);
 		}
 	}
-	
-	
+
+	@Override
+	public List<ServiceInstance> getServiceInstances(ServiceName service, EnvironmentName environment) {
+		return entityManager.createNamedQuery(ServiceInstance.QUERY_BY_SERVICE_NAME_AND_ENV_NAME, ServiceInstance.class)
+				.setParameter("service", service).setParameter("env", environment).getResultList();
+	}
+
 }

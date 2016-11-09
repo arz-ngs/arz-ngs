@@ -44,7 +44,7 @@ public class StartupService {
 	}
 
 	private void setupStatusFetcher() {
-		executor.execute(getFetcherLogic());
+		executor.executeWithoutTransaction(getFetcherLogic());
 	}
 
 	/**

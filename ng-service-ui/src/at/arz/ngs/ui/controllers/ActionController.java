@@ -82,6 +82,10 @@ public class ActionController {
 				ServiceInstanceOverview serviceInstance = oc.getServiceInstance();
 				//				System.out.println(action + " service instance: " + serviceInstance.toString());
 				try {
+					// TODO Aggregation nach Environment und Service
+					// TODO Pro Element der Aggregation einen Job erstellen und Job-ID ermitteln.
+					// TODO Pro Job-ID asynchronen Vorgang starten
+					// TODO
 					admin.performAction(userController.getCurrentActor(), serviceInstance.getServiceName(),
 							serviceInstance.getEnvironmentName(), serviceInstance.getHostName(),
 							serviceInstance.getInstanceName(), action);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -62,6 +63,7 @@ import at.arz.ngs.serviceinstance.commands.update.UpdateStatus;
  *
  */
 @Stateless
+@RolesAllowed("User")
 public class ServiceInstanceAdmin {
 
 	@Inject
@@ -347,7 +349,7 @@ public class ServiceInstanceAdmin {
 			String hostNameString, String serviceInstanceNameString, PerformAction perform) {
 
 		securityAdmin.proofPerformAction(new EnvironmentName(environmentNameString), new ServiceName(serviceNameString),
-				Action.valueOf(perform.getPerformAction()), actor);
+				Action.valueOf(perform.getPerformAction()));
 
 		HostName hostName = getHostName(hostNameString);
 		ServiceName serviceName = getServiceName(serviceNameString);

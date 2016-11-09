@@ -47,7 +47,7 @@ do
 				json_string="$x$env$y$host$a$service$b$instance$c$start_path$e$stop_path$f$restart_path$g$status_path$h" 
 				echo "adding instance: "
 				echo "$json_string"
-	   		    curl -H "Content-Type: application/json" -X PUT -d "$json_string" http://localhost:8080/ngs/api/v1/instances
+	   		    curl -u admin:admin1234 -H "Content-Type: application/json" -X PUT -d "$json_string" http://localhost:8080/ngs/api/v1/instances
 				
 			    count_instance=`expr $count_instance + 1`
 		    done 
