@@ -1,5 +1,6 @@
 package at.arz.ngs;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -26,8 +28,12 @@ import at.arz.ngs.converter.jpa.JobIdConverter;
 import at.arz.ngs.security.User;
 
 @Entity
-@NamedQuery(name = "Job.findByJobID", query = "SELECT j FROM Job j WHERE j.jobId=:id")
+@NamedQueries({@NamedQuery(name = Job.QUERY_ALL, query = "SELECT j FROM Job j"),
+		@NamedQuery(name = Job.QUERY_BY_JOBID, query = "SELECT j FROM Job j WHERE j.jobId=:id")})
 public class Job {
+
+	public static final String QUERY_ALL = "Job.getAll";
+	public static final String QUERY_BY_JOBID = "Job.findByUniqueKey";
 
 	@Id
 	@GeneratedValue(generator = "ngs.job", strategy = GenerationType.TABLE)
@@ -60,8 +66,9 @@ public class Job {
 		//JPA
 	}
 
-	public Job(JobId jobId, Action action, List<ServiceInstance> instances) {
+	public Job(JobId jobId, User creator, Action action, List<ServiceInstance> instances) {
 		this.jobId = jobId;
+		this.creator = creator;
 		this.action = action;
 		for (ServiceInstance instance : instances) {
 			instance.setJob(this);
@@ -104,11 +111,50 @@ public class Job {
 		return new Date(tscreated.getTime());
 	}
 
-	public Date getTslastmodiefied() {
+	public JobId getJobId() {
+		return jobId;
+	}
+
+	public List<ServiceInstance> getInstances() {
+		return Collections.unmodifiableList(instances);
+	}
+
+	public User getCreator() {
+		return creator;
+	}
+
+	public Date getTslastmodified() {
 		return new Date(tslastmodified.getTime());
 	}
 
-	public JobId getJobId() {
-		return jobId;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((jobId == null) ? 0 : jobId.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		Job other = (Job) obj;
+		if (jobId == null) {
+			if (other.jobId != null) {
+				return false;
+			}
+		}
+		else if (!jobId.equals(other.jobId)) {
+			return false;
+		}
+		return true;
 	}
 }

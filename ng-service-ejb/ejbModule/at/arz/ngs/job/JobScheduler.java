@@ -1,4 +1,4 @@
-package at.arz.ngs;
+package at.arz.ngs.job;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,11 +11,19 @@ import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import at.arz.ngs.Job;
+import at.arz.ngs.JobRepository;
+import at.arz.ngs.ServiceInstance;
+import at.arz.ngs.ServiceInstanceRepository;
 import at.arz.ngs.api.Action;
 import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.JobId;
 import at.arz.ngs.api.ServiceInstanceLocation;
 import at.arz.ngs.api.ServiceName;
+import at.arz.ngs.api.UserName;
+import at.arz.ngs.security.SecurityAdmin;
+import at.arz.ngs.security.User;
+import at.arz.ngs.security.UserRepository;
 
 @Stateless
 public class JobScheduler {
@@ -25,6 +33,15 @@ public class JobScheduler {
 
 	@Inject
 	private ServiceInstanceRepository serviceInstanceRepo;
+
+	@Inject
+	private UserRepository userRepository;
+
+	@Inject
+	private SecurityAdmin securityAdmin;
+
+	@Inject
+	private JobRepository jobRepository;
 
 	public JobId scheduleAction(Action action, ServiceName service, EnvironmentName env,
 			ServiceInstanceLocation... locations) {
@@ -50,18 +67,23 @@ public class JobScheduler {
 			}
 		}
 
-		// TODO User ermitteln und an Job übergeben
-		// TODO Rechte prüfen
+		String actor = context.getCallerPrincipal().getName();
+		User creator = userRepository.getUser(new UserName(actor)); //if passes -> user exists
+
+		securityAdmin.proofPerformAction(env, service, action); //if passes -> user has rights to perform the actions
+
 		JobId id = new JobId();
-		Job job = new Job(id, action, filtered);
+		Job job = new Job(id, creator, action, filtered);
+
+		jobRepository.addJob(job);
 
 		// TODO JobRepository anlegen
 		// TODO Job persistieren
-		// Job asynchron ausführen
+		// Job asynchron ausführen + pessimistic locking
 		return id;
 	}
 
-	//	public void notifyActionCompleted(JobId jobId, siUNI...){
+	//	public void notifyActionCompleted(JobId jobId, siUNI...){ //nicht hier einfügen
 	//		 //TODO
 	//	}
 
