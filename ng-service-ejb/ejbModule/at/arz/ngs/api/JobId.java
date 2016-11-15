@@ -1,9 +1,12 @@
 package at.arz.ngs.api;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class JobId {
+public class JobId
+		implements Serializable {
 
+	private static final long serialVersionUID = 1L;
 	private String value;
 
 	public JobId() {
@@ -12,6 +15,15 @@ public class JobId {
 
 	public JobId(String value) {
 		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return value;
+	}
+
+	public String getValue() {
+		return value;
 	}
 
 	@Override

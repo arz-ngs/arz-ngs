@@ -27,11 +27,15 @@
   <web-resource-collection>
    <web-resource-name>publicResources</web-resource-name>
    <url-pattern>/javax.faces.resource/*</url-pattern>
-   <url-pattern>*.css</url-pattern>
-   <url-pattern>*.js</url-pattern>
+   <url-pattern>/css/*.css</url-pattern>
+   <url-pattern>/js/*.js</url-pattern>
    <url-pattern>/login.xhtml</url-pattern>
    <url-pattern>/unauthorized</url-pattern>
+   <http-method>GET</http-method>
   </web-resource-collection>
+  <user-data-constraint>     
+  	<transport-guarantee>NONE</transport-guarantee>   
+  </user-data-constraint>
  </security-constraint>
  <security-constraint>
   <display-name>SecurityConstraint</display-name>

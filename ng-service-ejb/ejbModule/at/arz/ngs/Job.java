@@ -33,8 +33,8 @@ public class Job {
 	@GeneratedValue(generator = "ngs.job", strategy = GenerationType.TABLE)
 	private long oid;
 
-	@Column(name = "JOBID", nullable = false)
 	@Convert(converter = JobIdConverter.class)
+	@Column(name = "JOBID", nullable = false)
 	private JobId jobId;
 
 	@Column(name = "ACTION")
