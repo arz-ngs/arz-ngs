@@ -26,9 +26,6 @@ public class NewServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
-	@Inject
-	private UserController userController;
-
 	private String instance;
 	private String service;
 	private String environment;
@@ -69,8 +66,9 @@ public class NewServiceInstanceController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.createNewServiceInstance(userController.getCurrentActor(), command);
-		} catch (RuntimeException e) {
+			admin.createNewServiceInstance(command);
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return null;

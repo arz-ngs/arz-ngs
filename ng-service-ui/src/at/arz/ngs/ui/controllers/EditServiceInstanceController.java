@@ -52,9 +52,6 @@ public class EditServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
-	@Inject
-	private UserController userController;
-
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -83,7 +80,8 @@ public class EditServiceInstanceController
 		errorCollection = new ErrorCollection();
 		try {
 			this.response = admin.getServiceInstance(service, environment, host, instance);
-		} catch (RuntimeException e) {
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return null;
@@ -128,13 +126,10 @@ public class EditServiceInstanceController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.updateServiceInstance(userController.getCurrentActor(),
-										command,
-										this.response.getServiceName(),
-										this.response.getEnvironmentName(),
-										this.response.getHostName(),
-										this.response.getInstanceName());
-		} catch (RuntimeException e) {
+			admin.updateServiceInstance(command, this.response.getServiceName(), this.response.getEnvironmentName(),
+					this.response.getHostName(), this.response.getInstanceName());
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return null;

@@ -33,9 +33,6 @@ public class UserDetailController
 	@Inject
 	private SecurityAdmin admin;
 
-	@Inject
-	private UserController userController;
-
 	private UserData currentUser;
 
 	private boolean handover;
@@ -92,7 +89,7 @@ public class UserDetailController
 
 		errorCollection = new ErrorCollection();
 		try {
-			List<String> rolesToHandOver = admin.getHandoverRolesFromActor(userController.getCurrentActor()).getRoles();
+			List<String> rolesToHandOver = admin.getHandoverRolesFromActor().getRoles();
 			if (rolesToHandOver == null || rolesToHandOver.size() == 0) {
 				renderNewRemoveRoleElements = false; //can not handover some roles, so he also can't remove roles
 			}
@@ -123,7 +120,7 @@ public class UserDetailController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removeRoleFromUser(userController.getCurrentActor(), command);
+			admin.removeRoleFromUser(command);
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
@@ -147,7 +144,7 @@ public class UserDetailController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.addRoleToUser(userController.getCurrentActor(), command);
+			admin.addRoleToUser(command);
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));

@@ -36,9 +36,6 @@ public class RoleDetailController
 	@Inject
 	private ServiceInstanceAdmin si_admin;
 
-	@Inject
-	private UserController userController;
-
 	private String currentRole;
 	private List<PermissionData> permissions;
 	private String chosenEnvID;
@@ -78,7 +75,7 @@ public class RoleDetailController
 		AddPermissionToRole command = new AddPermissionToRole(currentRole, permissionData);
 		errorCollection = new ErrorCollection();
 		try {
-			admin.addPermissionToRole(userController.getCurrentActor(), command);
+			admin.addPermissionToRole(command);
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
@@ -95,8 +92,7 @@ public class RoleDetailController
 	public String removePermission(PermissionData data) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removePermissionFromRole(userController.getCurrentActor(),
-					new RemovePermissionFromRole(currentRole, data));
+			admin.removePermissionFromRole(new RemovePermissionFromRole(currentRole, data));
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));

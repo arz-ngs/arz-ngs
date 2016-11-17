@@ -86,8 +86,6 @@ public class JournalAdmin {
 			String action) {
 
 		Actor actor = new Actor(context.getCallerPrincipal().getName());
-		//TODO for automatic script execution -> try if user can be eligable 
-		//		new Actor("automatic script execution")
 
 		if (actor == null || actor.getUserName().trim().equals("")) {
 			throw new EmptyField("To add an journal entry an actor must be set!");

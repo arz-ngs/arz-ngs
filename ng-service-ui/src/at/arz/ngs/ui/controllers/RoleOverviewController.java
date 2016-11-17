@@ -26,9 +26,6 @@ public class RoleOverviewController
 	@Inject
 	private SecurityAdmin admin;
 
-	@Inject
-	private UserController userController;
-
 	private List<String> roleOverview;
 
 	private String createRoleName;
@@ -61,7 +58,7 @@ public class RoleOverviewController
 
 		errorCollection = new ErrorCollection();
 		try {
-			admin.createRole(userController.getCurrentActor(), new CreateRole(createRoleName));
+			admin.createRole(new CreateRole(createRoleName));
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
@@ -75,7 +72,7 @@ public class RoleOverviewController
 	public String removeRole(String roleName) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removeRole(userController.getCurrentActor(), new RemoveRole(roleName));
+			admin.removeRole(new RemoveRole(roleName));
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));

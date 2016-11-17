@@ -13,7 +13,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
 import at.arz.ngs.security.SecurityAdmin;
-import at.arz.ngs.security.commands.login.Login;
 import at.arz.ngs.security.commands.login.LoginResponse;
 import at.arz.ngs.security.user.commands.UserData;
 import at.arz.ngs.ui.data_collections.LoginCollection;
@@ -52,12 +51,9 @@ public class LoginController
 		}
 
 		if ((userName != null) && (!userName.equals("")) && (password != null) && (!password.equals(""))) {
-			Login loginData = new Login(userName, password);
-
-			//			if (admin.isApplicationUsingsLDAPauth()) {
 			HttpServletRequest httpRequest = getCurrentHttpRequest();
 			try {
-				httpRequest.login(loginData.getUserName(), loginData.getPassword());
+				httpRequest.login(userName, password);
 			}
 			catch (ServletException e) {
 				e.printStackTrace();
@@ -65,15 +61,15 @@ public class LoginController
 						true);
 				return null;
 			}
-			//			}
 
 			try {
-				LoginResponse response = admin.login(loginData);
+				LoginResponse response = admin.login();
+
 				UserData user = response.getUser();
 
 				if (user != null) {
 					userController.setUserData(user);
-					userController.setRenderAdminOnlyElements(admin.isAdmin(userController.getCurrentActor()));
+					userController.setRenderAdminOnlyElements(admin.isAdmin());
 					return "overview.xhtml?faces-redirect=true";
 				}
 				else {

@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
@@ -39,11 +38,6 @@ public class ServiceInstanceResource {
 	@Context
 	private HttpServletRequest request;
 
-	// TODO remove this method for security
-	private Actor getAdminActor() {
-		return new Actor(request.getUserPrincipal().getName());
-	}
-
 	/**
 	 * Need Administrator rights.
 	 * 
@@ -54,7 +48,7 @@ public class ServiceInstanceResource {
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Response createNewServiceInstance(CreateNewServiceInstance command) {
-		instanceAdmin.createNewServiceInstance(getAdminActor(), command);
+		instanceAdmin.createNewServiceInstance(command);
 
 		String path = command.getServiceName() + "/" + command.getEnvironmentName() + "/" + command.getHostName() + "/"
 				+ command.getInstanceName();
@@ -88,8 +82,7 @@ public class ServiceInstanceResource {
 	public Response updateServiceInstance(@PathParam("service") String serviceName,
 			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
 			@PathParam("name") String instanceName, UpdateServiceInstance command) {
-		instanceAdmin.updateServiceInstance(getAdminActor(), command, serviceName, environmentName, hostName,
-				instanceName);
+		instanceAdmin.updateServiceInstance(command, serviceName, environmentName, hostName, instanceName);
 
 		String path = command.getServiceName() + "/" + command.getEnvironmentName() + "/" + command.getHostName() + "/"
 				+ command.getInstanceName();
@@ -118,7 +111,7 @@ public class ServiceInstanceResource {
 			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
 			@PathParam("name") String instanceName) {
 
-		instanceAdmin.removeServiceInstance(getAdminActor(), serviceName, environmentName, hostName, instanceName);
+		instanceAdmin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 	}
 
 	/**
@@ -191,8 +184,7 @@ public class ServiceInstanceResource {
 	public void performStartStopRestart(@PathParam("service") String serviceName,
 			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
 			@PathParam("name") String instanceName, PerformAction performAction) {
-		instanceAdmin.performAction(getAdminActor(), serviceName, environmentName, hostName, instanceName,
-				performAction);
+		instanceAdmin.performAction(serviceName, environmentName, hostName, instanceName, performAction);
 	}
 
 	/**
@@ -214,8 +206,7 @@ public class ServiceInstanceResource {
 	public void updateStatus(@PathParam("service") String serviceName, @PathParam("environment") String environmentName,
 			@PathParam("host") String hostName, @PathParam("name") String instanceName, UpdateStatus command) {
 
-		instanceAdmin.updateServiceInstanceStatus(getAdminActor(), serviceName, environmentName, hostName, instanceName,
-				command);
+		instanceAdmin.updateServiceInstanceStatus(serviceName, environmentName, hostName, instanceName, command);
 	}
 
 }

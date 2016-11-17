@@ -26,9 +26,6 @@ public class ActionController {
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
-	@Inject
-	private UserController userController;
-
 	private ErrorCollection errorCollection;
 
 	@PostConstruct
@@ -86,9 +83,8 @@ public class ActionController {
 					// TODO Pro Element der Aggregation einen Job erstellen und Job-ID ermitteln.
 					// TODO Pro Job-ID asynchronen Vorgang starten
 					// TODO
-					admin.performAction(userController.getCurrentActor(), serviceInstance.getServiceName(),
-							serviceInstance.getEnvironmentName(), serviceInstance.getHostName(),
-							serviceInstance.getInstanceName(), action);
+					admin.performAction(serviceInstance.getServiceName(), serviceInstance.getEnvironmentName(),
+							serviceInstance.getHostName(), serviceInstance.getInstanceName(), action);
 				}
 				catch (RuntimeException e) {
 					errorCollection.addError(new Error(e));
@@ -181,7 +177,7 @@ public class ActionController {
 			String instance) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.performAction(userController.getCurrentActor(), service, environment, host, instance, action);
+			admin.performAction(service, environment, host, instance, action);
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));

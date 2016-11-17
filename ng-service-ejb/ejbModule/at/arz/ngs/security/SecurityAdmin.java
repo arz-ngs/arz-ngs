@@ -32,7 +32,6 @@ import at.arz.ngs.api.exception.User_RoleNotFound;
 import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.commands.getSIDetailPermissions.PerformActionPermissions;
-import at.arz.ngs.security.commands.login.Login;
 import at.arz.ngs.security.commands.login.LoginResponse;
 import at.arz.ngs.security.permission.commands.PermissionData;
 import at.arz.ngs.security.permission.commands.addToRole.AddPermissionToRole;
@@ -114,22 +113,11 @@ public class SecurityAdmin {
 		return res;
 	}
 
-	public LoginResponse login(Login login) { //TODO remove login
+	public LoginResponse login() {
 		String userName = context.getCallerPrincipal().getName();
 		if (userName == null || userName.trim().equals("")) {
 			throw new EmptyField("user name must be set");
 		}
-
-		//		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove if authentication working without!!
-		//			// productional stage
-		//			//Replaces InitalInserts
-		//			//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
-		//			//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
-		//			//			User u = userRepository.getUser(new UserName("admin"));
-		//			//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
-		//			//			userRoleRepository.addUser_Role(u, r, true);
-		//			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
-		//		}
 
 		UserData userData = adjustUser(userName);
 
@@ -145,8 +133,9 @@ public class SecurityAdmin {
 		if (isAuthorizedToPerformAction(env, service, action, actor)) {
 			return;
 		}
-		throw new NoPermission("The actor " + actor + " does not have permission to perform an action in environment "
-				+ env.getName() + " on service " + service.getName() + "!");
+		throw new NoPermission(
+				"The actor " + actor.getUserName() + " does not have permission to perform an action in environment "
+						+ env.getName() + " on service " + service.getName() + "!");
 	}
 
 	public PerformActionPermissions isAuthorizedToPerformActions(EnvironmentName env, ServiceName service) {
@@ -319,8 +308,6 @@ public class SecurityAdmin {
 	}
 
 	public void createRole(CreateRole command) {
-		Actor actor = new Actor(context.getCallerPrincipal().getName());
-
 		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
@@ -411,8 +398,6 @@ public class SecurityAdmin {
 	}
 
 	public void addPermissionToRole(AddPermissionToRole command) {
-		Actor actor = new Actor(context.getCallerPrincipal().getName());
-
 		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
@@ -493,8 +478,6 @@ public class SecurityAdmin {
 	}
 
 	public void removePermissionFromRole(RemovePermissionFromRole command) {
-		Actor actor = new Actor(context.getCallerPrincipal().getName());
-
 		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
@@ -573,10 +556,13 @@ public class SecurityAdmin {
 		else {
 			//local use
 			if (userName.equals("alex")) {
-				userData = new UserData("alex", "Alexander", "Schiegl", "alexander.schiegl@gmx.at");
+				userData = new UserData("alex", "Alexander", "Schiegl", "test1@email.com");
 			}
 			else if (userName.equals("daniel")) {
-				userData = new UserData("daniel", "Daniel", "Testor", "daniel.testor@hotmail.com");
+				userData = new UserData("daniel", "Daniel", "Testor", "test2@email.com");
+			}
+			else if (userName.equals("admin")) {
+				userData = new UserData("admin", "Admin", "arz-ngs", "admin@arz-ngs.com");
 			}
 			else {
 				userData = new UserData(userName, "Test", "User", "test.user@email.com");

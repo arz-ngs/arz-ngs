@@ -33,9 +33,6 @@ public class DetailViewController
 	@Inject
 	private SecurityAdmin securityAdmin;
 
-	@Inject
-	private UserController userController;
-
 	private String instance;
 	private String service;
 	private String environment;
@@ -95,8 +92,8 @@ public class DetailViewController
 	}
 
 	private void validateCommandButtons() {
-		PerformActionPermissions permissions = securityAdmin.isAuthorizedToPerformActions(
-				new EnvironmentName(this.environment), new ServiceName(this.service), userController.getCurrentActor());
+		PerformActionPermissions permissions = securityAdmin
+				.isAuthorizedToPerformActions(new EnvironmentName(this.environment), new ServiceName(this.service));
 
 		commandButtonCollection = new CommandButtonCollection(); //reset the collection to defaults
 		if (pathEmpty(pathStart) || !permissions.isAbleToStart()) {

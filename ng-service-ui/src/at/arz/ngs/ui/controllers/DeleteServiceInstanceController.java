@@ -25,9 +25,6 @@ public class DeleteServiceInstanceController
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
 
-	@Inject
-	private UserController userController;
-
 	private String service;
 	private String environment;
 	private String host;
@@ -38,21 +35,16 @@ public class DeleteServiceInstanceController
 	public String deleteServiceInstance(String instance, String service, String environment, String host) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.removeServiceInstance(userController.getCurrentActor(), service, environment, host, instance);
-		} catch (RuntimeException e) {
+			admin.removeServiceInstance(service, environment, host, instance);
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			try {
-				FacesContext.getCurrentInstance()
-							.getExternalContext()
-							.redirect("detailview.xhtml?instance="+ instance
-										+ "&service="
-										+ service
-										+ "&env="
-										+ environment
-										+ "&host="
-										+ host);
-			} catch (IOException e1) {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
+						+ "&service=" + service + "&env=" + environment + "&host=" + host);
+			}
+			catch (IOException e1) {
 				e1.printStackTrace();
 			}
 			return "";
