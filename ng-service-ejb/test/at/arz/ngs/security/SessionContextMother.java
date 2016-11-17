@@ -14,6 +14,7 @@ import javax.ejb.TimerService;
 import javax.transaction.UserTransaction;
 import javax.xml.rpc.handler.MessageContext;
 
+@SuppressWarnings("deprecation")
 public class SessionContextMother {
 
 	public static SessionContext authenticatedAs(final String userid) {
@@ -122,7 +123,7 @@ public class SessionContextMother {
 			}
 
 			@Override
-			public Class getInvokedBusinessInterface() throws IllegalStateException {
+			public Class<?> getInvokedBusinessInterface() throws IllegalStateException {
 				// TODO Auto-generated method stub
 				return null;
 			}

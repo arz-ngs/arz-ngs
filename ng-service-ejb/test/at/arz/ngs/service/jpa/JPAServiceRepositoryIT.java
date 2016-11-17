@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,8 +13,7 @@ import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.exception.ServiceNotFound;
 
-public class JPAServiceRepositoryIT
-		extends AbstractJpaIT {
+public class JPAServiceRepositoryIT extends AbstractJpaIT {
 
 	private ServiceRepository repository;
 
@@ -65,59 +61,9 @@ public class JPAServiceRepositoryIT
 		try {
 			repository.getService(serviceName1);
 			fail();
-		} catch (ServiceNotFound e) {
+		}
+		catch (ServiceNotFound e) {
 
 		}
 	}
-
-	/**
-	 * cleanup table entries
-	 */
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
-	}
-
-	// @Test
-	// public void updateServices() {
-	// repository.addService(serviceName1);
-	// Service service1 = repository.getService(serviceName1);
-	// repository.updateService(service1, serviceName3);
-	// Service service1updated = repository.getService(serviceName3);
-	// assertEquals(serviceName3, service1updated.getServiceName());
-	// assertNotEquals(serviceName1, service1updated.getServiceName());
-	// assertEquals(service1.getOid(), service1updated.getOid());
-	// }
-
-
-	// @Test(expected = ServiceNotFoundException.class)
-	// public void findServices() {
-	// assertEquals(serviceName1, repository.getService(serviceName1).getServiceName());
-	// assertEquals(serviceName3, repository.getService(serviceName3).getServiceName());
-	//
-	// // Exception should be thrown
-	// service2 = repository.getService(serviceName2);
-	// }
-
 }

@@ -3,6 +3,8 @@ package at.arz.ngs.journal;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.annotation.Resource;
+import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -18,6 +20,9 @@ public class JournalAdmin {
 	@Inject
 	private JournalRepository journalRepositoy;
 
+	@Resource
+	private SessionContext context;
+
 	protected JournalAdmin() {
 		//ejb constructor
 	}
@@ -29,8 +34,9 @@ public class JournalAdmin {
 	 * @param serviceInstanceRepository
 	 * @param roleRepository
 	 */
-	public JournalAdmin(JournalRepository journalRepository) {
+	public JournalAdmin(SessionContext context, JournalRepository journalRepository) {
 		this.journalRepositoy = journalRepository;
+		this.context = context;
 	}
 
 	public List<JournalResponse> getAllJournalEntries() {
@@ -76,8 +82,13 @@ public class JournalAdmin {
 		return currentFirstElement;
 	}
 
-	public void addJournalEntry(Actor actor, Class<?> targetObject_class, long targetObject_oid,
-			String targetObject_uniqueKey, String action) {
+	public void addJournalEntry(Class<?> targetObject_class, long targetObject_oid, String targetObject_uniqueKey,
+			String action) {
+
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+		//TODO for automatic script execution -> try if user can be eligable 
+		//		new Actor("automatic script execution")
+
 		if (actor == null || actor.getUserName().trim().equals("")) {
 			throw new EmptyField("To add an journal entry an actor must be set!");
 		}
@@ -100,5 +111,14 @@ public class JournalAdmin {
 
 	public int getJournalEntryCount() {
 		return journalRepositoy.getJournalEntryCount();
+	}
+
+	/**
+	 * Only for JUnit Tests!!!
+	 * 
+	 * @param context
+	 */
+	public void setContext(SessionContext context) {
+		this.context = context;
 	}
 }

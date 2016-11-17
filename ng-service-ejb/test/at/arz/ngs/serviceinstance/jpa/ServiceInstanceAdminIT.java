@@ -5,9 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -80,7 +77,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		roleRepository = new JPARoleRepository(getEntityManager());
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		journalAdmin = new JournalAdmin(new JPAJournalRepository(getEntityManager()));
+		journalAdmin = new JournalAdmin(SessionContextMother.authenticatedAs("admin"),
+				new JPAJournalRepository(getEntityManager()));
 		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
 				journalAdmin, SessionContextMother.authenticatedAs("admin"));
 		admin = new ServiceInstanceAdmin(services, hosts, environments, instances, scripts,
@@ -107,8 +105,10 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		actor = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset admin
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
-		securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
-		admin.createNewServiceInstance(actor, command);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
+		admin.createNewServiceInstance(command);
 	}
 
 	@Test
@@ -132,7 +132,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setInstanceName(instanceName);
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
-		admin.createNewServiceInstance(actor, command);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.createNewServiceInstance(command);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -169,7 +170,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setServiceName(serviceName);
 
 		try {
-			admin.createNewServiceInstance(actor, command);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			admin.createNewServiceInstance(command);
 			fail();
 		}
 		catch (EmptyField e) {
@@ -201,7 +203,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setServiceName(serviceName);
 
 		try {
-			admin.createNewServiceInstance(actor, command);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			admin.createNewServiceInstance(command);
 			fail();
 		}
 		catch (EmptyField e) {
@@ -232,7 +235,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 
-		admin.createNewServiceInstance(actor, command);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.createNewServiceInstance(command);
 		assertEquals(2, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
 
@@ -258,7 +262,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 
-		admin.createNewServiceInstance(actor, command);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.createNewServiceInstance(command);
 
 		ServiceInstanceResponse serviceInstance = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -276,7 +281,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 
-		admin.removeServiceInstance(actor, serviceName, environmentName, hostName, instanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 
 		try {
 			admin.getServiceInstance(serviceName, environmentName, hostName, instanceName);
@@ -316,7 +322,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -357,7 +364,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -399,7 +407,9 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldEnvironmentName = "environment1";
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -443,8 +453,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
-					oldInstanceName);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 			fail();
 		}
 		catch (AlreadyModified e) {
@@ -452,7 +462,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		}
 
 		command.setVersion(0);
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -494,8 +505,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 		try {
-			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
-					oldInstanceName);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 			fail();
 		}
 		catch (AlreadyModified e) {
@@ -503,7 +514,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 
 		command.setVersion(0);
 
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		ServiceInstanceResponse response = admin.getServiceInstance(serviceName, environmentName, hostName,
 				instanceName);
@@ -544,8 +556,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldInstanceName = "instance1";
 
 		try {
-			admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName,
-					oldInstanceName);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 			fail();
 		}
 		catch (EmptyField e) {
@@ -582,7 +594,8 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		String oldHostName = "host1";
 		String oldInstanceName = "instance1";
 
-		admin.updateServiceInstance(actor, command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.updateServiceInstance(command, oldServiceName, oldEnvironmentName, oldHostName, oldInstanceName);
 
 		assertEquals(1, admin.getServiceInstances("*", "*", "*", "*").getServiceInstances().size());
 	}
@@ -607,7 +620,10 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
 		assertEquals(1, hosts.getAllHosts().size());
-		admin.createNewServiceInstance(actor, command);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.createNewServiceInstance(command);
+
 		assertEquals(1, hosts.getAllHosts().size());
 
 		String environmentName3 = "environment3";
@@ -627,47 +643,23 @@ public class ServiceInstanceAdminIT extends AbstractJpaIT {
 		command3.setInstanceName(instanceName3);
 		command3.setScript(scriptData3);
 		command3.setServiceName(serviceName3);
-		admin.createNewServiceInstance(actor, command3);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		admin.createNewServiceInstance(command3);
 		assertEquals(2, hosts.getAllHosts().size());
-		admin.removeServiceInstance(actor, serviceName3, environmentName3, hostName3, instanceName3);
+
+		admin.removeServiceInstance(serviceName3, environmentName3, hostName3, instanceName3);
 		assertEquals(1, hosts.getAllHosts().size());
-		admin.removeServiceInstance(actor, serviceName, environmentName, hostName, instanceName);
+
+		admin.removeServiceInstance(serviceName, environmentName, hostName, instanceName);
 		assertEquals(1, hosts.getAllHosts().size());
 
 		String environmentName2 = "environment1";
 		String hostName2 = "host1";
 		String serviceName2 = "service1";
 		String instanceName2 = "instance1";
-		admin.removeServiceInstance(actor, serviceName2, environmentName2, hostName2, instanceName2);
-		assertEquals(0, hosts.getAllHosts().size());
-	}
 
-	/**
-	 * cleanup table entries
-	 */
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
+		admin.removeServiceInstance(serviceName2, environmentName2, hostName2, instanceName2);
+		assertEquals(0, hosts.getAllHosts().size());
 	}
 }

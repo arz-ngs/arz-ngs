@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,9 +34,7 @@ import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 
-
-public class JPAServiceInstanceRepositoryIT
-		extends AbstractJpaIT {
+public class JPAServiceInstanceRepositoryIT extends AbstractJpaIT {
 
 	@Test
 	public void addServiceInstances() {
@@ -64,24 +59,17 @@ public class JPAServiceInstanceRepositoryIT
 		script2 = scriptRepository.getScript(scriptName2);
 
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1, "");
-		repository.addServiceInstance(	host2,
-										service2,
-										environment2,
-										script2,
-										serviceInstanceName2,
-										status2,
-										"Test Information");
+		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2,
+				"Test Information");
 
 		assertNotNull(repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1));
 		// testing default behavior of version numbering
-		assertEquals(	0,
-						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
-									.getVersion());
+		assertEquals(0,
+				repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1).getVersion());
 		assertNotNull(repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2));
 		assertEquals(2, repository.getAllInstances().size());
-		assertEquals(	serviceInstanceName1,
-						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
-									.getServiceInstanceName());
+		assertEquals(serviceInstanceName1, repository
+				.getServiceInstance(serviceInstanceName1, service1, host1, environment1).getServiceInstanceName());
 	}
 
 	@Test
@@ -107,32 +95,24 @@ public class JPAServiceInstanceRepositoryIT
 		script2 = scriptRepository.getScript(scriptName2);
 
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1, "");
-		repository.addServiceInstance(	host2,
-										service2,
-										environment2,
-										script2,
-										serviceInstanceName2,
-										status2,
-										"INFORMATION");
+		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2,
+				"INFORMATION");
 
-		ServiceInstance serviceInstance1 = repository.getServiceInstance(	serviceInstanceName1,
-																			service1,
-																			host1,
-																			environment1);
+		ServiceInstance serviceInstance1 = repository.getServiceInstance(serviceInstanceName1, service1, host1,
+				environment1);
 		assertEquals(2, repository.getAllInstances().size());
-		assertEquals(	"",
-						repository	.getServiceInstance(serviceInstanceName1, service1, host1, environment1)
-									.getInformation());
+		assertEquals("",
+				repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1).getInformation());
 		repository.removeServiceInstance(serviceInstance1);
 		assertEquals(1, repository.getAllInstances().size());
-		assertEquals(	"INFORMATION",
-						repository	.getServiceInstance(serviceInstanceName2, service2, host2, environment2)
-									.getInformation());
+		assertEquals("INFORMATION",
+				repository.getServiceInstance(serviceInstanceName2, service2, host2, environment2).getInformation());
 
 		try {
 			repository.getServiceInstance(serviceInstanceName1, service1, host1, environment1);
 			fail();
-		} catch (ServiceInstanceNotFound e) {
+		}
+		catch (ServiceInstanceNotFound e) {
 
 		}
 	}
@@ -299,9 +279,6 @@ public class JPAServiceInstanceRepositoryIT
 
 		status1 = Status.active;
 
-
-
-
 		serviceInstanceName2 = new ServiceInstanceName("serviceInstanceName2");
 
 		serviceName2 = new ServiceName("serviceName2");
@@ -317,39 +294,5 @@ public class JPAServiceInstanceRepositoryIT
 		pathStatus2 = new PathStatus("pathStatus2");
 
 		status2 = Status.not_active;
-
-		// status3 = Status.is_starting;
-
-
 	}
-
-	/**
-	 * cleanup table entries
-	 */
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
-	}
-
 }

@@ -23,7 +23,6 @@ import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.journal.JournalAdmin;
-import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 
 /**
@@ -176,7 +175,7 @@ public class ScriptExecutor {
 		error = error.substring(0, toErr);
 		c.close();
 
-		journalAdmin.addJournalEntry(new Actor("automatic script execution"), ServiceInstance.class,
-				serviceInstance.getOid(), serviceInstance.toString(), action + " with Error " + error);
+		journalAdmin.addJournalEntry(ServiceInstance.class, serviceInstance.getOid(), serviceInstance.toString(),
+				action + " with Error " + error);
 	}
 }

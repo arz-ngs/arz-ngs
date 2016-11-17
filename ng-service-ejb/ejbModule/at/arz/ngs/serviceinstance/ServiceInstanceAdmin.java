@@ -46,7 +46,6 @@ import at.arz.ngs.search.OrderCondition;
 import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.SecurityAdmin;
-import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
@@ -120,8 +119,8 @@ public class ServiceInstanceAdmin {
 		// EJB Constructor
 	}
 
-	public void createNewServiceInstance(Actor actor, CreateNewServiceInstance command) {
-		securityAdmin.proofActorAdminAccess(actor);
+	public void createNewServiceInstance(CreateNewServiceInstance command) {
+		securityAdmin.proofActorAdminAccess();
 
 		ScriptData scriptData = command.getScript();
 		String information = command.getInformation();
@@ -166,25 +165,25 @@ public class ServiceInstanceAdmin {
 		ServiceInstance si = serviceInstanceRepository.getServiceInstance(serviceInstanceName, service, host,
 				environment);
 
-		journalAdmin.addJournalEntry(actor, si.getClass(), si.getOid(), si.toString(),
+		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
 				"Neue ServiceInstance wurde hinzugefügt");
 	}
 
-	public void updateServiceInstanceStatus(Actor actor, String service, String environment, String host,
-			String serviceInstance, UpdateStatus command) {
-		securityAdmin.proofActorAdminAccess(actor);
+	public void updateServiceInstanceStatus(String service, String environment, String host, String serviceInstance,
+			UpdateStatus command) {
+		securityAdmin.proofActorAdminAccess();
 
 		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
 		Status status = convertToStatus(command.getStatus());
 		si.setStatus(status);
 
-		journalAdmin.addJournalEntry(actor, si.getClass(), si.getOid(), si.toString(),
+		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
 				"Status wurde auf " + status + " gesetzt"); //TODO really log this action?
 	}
 
-	public void updateServiceInstance(Actor actor, UpdateServiceInstance command, String oldServiceNameString,
+	public void updateServiceInstance(UpdateServiceInstance command, String oldServiceNameString,
 			String oldEnvironmentNameString, String oldHostNameString, String oldServiceInstanceNameString) {
-		securityAdmin.proofActorAdminAccess(actor);
+		securityAdmin.proofActorAdminAccess();
 
 		ServiceName oldServiceName = getServiceName(oldServiceNameString);
 		EnvironmentName oldEnvironmentName = getEnvironmentName(oldEnvironmentNameString);
@@ -247,7 +246,7 @@ public class ServiceInstanceAdmin {
 				oldServiceInstance.setInformation(information);
 				oldServiceInstance.incrementVersion();
 
-				journalAdmin.addJournalEntry(actor, oldServiceInstance.getClass(), oldServiceInstance.getOid(),
+				journalAdmin.addJournalEntry(oldServiceInstance.getClass(), oldServiceInstance.getOid(),
 						oldServiceInstance.toString(), "Daten der ServiceInstance wurden geändert");
 			}
 			else {
@@ -262,9 +261,8 @@ public class ServiceInstanceAdmin {
 		removeAllUnusedElements();
 	}
 
-	public void removeServiceInstance(Actor actor, String service, String environment, String host,
-			String serviceInstance) {
-		securityAdmin.proofActorAdminAccess(actor);
+	public void removeServiceInstance(String service, String environment, String host, String serviceInstance) {
+		securityAdmin.proofActorAdminAccess();
 
 		ServiceInstance si = getServiceInstanceFromStrings(service, environment, host, serviceInstance);
 
@@ -273,7 +271,7 @@ public class ServiceInstanceAdmin {
 
 		serviceInstanceRepository.removeServiceInstance(si);
 
-		journalAdmin.addJournalEntry(actor, ServiceInstance.class, oid, uniqueName,
+		journalAdmin.addJournalEntry(ServiceInstance.class, oid, uniqueName,
 				"ServiceInstance " + uniqueName + " wurde gelöscht");
 		removeAllUnusedElements();
 	}
@@ -345,8 +343,8 @@ public class ServiceInstanceAdmin {
 				serviceInstanceNameString));
 	}
 
-	public void performAction(Actor actor, String serviceNameString, String environmentNameString,
-			String hostNameString, String serviceInstanceNameString, PerformAction perform) {
+	public void performAction(String serviceNameString, String environmentNameString, String hostNameString,
+			String serviceInstanceNameString, PerformAction perform) {
 
 		securityAdmin.proofPerformAction(new EnvironmentName(environmentNameString), new ServiceName(serviceNameString),
 				Action.valueOf(perform.getPerformAction()));
@@ -403,7 +401,7 @@ public class ServiceInstanceAdmin {
 		scriptExecutor.executeScript(serviceName, environmentName, hostName, serviceInstanceName, path, perform); //note: this is asynchronously executed
 
 		if (!param.equals("status")) {
-			journalAdmin.addJournalEntry(actor, serviceInstance.getClass(), serviceInstance.getOid(),
+			journalAdmin.addJournalEntry(serviceInstance.getClass(), serviceInstance.getOid(),
 					serviceInstance.toString(), actionString);
 		}
 	}

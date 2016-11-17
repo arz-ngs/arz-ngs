@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,8 +34,7 @@ import at.arz.ngs.script.jpa.JPAScriptRepository;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
-public class SearchEngineIT
-		extends AbstractJpaIT {
+public class SearchEngineIT extends AbstractJpaIT {
 
 	@Test
 	public void testFindServiceInstances() {
@@ -54,7 +50,7 @@ public class SearchEngineIT
 	@Test
 	public void testOrderByGeneral() {
 		print("Host ASC", searchEngine.orderByHostNameTest());
-		
+
 	}
 
 	/**
@@ -68,70 +64,35 @@ public class SearchEngineIT
 			System.err.println(i.toString());
 		}
 
-		List<ServiceInstance> inst = searchEngine.findServiceInstances(	"*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING));
+		List<ServiceInstance> inst = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING));
 
 		print("Service DSC", inst);
-		List<ServiceInstance> inst2 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_ENVIRONMENT,
-																							OrderCondition.DESCENDING));
+		List<ServiceInstance> inst2 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_ENVIRONMENT, OrderCondition.DESCENDING));
 		print("Env DSC", inst2);
-		List<ServiceInstance> inst3 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_HOST,
-																							OrderCondition.DESCENDING));
+		List<ServiceInstance> inst3 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_HOST, OrderCondition.DESCENDING));
 		print("Host DSC", inst3);
-		List<ServiceInstance> inst4 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICEINSTANCE,
-																							OrderCondition.DESCENDING));
+		List<ServiceInstance> inst4 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.DESCENDING));
 
 		print("Instance DSC", inst4);
-		List<ServiceInstance> inst5 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.ASCENDING));
+		List<ServiceInstance> inst5 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.ASCENDING));
 		print("Service ASC", inst5);
-		List<ServiceInstance> inst6 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_ENVIRONMENT,
-																							OrderCondition.ASCENDING));
+		List<ServiceInstance> inst6 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_ENVIRONMENT, OrderCondition.ASCENDING));
 		print("Env ASC", inst6);
-		List<ServiceInstance> inst7 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_HOST,
-																							OrderCondition.ASCENDING));
+		List<ServiceInstance> inst7 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_HOST, OrderCondition.ASCENDING));
 		print("Host ASC", inst7);
-		List<ServiceInstance> inst8 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*3",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICEINSTANCE,
-																							OrderCondition.ASCENDING));
+		List<ServiceInstance> inst8 = searchEngine.findServiceInstances("*", "*", "*", "*3",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICEINSTANCE, OrderCondition.ASCENDING));
 		print("Instance ASC only 1", inst8);
 
-		List<ServiceInstance> inst9 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(null, null));
+		List<ServiceInstance> inst9 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(null, null));
 		print("with null values -> Instance ASC", inst9);
 	}
 
@@ -140,82 +101,50 @@ public class SearchEngineIT
 	 */
 	@Test
 	public void testPagination() {
-		List<ServiceInstance> all = searchEngine.findServiceInstances(	"*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING));
+		List<ServiceInstance> all = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING));
 
 		print("ALL -- Service DSC", all);
 
-		List<ServiceInstance> inst1 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING),
-																		new PaginationCondition(1, 1));
+		List<ServiceInstance> inst1 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(1, 1));
 
 		print("Service DSC", 1, 1, inst1);
 
-		List<ServiceInstance> inst3 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING),
-																		new PaginationCondition(1, 2));
+		List<ServiceInstance> inst3 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(1, 2));
 
 		print("Service DSC", 1, 2, inst3);
 
-		List<ServiceInstance> inst2 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING),
-																		new PaginationCondition(2, 1));
+		List<ServiceInstance> inst2 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(2, 1));
 
 		print("Service DSC", 2, 1, inst2);
 
-		List<ServiceInstance> inst25 = searchEngine.findServiceInstances(	"*",
-																			"*",
-																			"*",
-																			"*",
-																			new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																								OrderCondition.DESCENDING),
-																			new PaginationCondition(2, 2));
+		List<ServiceInstance> inst25 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(2, 2));
 
 		print("Service DSC", 2, 2, inst25);
 
-		List<ServiceInstance> inst4 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING),
-																		new PaginationCondition(3, 1));
+		List<ServiceInstance> inst4 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(3, 1));
 
 		print("Service DSC", 3, 1, inst4);
 
-		List<ServiceInstance> inst5 = searchEngine.findServiceInstances("*",
-																		"*",
-																		"*",
-																		"*",
-																		new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																							OrderCondition.DESCENDING),
-																		new PaginationCondition(-1, 0));
+		List<ServiceInstance> inst5 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(-1, 0));
 
 		print("Service DSC", 50, 1, inst5);
 
-		List<ServiceInstance> inst55 = searchEngine.findServiceInstances(	"*",
-																			"*",
-																			"*",
-																			"*",
-																			new OrderCondition(	OrderCondition.ORDERBY_SERVICE,
-																								OrderCondition.DESCENDING),
-																			new PaginationCondition(7, 8));
+		List<ServiceInstance> inst55 = searchEngine.findServiceInstances("*", "*", "*", "*",
+				new OrderCondition(OrderCondition.ORDERBY_SERVICE, OrderCondition.DESCENDING),
+				new PaginationCondition(7, 8));
 
 		print("Service DSC", 7, 8, inst55);
 	}
@@ -228,13 +157,8 @@ public class SearchEngineIT
 	}
 
 	private void print(String comm, int elementsPerPage, int currentPage, List<ServiceInstance> inst) {
-		System.err.println("\n\n"+ comm
-							+ "\nElements per Page: "
-							+ elementsPerPage
-							+ "\nCurrentPage: "
-							+ currentPage
-							+ "\nSize: "
-							+ inst.size());
+		System.err.println("\n\n" + comm + "\nElements per Page: " + elementsPerPage + "\nCurrentPage: " + currentPage
+				+ "\nSize: " + inst.size());
 		for (ServiceInstance i : inst) {
 			System.err.println(i.toString());
 		}
@@ -399,34 +323,5 @@ public class SearchEngineIT
 		repository.addServiceInstance(host1, service1, environment1, script1, serviceInstanceName1, status1, "");
 		repository.addServiceInstance(host2, service2, environment2, script2, serviceInstanceName2, status2, "");
 		repository.addServiceInstance(host3, service3, environment3, script3, serviceInstanceName3, status3, "");
-	}
-
-	/**
-	 * cleanup table entries
-	 */
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
 	}
 }

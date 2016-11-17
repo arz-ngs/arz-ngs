@@ -99,6 +99,11 @@ public class SecurityAdmin {
 		this.context = context;
 	}
 
+	/**
+	 * Open for everyone.
+	 * 
+	 * @return
+	 */
 	public UserResponse getUserOverview() {
 		UserResponse res = new UserResponse();
 		for (User u : userRepository.getAllUsers()) {
@@ -109,24 +114,24 @@ public class SecurityAdmin {
 		return res;
 	}
 
-	public LoginResponse login(Login login) {
-		if (login == null || login.getUserName() == null || login.getUserName().equals("")
-				|| login.getPassword() == null) {
-			throw new EmptyField("login field must be set");
+	public LoginResponse login(Login login) { //TODO remove login
+		String userName = context.getCallerPrincipal().getName();
+		if (userName == null || userName.trim().equals("")) {
+			throw new EmptyField("user name must be set");
 		}
 
-		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove in
-			// productional stage
-			//Replaces InitalInserts
-			//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
-			//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
-			//			User u = userRepository.getUser(new UserName("admin"));
-			//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
-			//			userRoleRepository.addUser_Role(u, r, true);
-			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
-		}
+		//		if (login.getUserName().equals("admin") && login.getPassword().equals("admin")) { // TODO IMPORTANT: remove if authentication working without!!
+		//			// productional stage
+		//			//Replaces InitalInserts
+		//			//			userRepository.addUser(new UserName("admin"), new FirstName("Vorname"), new LastName("Nachname"), new Email("test@mail.com"));
+		//			//			roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
+		//			//			User u = userRepository.getUser(new UserName("admin"));
+		//			//			Role r = roleRepository.getRole(new RoleName(SecurityAdmin.ADMIN));
+		//			//			userRoleRepository.addUser_Role(u, r, true);
+		//			return new LoginResponse(new UserData("admin", "Max", "Mustermann", "max.mustermann@email.at"));
+		//		}
 
-		UserData userData = adjustUser(login.getUserName());
+		UserData userData = adjustUser(userName);
 
 		return new LoginResponse(userData);
 	}
@@ -144,8 +149,9 @@ public class SecurityAdmin {
 				+ env.getName() + " on service " + service.getName() + "!");
 	}
 
-	public PerformActionPermissions isAuthorizedToPerformActions(EnvironmentName env, ServiceName service,
-			Actor actor) {
+	public PerformActionPermissions isAuthorizedToPerformActions(EnvironmentName env, ServiceName service) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
 		PerformActionPermissions res = new PerformActionPermissions();
 
 		res.setAbleToStart(isAuthorizedToPerformAction(env, service, Action.start, actor));
@@ -157,7 +163,7 @@ public class SecurityAdmin {
 	}
 
 	private boolean isAuthorizedToPerformAction(EnvironmentName env, ServiceName service, Action action, Actor actor) {
-		if (isAdmin(actor)) {
+		if (isAdmin()) {
 			return true;
 		}
 
@@ -185,15 +191,17 @@ public class SecurityAdmin {
 	 * used. Only Administrators have access to perfom changes. If no permission
 	 * an NoPermission Exception is thrown.
 	 */
-	public void proofActorAdminAccess(Actor actor) {
-		if (!isAdmin(actor)) {
-			throw new NoPermission("The actor " + actor.getUserName()
+	public void proofActorAdminAccess() {
+		if (!isAdmin()) {
+			throw new NoPermission("The actor " + context.getCallerPrincipal().getName()
 					+ " does not have the permission to do this action. To change one must have to role '" + ADMIN
 					+ "'!");
 		}
 	}
 
-	public boolean isAdmin(Actor actor) {
+	public boolean isAdmin() {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
 		if (actor == null || actor.getUserName() == null || actor.getUserName().equals("")) {
 			throw new EmptyField("actor was null or empty");
 		}
@@ -224,12 +232,14 @@ public class SecurityAdmin {
 	 * 
 	 * @param command
 	 */
-	public void addRoleToUser(Actor actor, AddRoleToUser command) {
+	public void addRoleToUser(AddRoleToUser command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
 		boolean checkIfUserhasSameRole = false; // admin do not need the same role
 
 		if (!isJunitTest) {
 			try {
-				proofActorAdminAccess(actor);
+				proofActorAdminAccess();
 			}
 			catch (NoPermission e) { // user is not an Admin -> check if he can handover his own role to other people
 				checkIfUserhasSameRole = true;
@@ -249,7 +259,6 @@ public class SecurityAdmin {
 
 		if (checkIfUserhasSameRole) {
 			proofActorHasSameRoleAndHandoverRights(actor, roleToAdd);
-
 		}
 		try {
 			userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
@@ -259,16 +268,18 @@ public class SecurityAdmin {
 			userRoleRepository.addUser_Role(userToAddTo, roleToAdd, command.isHandover());
 			User_Role user_Role = userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
 
-			journalAdmin.addJournalEntry(actor, user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
+			journalAdmin.addJournalEntry(user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
 					userToAddTo.getUserName().getName() + " hat die Rolle " + roleToAdd.getRoleName().getName()
 							+ " erhalten");
 		}
 	}
 
-	public void removeRoleFromUser(Actor actor, RemoveRoleFromUser command) {
+	public void removeRoleFromUser(RemoveRoleFromUser command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
 		boolean checkIfUserhasSameRole = false; // admin do not need the same role
 		try {
-			proofActorAdminAccess(actor);
+			proofActorAdminAccess();
 		}
 		catch (NoPermission e) { // user is not an Admin -> check if he can handover his own role to other people
 			checkIfUserhasSameRole = true;
@@ -294,7 +305,7 @@ public class SecurityAdmin {
 		User_Role user_Role = userRoleRepository.getUser_Role(user, role);
 		userRoleRepository.removeUser_Role(user_Role);
 
-		journalAdmin.addJournalEntry(actor, user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
+		journalAdmin.addJournalEntry(user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
 				user_Role.getUser().getUserName().getName() + " wurde die Rolle "
 						+ user_Role.getRole().getRoleName().getName() + " entzogen");
 
@@ -307,8 +318,10 @@ public class SecurityAdmin {
 		}
 	}
 
-	public void createRole(Actor actor, CreateRole command) {
-		proofActorAdminAccess(actor);
+	public void createRole(CreateRole command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
+		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not create role in order to empty fields.");
@@ -325,12 +338,14 @@ public class SecurityAdmin {
 		roleRepository.addRole(roleName);
 		Role role = roleRepository.getRole(roleName);
 
-		journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(),
+		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(),
 				"Rolle " + role.getRoleName().getName() + " wurde neu erstellt");
 	}
 
-	public void removeRole(Actor actor, RemoveRole command) {
-		proofActorAdminAccess(actor);
+	public void removeRole(RemoveRole command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
+		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not remove role in order to empty fields.");
@@ -366,8 +381,7 @@ public class SecurityAdmin {
 			}
 		}
 
-		journalAdmin.addJournalEntry(actor, Role.class, role_oid, uniqueName,
-				"Rolle " + uniqueName + " wurde gelöscht");
+		journalAdmin.addJournalEntry(Role.class, role_oid, uniqueName, "Rolle " + uniqueName + " wurde gelöscht");
 	}
 
 	public RolesResponse getAllRoles() {
@@ -396,8 +410,10 @@ public class SecurityAdmin {
 		return res;
 	}
 
-	public void addPermissionToRole(Actor actor, AddPermissionToRole command) {
-		proofActorAdminAccess(actor);
+	public void addPermissionToRole(AddPermissionToRole command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
+		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not add permission to role in order to empty fields.");
@@ -421,7 +437,7 @@ public class SecurityAdmin {
 			role.addPermission(permission);
 			permission.addRole(role);
 
-			journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(), "Permission "
+			journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
 					+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " hinzugefügt");
 		}
 		else {
@@ -476,8 +492,10 @@ public class SecurityAdmin {
 		return value;
 	}
 
-	public void removePermissionFromRole(Actor actor, RemovePermissionFromRole command) {
-		proofActorAdminAccess(actor);
+	public void removePermissionFromRole(RemovePermissionFromRole command) {
+		Actor actor = new Actor(context.getCallerPrincipal().getName());
+
+		proofActorAdminAccess();
 
 		if (command == null || command.getRoleName() == null || command.getRoleName().equals("")) {
 			throw new EmptyField("Could not remove permission from role in order to empty fields.");
@@ -505,7 +523,7 @@ public class SecurityAdmin {
 		permission.removeRole(role);
 		role.removePermission(permission);
 
-		journalAdmin.addJournalEntry(actor, role.getClass(), role.getOid(), role.toString(), "Permission "
+		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
 				+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " entzogen");
 
 		try {
@@ -588,11 +606,13 @@ public class SecurityAdmin {
 		return userData;
 	}
 
-	public RolesResponse getHandoverRolesFromActor(Actor actor) {
-		if (isAdmin(actor)) {
+	public RolesResponse getHandoverRolesFromActor() {
+		if (isAdmin()) {
 			return getAllRoles();
 		}
 		else {
+			Actor actor = new Actor(context.getCallerPrincipal().getName());
+
 			User user = userRepository.getUser(new UserName(actor.getUserName()));
 			RolesResponse response = new RolesResponse();
 			for (User_Role ur : userRoleRepository.getUser_RoleByUser(user)) {
@@ -626,5 +646,14 @@ public class SecurityAdmin {
 		isASUsingLDAP = false;
 		isUsingLDAPPropSet = true;
 		return false;
+	}
+
+	/**
+	 * Only for JUnit Tests!!!
+	 * 
+	 * @param context
+	 */
+	public void setContext(SessionContext context) {
+		this.context = context;
 	}
 }

@@ -4,9 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -33,7 +30,6 @@ import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.SessionContextMother;
 import at.arz.ngs.security.UserRepository;
 import at.arz.ngs.security.User_RoleRepository;
-import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.permission.jpa.JPAPermissionRepository;
 import at.arz.ngs.security.role.jpa.JPARoleRepository;
 import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
@@ -63,8 +59,6 @@ public class JournalAdminIT extends AbstractJpaIT {
 	private JournalRepository journalRepository;
 	private JournalAdmin journalAdmin;
 
-	private Actor actor;
-
 	@Before
 	public void setUpBefore() {
 		services = new JPAServiceRepository(getEntityManager());
@@ -77,7 +71,7 @@ public class JournalAdminIT extends AbstractJpaIT {
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
 		journalRepository = new JPAJournalRepository(getEntityManager());
-		journalAdmin = new JournalAdmin(journalRepository);
+		journalAdmin = new JournalAdmin(SessionContextMother.authenticatedAs("admin"), journalRepository);
 
 		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
 				journalAdmin, SessionContextMother.authenticatedAs("admin"));
@@ -98,10 +92,10 @@ public class JournalAdminIT extends AbstractJpaIT {
 
 		userRepository.addUser(new UserName("admin"), new FirstName(""), new LastName(""), new Email(""));
 
-		actor = new Actor("admin"); // preset admin
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
-		securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
+
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
 
 		CreateNewServiceInstance command = new CreateNewServiceInstance();
 		command.setEnvironmentName(environmentName);
@@ -109,7 +103,7 @@ public class JournalAdminIT extends AbstractJpaIT {
 		command.setInstanceName(instanceName);
 		command.setScript(scriptData);
 		command.setServiceName(serviceName);
-		admin.createNewServiceInstance(actor, command);
+		admin.createNewServiceInstance(command);
 	}
 
 	@Test
@@ -125,31 +119,5 @@ public class JournalAdminIT extends AbstractJpaIT {
 		assertEquals("admin", jr2.getUserName());
 		assertEquals("ServiceInstance", jr2.getTargetObject_class());
 		assertEquals("service1/environment1/host1/instance1", jr2.getTargetObject_uniqueKey());
-	}
-
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
 	}
 }

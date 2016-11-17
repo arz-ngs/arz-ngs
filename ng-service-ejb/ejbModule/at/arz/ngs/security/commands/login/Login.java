@@ -1,6 +1,6 @@
 package at.arz.ngs.security.commands.login;
 
-
+@Deprecated
 public class Login {
 
 	private String userName;
@@ -8,7 +8,6 @@ public class Login {
 	private String password;
 
 	public Login(String userName, String password) {
-		super();
 		this.userName = userName;
 		this.password = password;
 	}

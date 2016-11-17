@@ -3,18 +3,10 @@ package at.arz.ngs.security;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
-import javax.persistence.Query;
-
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import at.arz.ngs.AbstractJpaIT;
-import at.arz.ngs.EnvironmentRepository;
-import at.arz.ngs.HostRepository;
-import at.arz.ngs.ScriptRepository;
-import at.arz.ngs.ServiceInstanceRepository;
-import at.arz.ngs.ServiceRepository;
 import at.arz.ngs.api.Action;
 import at.arz.ngs.api.Email;
 import at.arz.ngs.api.EnvironmentName;
@@ -24,12 +16,8 @@ import at.arz.ngs.api.RoleName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.api.exception.NoPermission;
-import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
-import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.journal.jpa.JPAJournalRepository;
-import at.arz.ngs.script.jpa.JPAScriptRepository;
-import at.arz.ngs.search.SearchEngine;
 import at.arz.ngs.security.commands.Actor;
 import at.arz.ngs.security.permission.commands.PermissionData;
 import at.arz.ngs.security.permission.commands.addToRole.AddPermissionToRole;
@@ -38,21 +26,10 @@ import at.arz.ngs.security.role.jpa.JPARoleRepository;
 import at.arz.ngs.security.user.commands.addRole.AddRoleToUser;
 import at.arz.ngs.security.user.jpa.JPAUserRepository;
 import at.arz.ngs.security.userrole.jpa.JPAUser_RoleRepository;
-import at.arz.ngs.service.jpa.JPAServiceRepository;
-import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.ScriptData;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
-import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
 public class SecurityAdminIT extends AbstractJpaIT {
-
-	private ServiceInstanceAdmin serviceAdmin;
-
-	private ServiceRepository serviceRepository;
-	private HostRepository hostRepository;
-	private EnvironmentRepository environmentRepository;
-	private ScriptRepository scriptRepository;
-	private ServiceInstanceRepository instanceRepository;
 
 	private SecurityAdmin securityAdmin;
 	private PermissionRepository permissionRepository;
@@ -63,22 +40,15 @@ public class SecurityAdminIT extends AbstractJpaIT {
 
 	@Before
 	public void setUpBeforeClass() {
-		serviceRepository = new JPAServiceRepository(getEntityManager());
-		hostRepository = new JPAHostRepository(getEntityManager());
-		environmentRepository = new JPAEnvironmentRepository(getEntityManager());
-		scriptRepository = new JPAScriptRepository(getEntityManager());
-		instanceRepository = new JPAServiceInstanceRepository(getEntityManager());
 		permissionRepository = new JPAPermissionRepository(getEntityManager());
 		roleRepository = new JPARoleRepository(getEntityManager());
 		userRepository = new JPAUserRepository(getEntityManager());
 		userRoleRepository = new JPAUser_RoleRepository(getEntityManager());
-		journalAdmin = new JournalAdmin(new JPAJournalRepository(getEntityManager()));
+		journalAdmin = new JournalAdmin(SessionContextMother.authenticatedAs("admin"),
+				new JPAJournalRepository(getEntityManager()));
 
 		securityAdmin = new SecurityAdmin(permissionRepository, roleRepository, userRepository, userRoleRepository,
 				journalAdmin, SessionContextMother.authenticatedAs("admin"));
-		serviceAdmin = new ServiceInstanceAdmin(serviceRepository, hostRepository, environmentRepository,
-				instanceRepository, scriptRepository, new SearchEngine(getEntityManager()), securityAdmin,
-				journalAdmin);
 
 		ScriptData scriptData = new ScriptData();
 		scriptData.setPathStart("start");
@@ -103,14 +73,14 @@ public class SecurityAdminIT extends AbstractJpaIT {
 
 		// securityAdmin.addPermissionToRole(actor, command);
 
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString()); // preset
 		// to
 		// admin-rights
 		roleRepository.addRole(new RoleName(SecurityAdmin.ADMIN));
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("admin", SecurityAdmin.ADMIN, true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
-		serviceAdmin.createNewServiceInstance(admin, command);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
 
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
 	}
 
 	@Test
@@ -119,47 +89,54 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		Actor actor2 = new Actor(userRepository.getUser(new UserName("alex")).getUserName().toString());
 		Actor actor3 = new Actor(userRepository.getUser(new UserName("user1")).getUserName().toString());
 		Actor actor4 = new Actor(userRepository.getUser(new UserName("user2")).getUserName().toString());
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", false);
 		AddRoleToUser addRoleToUserCommand2 = new AddRoleToUser("user2", "entwickler", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand2);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
+		securityAdmin.addRoleToUser(addRoleToUserCommand2);
 		assertEquals(2, roleRepository.getAllRoles().size());
 		try {
-			securityAdmin.addRoleToUser(actor, addRoleToUserCommand);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+			securityAdmin.addRoleToUser(addRoleToUserCommand);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.addRoleToUser(actor2, addRoleToUserCommand);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor2.getUserName()));
+			securityAdmin.addRoleToUser(addRoleToUserCommand);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 		try {
-			securityAdmin.addRoleToUser(actor3, addRoleToUserCommand);
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor3.getUserName()));
+			securityAdmin.addRoleToUser(addRoleToUserCommand);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
-		securityAdmin.addRoleToUser(actor4, addRoleToUserCommand);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor4.getUserName()));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
 	}
 
 	@Test
 	public void proofPermission() {
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.all.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
-		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+		securityAdmin.addPermissionToRole(addPermissionToRoleCommand);
 
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.all);
-		securityAdmin.proofActorAdminAccess(admin);
+		securityAdmin.proofActorAdminAccess();
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
 		try {
 			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.all);
 			fail();
@@ -175,7 +152,7 @@ public class SecurityAdminIT extends AbstractJpaIT {
 			// wanted
 		}
 		try {
-			securityAdmin.proofActorAdminAccess(actor);
+			securityAdmin.proofActorAdminAccess();
 			fail();
 		}
 		catch (NoPermission e) {
@@ -185,18 +162,20 @@ public class SecurityAdminIT extends AbstractJpaIT {
 
 	@Test
 	public void proofPermission2() {
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
+
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
-		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
+
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs("admin"));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
+
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.start.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
-		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+		securityAdmin.addPermissionToRole(addPermissionToRoleCommand);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
-		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.all, actor);
-		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("*"), Action.start, actor);
-		// securityAdmin.proofPerformAction(new EnvironmentName("*"), new ServiceName("serv1"), Action.start, actor);
-		// securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("*"), Action.start, actor);
 		try {
 			securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start);
 			fail();
@@ -233,15 +212,18 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
 		PermissionData permissionData = new PermissionData("env1", "serv1", Action.start.name());
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
 		try {
-			securityAdmin.addPermissionToRole(actor, addPermissionToRoleCommand);
+			securityAdmin.addPermissionToRole(addPermissionToRoleCommand);
 			fail();
 		}
 		catch (NoPermission e) {
 			// wanted
 		}
 
-		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
+		securityAdmin.addPermissionToRole(addPermissionToRoleCommand);
 	}
 
 	@Test
@@ -249,8 +231,11 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
 		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "entwickler", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
 		try {
+			securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
 			securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
 			fail();
 		}
@@ -261,8 +246,12 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		AddPermissionToRole addPermissionToRoleCommand = new AddPermissionToRole("entwickler", permissionData);
 		PermissionData permissionData2 = new PermissionData("*", "serv1", Action.all.name());
 		AddPermissionToRole addPermissionToRoleCommand2 = new AddPermissionToRole("entwickler", permissionData2);
-		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand2);
-		securityAdmin.addPermissionToRole(admin, addPermissionToRoleCommand);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
+		securityAdmin.addPermissionToRole(addPermissionToRoleCommand2);
+		securityAdmin.addPermissionToRole(addPermissionToRoleCommand);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.start);
 		securityAdmin.proofPerformAction(new EnvironmentName("env1"), new ServiceName("serv1"), Action.stop);
 		securityAdmin.proofPerformAction(new EnvironmentName("env2"), new ServiceName("serv1"), Action.start);
@@ -280,47 +269,32 @@ public class SecurityAdminIT extends AbstractJpaIT {
 		roleRepository.addRole(new RoleName("role1"));
 		roleRepository.addRole(new RoleName("role2"));
 		roleRepository.addRole(new RoleName("role3"));
+
 		AddRoleToUser addRoleToUserCommand = new AddRoleToUser("daniel", "role1", true);
 		Actor admin = new Actor(userRepository.getUser(new UserName("admin")).getUserName().toString());
 		Actor actor = new Actor(userRepository.getUser(new UserName("daniel")).getUserName().toString());
-		assertEquals(0, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand);
-		assertEquals(1, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		assertEquals(0, securityAdmin.getHandoverRolesFromActor().getRoles().size());
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
+		securityAdmin.addRoleToUser(addRoleToUserCommand);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		assertEquals(1, securityAdmin.getHandoverRolesFromActor().getRoles().size());
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
 		AddRoleToUser addRoleToUserCommand2 = new AddRoleToUser("daniel", "role2", false);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand2);
-		assertEquals(1, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
+		securityAdmin.addRoleToUser(addRoleToUserCommand2);
+
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		assertEquals(1, securityAdmin.getHandoverRolesFromActor().getRoles().size());
 		AddRoleToUser addRoleToUserCommand3 = new AddRoleToUser("daniel", "role3", true);
-		securityAdmin.addRoleToUser(admin, addRoleToUserCommand3);
-		assertEquals(2, securityAdmin.getHandoverRolesFromActor(actor).getRoles().size());
-	}
 
-	/**
-	 * cleanup table entries
-	 */
-	@After
-	public void cleanup() {
-		Query d1 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICEINSTANCE");
-		d1.executeUpdate();
-		Query d2 = super.getEntityManager().createNativeQuery("DROP TABLE SERVICE");
-		d2.executeUpdate();
-		Query d3 = super.getEntityManager().createNativeQuery("DROP TABLE HOST");
-		d3.executeUpdate();
-		Query d4 = super.getEntityManager().createNativeQuery("DROP TABLE ENVIRONMENT");
-		d4.executeUpdate();
-		Query d5 = super.getEntityManager().createNativeQuery("DROP TABLE SCRIPT");
-		d5.executeUpdate();
-		Query d7 = super.getEntityManager().createNativeQuery("DROP TABLE USER_ROLE");
-		d7.executeUpdate();
-		Query d8 = super.getEntityManager().createNativeQuery("DROP TABLE USER_");
-		d8.executeUpdate();
-		Query d10 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION_ROLE"); // jpa generated table
-		d10.executeUpdate();
-		Query d9 = super.getEntityManager().createNativeQuery("DROP TABLE ROLE");
-		d9.executeUpdate();
-		Query d6 = super.getEntityManager().createNativeQuery("DROP TABLE PERMISSION");
-		d6.executeUpdate();
-		Query d11 = super.getEntityManager().createNativeQuery("DROP TABLE JOURNALENTRY");
-		d11.executeUpdate();
-	}
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(admin.getUserName()));
+		securityAdmin.addRoleToUser(addRoleToUserCommand3);
 
+		securityAdmin.setContext(SessionContextMother.authenticatedAs(actor.getUserName()));
+		assertEquals(2, securityAdmin.getHandoverRolesFromActor().getRoles().size());
+	}
 }
