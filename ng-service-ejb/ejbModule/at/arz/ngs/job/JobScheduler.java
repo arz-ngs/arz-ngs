@@ -43,6 +43,9 @@ public class JobScheduler {
 	@Inject
 	private JobRepository jobRepository;
 
+	@Inject
+	private JobExecutor jobExecutor;
+
 	public JobId scheduleAction(Action action, ServiceName service, EnvironmentName env,
 			ServiceInstanceLocation... locations) {
 		return scheduleAction(action, service, env, new HashSet<>(Arrays.asList(locations)));
@@ -81,6 +84,10 @@ public class JobScheduler {
 		// TODO Job persistieren
 		// Job asynchron ausführen + pessimistic locking
 		return id;
+	}
+
+	public void startJob(JobId jobId) {
+		jobExecutor.executeJob(jobId);
 	}
 
 	//	public void notifyActionCompleted(JobId jobId, siUNI...){ //nicht hier einfügen
