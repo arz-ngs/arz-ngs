@@ -21,7 +21,6 @@ import at.arz.ngs.api.ServiceInstanceLocation;
 import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.job.JobScheduler;
-import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.ui.data_collections.Environment_Service;
@@ -32,9 +31,6 @@ import at.arz.ngs.ui.data_collections.OverviewCollection;
 @RequestScoped
 @Named("actionController")
 public class ActionController {
-
-	@Inject
-	private ServiceInstanceAdmin admin;
 
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
@@ -89,58 +85,57 @@ public class ActionController {
 	}
 
 	private void performAction(PerformAction action, List<OverviewCollection> overviewList) {
-		errorCollection = new ErrorCollection();
-
-		HashMap<Environment_Service, Set<ServiceInstanceLocation>> agg = new HashMap<>();
+		Map<Environment_Service, Set<ServiceInstanceLocation>> agg = new HashMap<>();
 
 		for (OverviewCollection oc : overviewList) {
 			if (oc.isChecked()) {
 				ServiceInstanceOverview serviceInstance = oc.getServiceInstance();
 				//				System.out.println(action + " service instance: " + serviceInstance.toString());
-				try {
-					// Aggregation: Environment and Service
-					Environment_Service envS = new Environment_Service(
-							new EnvironmentName(serviceInstance.getEnvironmentName()),
-							new ServiceName(serviceInstance.getServiceName()));
+				// Aggregation: Environment and Service
+				Environment_Service envS = new Environment_Service(
+						new EnvironmentName(serviceInstance.getEnvironmentName()),
+						new ServiceName(serviceInstance.getServiceName()));
 
-					ServiceInstanceLocation siL = new ServiceInstanceLocation(
-							new HostName(serviceInstance.getHostName()),
-							new ServiceInstanceName(serviceInstance.getInstanceName()));
+				ServiceInstanceLocation siL = new ServiceInstanceLocation(new HostName(serviceInstance.getHostName()),
+						new ServiceInstanceName(serviceInstance.getInstanceName()));
 
-					if (agg.containsKey(envS)) {
-						agg.get(envS).add(siL);
-					}
-					else {
-						Set<ServiceInstanceLocation> lsiL = new HashSet<>();
-						lsiL.add(siL);
-						agg.put(envS, lsiL);
-					}
-
-					//	old one				admin.performAction(serviceInstance.getServiceName(), serviceInstance.getEnvironmentName(),
-					//							serviceInstance.getHostName(), serviceInstance.getInstanceName(), action);
+				if (agg.containsKey(envS)) {
+					agg.get(envS).add(siL);
 				}
-				catch (RuntimeException e) {
-					errorCollection.addError(new Error(e));
+				else {
+					Set<ServiceInstanceLocation> lsiL = new HashSet<>();
+					lsiL.add(siL);
+					agg.put(envS, lsiL);
 				}
+
+				//	old one				admin.performAction(serviceInstance.getServiceName(), serviceInstance.getEnvironmentName(),
+				//							serviceInstance.getHostName(), serviceInstance.getInstanceName(), action);
 			}
 			oc.setChecked(false); // set default, no checkbox checked
-		}
-		if (errorCollection.getErrors().size() > 0) {
-			errorCollection.setShowPopup(true);
-			return;
 		}
 		scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
 	}
 
-	private void scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg) {
+	private boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg) {
+		errorCollection = new ErrorCollection();
+
 		// for each element of the map get the job id and afterward schedule the action
 		for (Environment_Service es : agg.keySet()) {
-			JobId scheduledID = jobScheduler.scheduleAction(action, es.getServiceName(), es.getEnvironmentName(),
-					agg.get(es));
+			try {
+				JobId scheduledID = jobScheduler.scheduleAction(action, es.getServiceName(), es.getEnvironmentName(),
+						agg.get(es));
 
-			//start the JobID asynchronously
-			jobScheduler.startJob(scheduledID);
+				//start the JobID asynchronously
+				jobScheduler.startJob(scheduledID);
+			}
+			catch (RuntimeException e) {
+				errorCollection.addError(new Error(e));
+				errorCollection.setShowPopup(true);
+				return false;
+			}
 		}
+
+		return true;
 	}
 
 	public void startSingle(String service, String environment, String host, String instance) {
@@ -223,7 +218,16 @@ public class ActionController {
 			String instance) {
 		errorCollection = new ErrorCollection();
 		try {
-			admin.performAction(service, environment, host, instance, action);
+			Map<Environment_Service, Set<ServiceInstanceLocation>> agg = new HashMap<>();
+
+			Environment_Service envS = new Environment_Service(new EnvironmentName(environment),
+					new ServiceName(service));
+			Set<ServiceInstanceLocation> siL = new HashSet<>();
+			siL.add(new ServiceInstanceLocation(new HostName(host), new ServiceInstanceName(instance)));
+
+			agg.put(envS, siL);
+
+			return scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
 		}
 		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
@@ -238,6 +242,5 @@ public class ActionController {
 		//				+ environment
 		//				+ "/"
 		//				+ host);
-		return true;
 	}
 }

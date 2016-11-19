@@ -86,6 +86,10 @@ public class Job {
 		return instances.get(0);
 	}
 
+	public boolean hasNextInstance() {
+		return instances.size() > 0;
+	}
+
 	public void actionPerformed(ServiceInstanceLocation loc) {
 		this.tslastmodified = new Date();
 		ServiceInstance instance = findServiceInstance(loc);

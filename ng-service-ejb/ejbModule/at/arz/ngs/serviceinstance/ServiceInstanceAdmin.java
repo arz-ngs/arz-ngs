@@ -343,6 +343,7 @@ public class ServiceInstanceAdmin {
 				serviceInstanceNameString));
 	}
 
+	@Deprecated
 	public void performAction(String serviceNameString, String environmentNameString, String hostNameString,
 			String serviceInstanceNameString, PerformAction perform) {
 

@@ -21,6 +21,7 @@ import at.arz.ngs.api.JobId;
 import at.arz.ngs.api.ServiceInstanceLocation;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.UserName;
+import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.User;
 import at.arz.ngs.security.UserRepository;
@@ -46,6 +47,9 @@ public class JobScheduler {
 	@Inject
 	private JobExecutor jobExecutor;
 
+	@Inject
+	private JournalAdmin journalAdmin;
+
 	public JobId scheduleAction(Action action, ServiceName service, EnvironmentName env,
 			ServiceInstanceLocation... locations) {
 		return scheduleAction(action, service, env, new HashSet<>(Arrays.asList(locations)));
@@ -64,8 +68,17 @@ public class JobScheduler {
 					new ServiceInstanceLocation(instance.getHost().getHostName(), instance.getServiceInstanceName()))) {
 				if (instance.getJob() == null) {
 					filtered.add(instance);
+
+					journalAdmin.addJournalEntry(ServiceInstance.class, instance.getOid(), instance.toString(),
+							action.name() + " von " + instance.toString() + " wurde angefordert");
+
 					continue;
 				}
+
+				journalAdmin.addJournalEntry(JobScheduler.class, instance.getOid(), instance.toString(),
+						instance.toString() + " wurde bereits für einen Job mit der JobID "
+								+ instance.getJob().getJobId() + " eingeplant");
+
 				throw new IllegalStateException("Job already scheduled!");
 			}
 		}

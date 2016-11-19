@@ -16,7 +16,7 @@ import at.arz.ngs.api.exception.JobNotFound;
 
 @Dependent
 public class JPAJobRepository
-implements JobRepository {
+		implements JobRepository {
 
 	@PersistenceContext(unitName = "ng-service-model")
 	private EntityManager entityManager;
@@ -40,7 +40,8 @@ implements JobRepository {
 			TypedQuery<Job> getJob = entityManager.createNamedQuery(Job.QUERY_BY_JOBID, Job.class);
 			getJob.setParameter("id", jobId);
 			return getJob.getSingleResult();
-		} catch(NoResultException e){
+		}
+		catch (NoResultException e) {
 			throw new JobNotFound(jobId);
 		}
 	}
@@ -48,7 +49,7 @@ implements JobRepository {
 	@Override
 	public void removeJob(Job job) {
 		List<ServiceInstance> instances = job.getInstances();
-		for(ServiceInstance si : instances) {
+		for (ServiceInstance si : instances) {
 			si.clearJob();
 		}
 		entityManager.remove(job);
@@ -59,5 +60,4 @@ implements JobRepository {
 		TypedQuery<Job> getJobs = entityManager.createNamedQuery(Job.QUERY_ALL, Job.class);
 		return getJobs.getResultList();
 	}
-
 }

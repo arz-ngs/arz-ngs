@@ -2,7 +2,6 @@ package at.arz.ngs.job;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
 
@@ -47,9 +46,9 @@ public class JobExecutor {
 			public void run() {
 				Job job = jobRepository.getJob(jobId);
 
-				List<ServiceInstance> instances = job.getInstances();
+				while (job.hasNextInstance()) {
+					ServiceInstance si = job.nextInstance();
 
-				for (ServiceInstance si : instances) {
 					si.setStatus(Status.is_starting);
 					Script script = si.getScript();
 
@@ -73,18 +72,35 @@ public class JobExecutor {
 					}
 
 					boolean success = executeScript(si, path, job.getAction().name());
-					if (!success) {
-						//if a error occured
-						//TODO log this error
-					}
 
 					//detach job
 					job.actionPerformed(
 							new ServiceInstanceLocation(si.getHost().getHostName(), si.getServiceInstanceName()));
+
+					if (!success) {
+						//if a error occured
+						//TODO log this error
+
+						detachAllJobsOnError(job);
+
+						journalAdmin.addJournalEntry(ServiceInstance.class, si.getOid(), si.toString(),
+								job.getAction().name() + " von " + si.toString() + " fehlgeschlagen");
+
+						break;
+					}
 				}
+
+				jobRepository.removeJob(job);
 			}
 		};
 		executor.execute(command);
+	}
+
+	private void detachAllJobsOnError(Job job) {
+		while (job.hasNextInstance()) {
+			ServiceInstance si = job.nextInstance();
+			job.actionPerformed(new ServiceInstanceLocation(si.getHost().getHostName(), si.getServiceInstanceName()));
+		}
 	}
 
 	/**

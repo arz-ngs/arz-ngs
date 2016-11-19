@@ -19,6 +19,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
+import at.arz.ngs.api.Action;
+import at.arz.ngs.api.EnvironmentName;
+import at.arz.ngs.api.HostName;
+import at.arz.ngs.api.JobId;
+import at.arz.ngs.api.ServiceInstanceLocation;
+import at.arz.ngs.api.ServiceInstanceName;
+import at.arz.ngs.api.ServiceName;
+import at.arz.ngs.job.JobScheduler;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.create.CreateNewServiceInstance;
@@ -34,6 +42,9 @@ public class ServiceInstanceResource {
 
 	@Inject
 	private ServiceInstanceAdmin instanceAdmin;
+
+	@Inject
+	private JobScheduler jobScheduler;
 
 	@Context
 	private HttpServletRequest request;
@@ -181,10 +192,16 @@ public class ServiceInstanceResource {
 	@POST
 	@Path("{service}/{environment}/{host}/{name}/action")
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	public void performStartStopRestart(@PathParam("service") String serviceName,
+	public void performAction(@PathParam("service") String serviceName,
 			@PathParam("environment") String environmentName, @PathParam("host") String hostName,
 			@PathParam("name") String instanceName, PerformAction performAction) {
-		instanceAdmin.performAction(serviceName, environmentName, hostName, instanceName, performAction);
+		Action action = Action.valueOf(performAction.getPerformAction());
+
+		JobId jobId = jobScheduler.scheduleAction(action, new ServiceName(serviceName),
+				new EnvironmentName(environmentName),
+				new ServiceInstanceLocation(new HostName(hostName), new ServiceInstanceName(instanceName)));
+
+		jobScheduler.startJob(jobId);
 	}
 
 	/**
