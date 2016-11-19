@@ -83,7 +83,7 @@ public class JobExecutor {
 						detachAllJobsOnError(job);
 
 						journalAdmin.addJournalEntry(ServiceInstance.class, si.getOid(), si.toString(),
-								job.getAction().name() + " von " + si.toString() + " fehlgeschlagen");
+								job.getAction().name() + " of " + si.toString() + " failed");
 
 						break;
 					}
@@ -198,7 +198,7 @@ public class JobExecutor {
 		c.close();
 
 		journalAdmin.addJournalEntry(ServiceInstance.class, serviceInstance.getOid(), serviceInstance.toString(),
-				action + " with Error " + error);
+				action + " of " + serviceInstance.toString() + " failed with error " + error);
 	}
 
 	private String resolvePath(Path path) {

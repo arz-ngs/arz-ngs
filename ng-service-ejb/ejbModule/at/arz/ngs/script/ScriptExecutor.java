@@ -176,6 +176,6 @@ public class ScriptExecutor {
 		c.close();
 
 		journalAdmin.addJournalEntry(ServiceInstance.class, serviceInstance.getOid(), serviceInstance.toString(),
-				action + " with Error " + error);
+				action + " of " + serviceInstance.toString() + " failed with error " + error);
 	}
 }

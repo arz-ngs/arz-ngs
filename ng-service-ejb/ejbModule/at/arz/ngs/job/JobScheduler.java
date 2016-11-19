@@ -70,14 +70,14 @@ public class JobScheduler {
 					filtered.add(instance);
 
 					journalAdmin.addJournalEntry(ServiceInstance.class, instance.getOid(), instance.toString(),
-							action.name() + " von " + instance.toString() + " wurde angefordert");
+							action.name() + " of " + instance.toString() + " was requested");
 
 					continue;
 				}
 
 				journalAdmin.addJournalEntry(JobScheduler.class, instance.getOid(), instance.toString(),
-						instance.toString() + " wurde bereits für einen Job mit der JobID "
-								+ instance.getJob().getJobId() + " eingeplant");
+						instance.toString() + " is already planned for a job with the JobID"
+								+ instance.getJob().getJobId());
 
 				throw new IllegalStateException("Job already scheduled!");
 			}

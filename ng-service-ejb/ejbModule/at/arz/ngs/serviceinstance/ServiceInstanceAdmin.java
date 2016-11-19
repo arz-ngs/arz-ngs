@@ -166,7 +166,7 @@ public class ServiceInstanceAdmin {
 				environment);
 
 		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
-				"Neue ServiceInstance " + si.toString() + " wurde hinzugefügt");
+				"New serviceinstance " + si.toString() + " was created");
 	}
 
 	public void updateServiceInstanceStatus(String service, String environment, String host, String serviceInstance,
@@ -178,7 +178,7 @@ public class ServiceInstanceAdmin {
 		si.setStatus(status);
 
 		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
-				"Status von " + si.toString() + " wurde auf " + status + " gesetzt");
+				"Status of " + si.toString() + " was set to " + status);
 	}
 
 	public void updateServiceInstance(UpdateServiceInstance command, String oldServiceNameString,
@@ -251,7 +251,7 @@ public class ServiceInstanceAdmin {
 
 				journalAdmin.addJournalEntry(serviceInstance.getClass(), serviceInstance.getOid(),
 						serviceInstance.toString(),
-						oldSIId + " wurde u.A. zu + " + serviceInstance.toString() + " verändert");
+						oldSIId + " was updated to + " + serviceInstance.toString());
 			}
 			else {
 				throw new AlreadyModified(serviceInstance.toString());
@@ -276,7 +276,7 @@ public class ServiceInstanceAdmin {
 		serviceInstanceRepository.removeServiceInstance(si);
 
 		journalAdmin.addJournalEntry(ServiceInstance.class, oid, uniqueName,
-				"ServiceInstance " + uniqueName + " wurde gelöscht");
+				"ServiceInstance " + uniqueName + " was deleted");
 		removeAllUnusedElements();
 	}
 

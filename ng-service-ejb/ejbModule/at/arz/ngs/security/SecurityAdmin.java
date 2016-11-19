@@ -258,8 +258,7 @@ public class SecurityAdmin {
 			User_Role user_Role = userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
 
 			journalAdmin.addJournalEntry(user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
-					userToAddTo.getUserName().getName() + " hat die Rolle " + roleToAdd.getRoleName().getName()
-							+ " erhalten");
+					userToAddTo.getUserName().getName() + " got the role " + roleToAdd.getRoleName().getName());
 		}
 	}
 
@@ -295,8 +294,8 @@ public class SecurityAdmin {
 		userRoleRepository.removeUser_Role(user_Role);
 
 		journalAdmin.addJournalEntry(user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
-				user_Role.getUser().getUserName().getName() + " wurde die Rolle "
-						+ user_Role.getRole().getRoleName().getName() + " entzogen");
+				user_Role.getUser().getUserName().getName() + " was removed the role "
+						+ user_Role.getRole().getRoleName().getName());
 
 		try {
 			user.removeUser_Role(user_Role);
@@ -326,7 +325,7 @@ public class SecurityAdmin {
 		Role role = roleRepository.getRole(roleName);
 
 		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(),
-				"Rolle " + role.getRoleName().getName() + " wurde neu erstellt");
+				"Role " + role.getRoleName().getName() + " was created");
 	}
 
 	public void removeRole(RemoveRole command) {
@@ -368,7 +367,7 @@ public class SecurityAdmin {
 			}
 		}
 
-		journalAdmin.addJournalEntry(Role.class, role_oid, uniqueName, "Rolle " + uniqueName + " wurde gelöscht");
+		journalAdmin.addJournalEntry(Role.class, role_oid, uniqueName, "Role " + uniqueName + " was deleted");
 	}
 
 	public RolesResponse getAllRoles() {
@@ -423,7 +422,7 @@ public class SecurityAdmin {
 			permission.addRole(role);
 
 			journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
-					+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " hinzugefügt");
+					+ permission.toString() + " was added to role " + role.getRoleName().getName());
 		}
 		else {
 			throw new RoleAlreadyHasPermission(role.getRoleName().getName(), permission.getEnvironmentName().getName()
@@ -507,7 +506,7 @@ public class SecurityAdmin {
 		role.removePermission(permission);
 
 		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
-				+ permission.toString() + " wurde der Rolle " + role.getRoleName().getName() + " entzogen");
+				+ permission.toString() + " was removed from role " + role.getRoleName().getName());
 
 		try {
 			// try to remove permission if not used anymore, if exception this permission is used
@@ -570,7 +569,7 @@ public class SecurityAdmin {
 		}
 
 		if (userData == null) {
-			throw new LoginFailed("Falsche Accountdaten. Bitte versuchen Sie es erneut.");
+			throw new LoginFailed("Wrong credentials. Try again.");
 		}
 
 		UserName name = new UserName(userData.getUserName());
