@@ -1,6 +1,5 @@
 package at.arz.ngs.job;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
 import java.util.concurrent.Executor;
@@ -169,10 +168,7 @@ public class JobExecutor {
 				return true;
 			}
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
-		catch (InterruptedException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 		}
 

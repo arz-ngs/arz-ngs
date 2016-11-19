@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.enterprise.context.Dependent;
 import javax.persistence.EntityManager;
+import javax.persistence.LockModeType;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -38,6 +39,9 @@ public class JPAJobRepository
 	public Job getJob(JobId jobId) {
 		try {
 			TypedQuery<Job> getJob = entityManager.createNamedQuery(Job.QUERY_BY_JOBID, Job.class);
+
+			getJob.setLockMode(LockModeType.PESSIMISTIC_READ);
+
 			getJob.setParameter("id", jobId);
 			return getJob.getSingleResult();
 		}
