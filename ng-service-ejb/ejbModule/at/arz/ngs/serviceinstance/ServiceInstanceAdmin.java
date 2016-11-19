@@ -166,7 +166,7 @@ public class ServiceInstanceAdmin {
 				environment);
 
 		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
-				"Neue ServiceInstance wurde hinzugefügt");
+				"Neue ServiceInstance " + si.toString() + " wurde hinzugefügt");
 	}
 
 	public void updateServiceInstanceStatus(String service, String environment, String host, String serviceInstance,
@@ -178,7 +178,7 @@ public class ServiceInstanceAdmin {
 		si.setStatus(status);
 
 		journalAdmin.addJournalEntry(si.getClass(), si.getOid(), si.toString(),
-				"Status wurde auf " + status + " gesetzt"); //TODO really log this action?
+				"Status von " + si.toString() + " wurde auf " + status + " gesetzt");
 	}
 
 	public void updateServiceInstance(UpdateServiceInstance command, String oldServiceNameString,
@@ -216,7 +216,7 @@ public class ServiceInstanceAdmin {
 				getPathStop(scriptData.getPathStop()), getPathRestart(scriptData.getPathRestart()),
 				getPathStatus(scriptData.getPathStatus()));
 
-		ServiceInstance oldServiceInstance = getServiceInstance(oldServiceName, oldEnvironmentName, oldHostName,
+		ServiceInstance serviceInstance = getServiceInstance(oldServiceName, oldEnvironmentName, oldHostName,
 				oldServiceInstanceName);
 
 		Service newService = getOrCreateNewService(serviceName);
@@ -236,21 +236,25 @@ public class ServiceInstanceAdmin {
 				// wanted here
 			}
 		}
-		if (oldServiceInstance != null) {
-			if (version == oldServiceInstance.getVersion()) {
-				oldServiceInstance.setEnvironment(newEnvironment);
-				oldServiceInstance.setHost(newHost);
-				oldServiceInstance.setScript(newScript);
-				oldServiceInstance.setService(newService);
-				oldServiceInstance.renameServiceInstance(serviceInstanceName);
-				oldServiceInstance.setInformation(information);
-				oldServiceInstance.incrementVersion();
 
-				journalAdmin.addJournalEntry(oldServiceInstance.getClass(), oldServiceInstance.getOid(),
-						oldServiceInstance.toString(), "Daten der ServiceInstance wurden geändert");
+		if (serviceInstance != null) {
+			if (version == serviceInstance.getVersion()) {
+				String oldSIId = serviceInstance.toString();
+
+				serviceInstance.setEnvironment(newEnvironment);
+				serviceInstance.setHost(newHost);
+				serviceInstance.setScript(newScript);
+				serviceInstance.setService(newService);
+				serviceInstance.renameServiceInstance(serviceInstanceName);
+				serviceInstance.setInformation(information);
+				serviceInstance.incrementVersion();
+
+				journalAdmin.addJournalEntry(serviceInstance.getClass(), serviceInstance.getOid(),
+						serviceInstance.toString(),
+						oldSIId + " wurde u.A. zu + " + serviceInstance.toString() + " verändert");
 			}
 			else {
-				throw new AlreadyModified(oldServiceInstance.toString());
+				throw new AlreadyModified(serviceInstance.toString());
 			}
 
 		}
