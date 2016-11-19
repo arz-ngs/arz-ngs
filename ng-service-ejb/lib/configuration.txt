@@ -16,6 +16,7 @@ Ausgangssituation: Leerer PC
  Wildfly starten
  Wildfly im Webinterface öffnen unter http://localhost:8080
  User anlegen (.bat oder .sh ausführen, ist aber im Interface beschrieben wie, falls noch kein User angelegt ist)
+ User müssen Application User sein (Methode b) und der Gruppe "User" angehören, falls sie dieser Gruppe nicht angehören, kann man sich nicht anmelden. 
  
  Wildlfy in der Administratorkonsole öffnen http://localhost:9990
  Configuration -> Subsystems -> Datasources -> Non-XA -> Datasource Add ->

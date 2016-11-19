@@ -230,4 +230,8 @@ public class ServiceInstance {
 	public Job getJob() {
 		return job;
 	}
+	
+	public void clearJob() {
+		this.job = null;
+	}
 }

@@ -27,7 +27,10 @@
   <web-resource-collection>
    <web-resource-name>publicResources</web-resource-name>
    <url-pattern>/javax.faces.resource/*</url-pattern>
-   <url-pattern>/css/*.css</url-pattern>
+   <url-pattern>/css/style.css</url-pattern>
+   <url-pattern>/css/form-elements.css</url-pattern>
+   <url-pattern>/css/bootstrap.min.css</url-pattern>
+   <url-pattern>/css/bootstrap-dialog.min.css</url-pattern>
    <url-pattern>/js/*.js</url-pattern>
    <url-pattern>/login.xhtml</url-pattern>
    <url-pattern>/unauthorized</url-pattern>
