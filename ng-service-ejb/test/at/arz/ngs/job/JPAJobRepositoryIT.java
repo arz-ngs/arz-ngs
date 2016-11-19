@@ -1,6 +1,7 @@
 package at.arz.ngs.job;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +38,7 @@ import at.arz.ngs.api.ServiceInstanceName;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.UserName;
+import at.arz.ngs.api.exception.JobNotFound;
 import at.arz.ngs.environment.jpa.JPAEnvironmentRepository;
 import at.arz.ngs.host.jpa.JPAHostRepository;
 import at.arz.ngs.job.jpa.JPAJobRepository;
@@ -47,7 +49,7 @@ import at.arz.ngs.security.user.jpa.JPAUserRepository;
 import at.arz.ngs.service.jpa.JPAServiceRepository;
 import at.arz.ngs.serviceinstance.jpa.JPAServiceInstanceRepository;
 
-public class JobRepositoryIT extends AbstractJpaIT {
+public class JPAJobRepositoryIT extends AbstractJpaIT {
 
 	private JobRepository repository;
 	private UserRepository userRepository;
@@ -110,12 +112,16 @@ public class JobRepositoryIT extends AbstractJpaIT {
 		assertEquals(2, instanceRepository.getAllInstances().size());
 		repository.addJob(new Job(new JobId("job2"), user, Action.stop, instances));
 		assertEquals(2, repository.getAllJobs().size());
-		repository.removeJob(job);
-		assertEquals(2, instanceRepository.getAllInstances().size());
 		Job job2 = repository.getJob(new JobId("job2"));
 		assertEquals("job2", job2.getJobId().getValue());
-		repository.removeJob(job2);
-		assertEquals(0, repository.getAllJobs().size());
+		assertEquals(Action.stop, job2.getAction());
+		assertEquals(user, job2.getCreator());
+		
+		try {
+			repository.getJob(new JobId("job"));
+			fail();
+		} catch(JobNotFound e) {
+		}
 	}
 
 	@Test

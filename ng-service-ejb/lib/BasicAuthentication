@@ -1,8 +1,0 @@
-https://simplapi.wordpress.com/2015/09/19/jersey-jax-rs-securitycontext-in-action/
-Nach Möglichkeit suchen, berechtigte Rollen nicht mittels Annotationen festzulegen.
-
-
-
-http://code.tutsplus.com/tutorials/wp-rest-api-setting-up-and-using-basic-authentication--cms-24762
-How Basic Authentication Works
-Authorization: Basic {base64_encode(username:password)}  //soll sich ein User so anmelden?????

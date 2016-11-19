@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import at.arz.ngs.host.jpa.JPAHostRepositoryIT;
-import at.arz.ngs.job.JobRepositoryIT;
+import at.arz.ngs.job.JPAJobRepositoryIT;
 import at.arz.ngs.journal.JPAJournalRespositoryIT;
 import at.arz.ngs.journal.JournalAdminIT;
 import at.arz.ngs.permission.JPAPermissionRepositoryIT;
@@ -31,7 +31,7 @@ import at.arz.ngs.user_role.JPAUser_RoleRepositoryIT;
 				SecurityAdminIT.class,
 				JPAJournalRespositoryIT.class,
 				JournalAdminIT.class,
-				JobRepositoryIT.class})
+				JPAJobRepositoryIT.class})
 public class AllTestsSuite {
 
 }
