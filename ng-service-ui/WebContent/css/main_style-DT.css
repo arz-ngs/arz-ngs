@@ -150,3 +150,24 @@
 	width: 200px;
 }
 
+.stopWarning {
+	position: fixed;
+	top: 0px;
+	width: 100%;
+	height: 100px;
+	background-color: #BDBDBD;
+	z-index: 3;
+}
+
+.positionWarning {
+	position: relative;
+	margin-top: 40px;
+	text-align: center;
+}
+
+.warning {
+	position: relative;
+	margin-right: 30px;
+}
+
+

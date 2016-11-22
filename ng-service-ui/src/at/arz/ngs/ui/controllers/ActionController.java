@@ -23,6 +23,7 @@ import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.job.JobScheduler;
 import at.arz.ngs.serviceinstance.commands.action.PerformAction;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
+import at.arz.ngs.ui.data_collections.ConfirmStopAllCollection;
 import at.arz.ngs.ui.data_collections.Environment_Service;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
@@ -39,6 +40,11 @@ public class ActionController {
 	private JobScheduler jobScheduler;
 
 	private ErrorCollection errorCollection;
+	
+	private ConfirmStopAllCollection confirmCollection;
+	
+	@Inject
+	ConfirmController confirmController;
 
 	@PostConstruct
 	public void init() {
@@ -115,15 +121,31 @@ public class ActionController {
 		}
 		scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
 	}
-
+	
 	private boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg) {
 		errorCollection = new ErrorCollection();
 
+		for (Environment_Service es : agg.keySet()) {
+			if(!jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es)) && action.equals(Action.stop)) {
+				confirmCollection = new ConfirmStopAllCollection();
+				confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName() + " in environment "+ es.getEnvironmentName() + "?");
+				confirmCollection.setShowPopup(true);
+				confirmController.setAgg(agg);
+				return false;
+			}
+		}
+		
+		
 		// for each element of the map get the job id and afterward schedule the action
 		for (Environment_Service es : agg.keySet()) {
 			try {
+				
 				JobId scheduledID = jobScheduler.scheduleAction(action, es.getServiceName(), es.getEnvironmentName(),
 						agg.get(es));
+				/**
+				 * Check der gestoppten Instanzen hier nicht möglich. Was wäre wenn erst beim Xten Job ein Problem auftaucht
+				 * dann sind vorherige Instanzen schon in Queue.
+				 */
 
 				//start the JobID asynchronously
 				jobScheduler.startJob(scheduledID);
@@ -136,6 +158,13 @@ public class ActionController {
 		}
 
 		return true;
+	}
+	
+	public void stopMulti(Environment_Service es, Set<ServiceInstanceLocation> sil) {
+		JobId scheduledID = jobScheduler.scheduleAction(Action.valueOf("stop"), es.getServiceName(), es.getEnvironmentName(),
+				sil);
+		jobScheduler.startJob(scheduledID);
+
 	}
 
 	public void startSingle(String service, String environment, String host, String instance) {
@@ -212,6 +241,14 @@ public class ActionController {
 
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
+	}
+
+	public ConfirmStopAllCollection getConfirmCollection() {
+		return confirmCollection;
+	}
+
+	public void setConfirmCollection(ConfirmStopAllCollection confirmCollection) {
+		this.confirmCollection = confirmCollection;
 	}
 
 	private boolean performSingleAction(PerformAction action, String service, String environment, String host,

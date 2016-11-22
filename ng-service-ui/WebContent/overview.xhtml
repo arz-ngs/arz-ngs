@@ -13,7 +13,12 @@
 	<title>Service Instanz Übersicht</title>
 </h:head>
 <body jsf:id="body">
+
+
 	<ui:composition template="/templates/commonLayout.xhtml">
+	
+	
+	
 		<ui:define name="mainContent">
 			<div id="mid-col" class="col-md-8 secondcol">
 				<div class="row">
@@ -29,6 +34,10 @@
 						<h:commandButton value="Stop" class="btn btn-primary"
 							id="buttonStop"
 							action="#{actionController.stop(serviceinstance.instancesCollection)}">
+						</h:commandButton>
+						<h:commandButton value="Stop" class="btn btn-primary"
+							id="buttonStopMulti" rendered="false"
+							action="#{confirmController.scheduleJobs()}">
 						</h:commandButton>
 						<h:commandButton value="Restart" class="btn btn-primary"
 							id="buttonRestart"
@@ -132,6 +141,13 @@
 					</h:column>
 				</h:dataTable>
 			</div>
+			<h:panelGroup layout="block" class="stopWarning" rendered = "#{actionController.confirmCollection.showPopup}">
+				<div class="positionWarning">
+				<h:outputLabel class="warning" value="#{actionController.confirmCollection.message}" />
+				<h:commandButton class="btn btn-primary warning" value="Bestätigen" action="#{confirmController.scheduleJobs()}"></h:commandButton>
+				<h:commandButton class = "btn btn-primary warning" value="Abbrechen"></h:commandButton>			
+				</div>
+			</h:panelGroup>
 		</ui:define>
 
 		<ui:define name="settingsCol">
@@ -199,6 +215,7 @@
 					</ul>
 				</nav>
 			</div>
+			
 		</ui:define>
 		<ui:define name="errorDisplayables">
 			<h:outputScript
@@ -230,7 +247,31 @@
             	}
             }]
         });
-		</h:outputScript>
+        </h:outputScript>
+<!--         <h:outputScript -->
+<!-- 				rendered="#{actionController.confirmCollection.showPopup}"> -->
+<!--     	 BootstrapDialog.show({ -->
+<!--             title: 'Warning', -->
+<!--             message: '#{actionController.confirmCollection.message}', -->
+<!--             closable: false, -->
+<!--             buttons: [{ -->
+<!--             	label: 'Bestätigen', -->
+<!--             	action: function(dialogRef) { -->
+<!--             		document.getElementById('ngs-form\:buttonStopMulti').click(); -->
+<!-- 					alert("Test"); -->
+<!--             		dialogRef.close(); -->
+<!--             		console.log("test"); -->
+<!--             	} -->
+<!--             }, -->
+<!--             { -->
+<!--             	label: 'Abbrechen', -->
+<!--             	action: function(dialogRef) { -->
+<!--             		dialogRef.close(); -->
+<!--             		console.log("test"); -->
+<!--             	} -->
+<!--             }] -->
+<!--         }); -->
+<!--         </h:outputScript> -->
 		</ui:define>
 	</ui:composition>
 </body>

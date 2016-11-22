@@ -16,6 +16,11 @@ public class Error {
 		}
 	}
 	
+	public Error(String error, String message) {
+		this.error = error;
+		this.message = message;
+	}
+	
 	public Error(Exception e) {
 		this(e.getClass().getSimpleName(), e.getMessage(), e.getStackTrace());
 	}

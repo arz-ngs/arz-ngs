@@ -20,6 +20,7 @@ import at.arz.ngs.api.EnvironmentName;
 import at.arz.ngs.api.JobId;
 import at.arz.ngs.api.ServiceInstanceLocation;
 import at.arz.ngs.api.ServiceName;
+import at.arz.ngs.api.Status;
 import at.arz.ngs.api.UserName;
 import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.security.SecurityAdmin;
@@ -101,6 +102,20 @@ public class JobScheduler {
 
 	public void startJob(JobId jobId) {
 		jobExecutor.executeJob(jobId);
+	}
+	
+	public boolean checkMultiStop(ServiceName service, EnvironmentName env, Set<ServiceInstanceLocation> locations) {
+		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
+		List<ServiceInstance> stoppedInstances = new LinkedList<ServiceInstance>();
+		for (ServiceInstance si : instances) {
+			if((si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping)) && !locations.contains(si)) {
+				stoppedInstances.add(si);
+			}
+		}
+		if(stoppedInstances.size() + locations.size() < instances.size()) {
+			return true;
+		}
+		return false;
 	}
 
 	//	public void notifyActionCompleted(JobId jobId, siUNI...){ //nicht hier einfügen
