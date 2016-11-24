@@ -103,16 +103,18 @@ public class JobScheduler {
 	public void startJob(JobId jobId) {
 		jobExecutor.executeJob(jobId);
 	}
-	
+
 	public boolean checkMultiStop(ServiceName service, EnvironmentName env, Set<ServiceInstanceLocation> locations) {
+
 		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
-		List<ServiceInstance> stoppedInstances = new LinkedList<ServiceInstance>();
+		List<ServiceInstance> stoppedInstances = new LinkedList<>();
 		for (ServiceInstance si : instances) {
-			if((si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping)) && !locations.contains(si)) {
+			if ((si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping))
+					&& !locations.contains(si)) {
 				stoppedInstances.add(si);
 			}
 		}
-		if(stoppedInstances.size() + locations.size() < instances.size()) {
+		if (stoppedInstances.size() + locations.size() < instances.size()) {
 			return true;
 		}
 		return false;

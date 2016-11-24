@@ -6,4 +6,8 @@ public interface NGSExecutor
 		extends Executor {
 
 	void executeWithoutTransaction(Runnable command);
+
+	void executeNotAsynchronously(Runnable command);
+
+	void executeNotAsynchronouslyWithoutTransaction(Runnable command);
 }

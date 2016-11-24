@@ -31,4 +31,16 @@ public class TransactionalExecutor
 	public void executeWithoutTransaction(Runnable command) {
 		command.run();
 	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void executeNotAsynchronously(Runnable command) {
+		command.run();
+	}
+
+	@Override
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
+	public void executeNotAsynchronouslyWithoutTransaction(Runnable command) {
+		command.run();
+	}
 }
