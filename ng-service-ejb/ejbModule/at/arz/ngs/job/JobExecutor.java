@@ -225,8 +225,6 @@ public class JobExecutor {
 							si.getServiceInstanceName(), job.getAction().name(), path, jobId));
 
 				}
-
-//				jobRepository.removeJob(job);
 			}
 		};
 	}
@@ -321,13 +319,14 @@ public class JobExecutor {
 									+ hostName.getName() + "/" + serviceInstanceName.getName() + " failed"));
 				}
 
-				executor.execute(writeStatusToSI(serviceName, environmentName, hostName, serviceInstanceName, toSet)); //has to be asynch and with a new transaction
+				executor.execute(writeStatusToServiceInstance(serviceName, environmentName, hostName,
+						serviceInstanceName, toSet)); //has to be asynch and with a new transaction
 
 				if (cancelJob) {
 					executor.execute(cancelJob(jobId));
 				}
 				else {
-					executor.execute(removeSIFromJob(hostName, serviceInstanceName, jobId));
+					executor.execute(removeServiceInstanceFromJob(hostName, serviceInstanceName, jobId));
 				}
 			}
 		};
@@ -369,7 +368,8 @@ public class JobExecutor {
 	 * @param jobId
 	 * @return
 	 */
-	private Runnable removeSIFromJob(HostName hostName, ServiceInstanceName serviceInstanceName, JobId jobId) {
+	private Runnable removeServiceInstanceFromJob(HostName hostName, ServiceInstanceName serviceInstanceName,
+			JobId jobId) {
 		return new Runnable() {
 
 			@Override
@@ -419,8 +419,8 @@ public class JobExecutor {
 	 * 
 	 * @return
 	 */
-	private Runnable writeStatusToSI(ServiceName serviceName, EnvironmentName environmentName, HostName hostName,
-			ServiceInstanceName serviceInstanceName, Status status) {
+	private Runnable writeStatusToServiceInstance(ServiceName serviceName, EnvironmentName environmentName,
+			HostName hostName, ServiceInstanceName serviceInstanceName, Status status) {
 		return new Runnable() {
 
 			@Override
