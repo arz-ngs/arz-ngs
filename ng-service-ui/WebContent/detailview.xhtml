@@ -85,8 +85,15 @@
 							<span class="input-group-addon input_descriptor" id="status">Status</span>
 							<h:inputText value="#{serviceInstanceDetail.status}" type="text"
 								readonly="#{facesContext.renderResponse}" class="form-control"
-								p:placeholder="status should never be empty!!"
+								p:placeholder="Das Statusfeld sollte nie leer sein!"
 								aria-describedby="status"></h:inputText>
+						</div>
+						<div class="input-group inner_input_seperator">
+							<span class="input-group-addon input_descriptor" id="job">JobId</span>
+							<h:inputText value="#{serviceInstanceDetail.jobId}" type="text"
+								readonly="#{facesContext.renderResponse}" class="form-control"
+								p:placeholder="Derzeit ist kein Job an dieser Instanz geplant."
+								aria-describedby="job"></h:inputText>
 						</div>
 					</div>
 					<div class="outer_input_seperator">

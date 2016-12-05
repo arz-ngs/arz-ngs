@@ -131,7 +131,7 @@ public class ActionController {
 				confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName() + " in environment "+ es.getEnvironmentName() + "?");
 				confirmCollection.setShowPopup(true);
 				confirmController.setAgg(agg);
-				return false;
+				return false; //remove this and stopping instances works
 			}
 		}
 		

@@ -41,6 +41,7 @@ public class DetailViewController
 	private String version;
 	private String completeName;
 	private String information;
+	private String jobId;
 
 	private String scriptName;
 	private String pathStart;
@@ -80,6 +81,7 @@ public class DetailViewController
 			this.host = response.getHostName();
 			this.status = response.getStatus().name();
 			this.version = String.valueOf(response.getVersion());
+			this.jobId = response.getJobId();
 			this.completeName = this.service + "/" + this.environment + "/" + this.host + "/" + this.instance;
 
 			ScriptData scriptData = response.getScript();
@@ -238,4 +240,12 @@ public class DetailViewController
 		this.commandButtonCollection = commandButtonCollection;
 	}
 
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
+	}
+	
 }

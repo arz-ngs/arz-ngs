@@ -294,7 +294,11 @@ public class ServiceInstanceAdmin {
 			response.setStatus(si.getStatus());
 			response.setVersion(si.getVersion());
 			response.setInformation(si.getInformation());
-
+			if (si.getJob() != null) {
+				response.setJobId(si.getJob().getJobId().getValue());
+			} else {
+				response.setJobId("");
+			}
 			Script script = si.getScript();
 			if (script != null) {
 				String scriptName = script.getScriptName().getName();

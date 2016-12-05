@@ -22,6 +22,7 @@ import at.arz.ngs.api.ServiceInstanceLocation;
 import at.arz.ngs.api.ServiceName;
 import at.arz.ngs.api.Status;
 import at.arz.ngs.api.UserName;
+import at.arz.ngs.api.exception.EmptyField;
 import at.arz.ngs.journal.JournalAdmin;
 import at.arz.ngs.security.SecurityAdmin;
 import at.arz.ngs.security.User;
@@ -65,6 +66,13 @@ public class JobScheduler {
 		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
 		List<ServiceInstance> filtered = new LinkedList<>();
 		for (ServiceInstance instance : instances) {
+			if (action.toString().equals("start") && instance.getScript().getPathStart().toString().equals("") ||
+					action.toString().equals("stop") && instance.getScript().getPathStop().toString().equals("") ||
+					action.toString().equals("restart") && instance.getScript().getPathRestart().toString().equals("") ||
+					action.toString().equals("status") && instance.getScript().getPathStatus().toString().equals("")) {
+				throw new EmptyField(action.name().toString() + ":" + instance.toString());
+			}
+			
 			if (locations.contains(
 					new ServiceInstanceLocation(instance.getHost().getHostName(), instance.getServiceInstanceName()))) {
 				if (instance.getJob() == null) {

@@ -226,7 +226,7 @@ public class JobExecutor {
 
 				}
 
-				jobRepository.removeJob(job);
+//				jobRepository.removeJob(job);
 			}
 		};
 	}

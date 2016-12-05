@@ -35,6 +35,9 @@ public class ServiceInstanceResponse {
 
 	@XmlElement(required = false)
 	private String information;
+	
+	@XmlElement(required = false)
+	private String jobId;
 
 	public String getEnvironmentName() {
 		return environmentName;
@@ -98,6 +101,14 @@ public class ServiceInstanceResponse {
 
 	public void setInformation(String information) {
 		this.information = information;
+	}
+
+	public String getJobId() {
+		return jobId;
+	}
+
+	public void setJobId(String jobId) {
+		this.jobId = jobId;
 	}
 
 }
