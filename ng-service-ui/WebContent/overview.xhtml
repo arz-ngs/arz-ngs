@@ -144,8 +144,8 @@
 			<h:panelGroup layout="block" class="stopWarning" rendered = "#{actionController.confirmCollection.showPopup}">
 				<div class="positionWarning">
 				<h:outputLabel class="warning" value="#{actionController.confirmCollection.message}" />
-				<h:commandButton class="btn btn-primary warning" value="Bestätigen" action="#{confirmController.scheduleJobs()}"></h:commandButton>
-				<h:commandButton class = "btn btn-primary warning" value="Abbrechen"></h:commandButton>			
+				<h:commandButton class = "btn btn-primary warning" value="Bestätigen" action="#{confirmController.scheduleJobs()}"></h:commandButton>
+				<h:commandButton class = "btn btn-primary warning" value="Abbrechen" action="#{confirmController.cancel()}"></h:commandButton>			
 				</div>
 			</h:panelGroup>
 		</ui:define>

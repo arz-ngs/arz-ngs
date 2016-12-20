@@ -85,3 +85,12 @@ curl -H "Content-Type: application/json" --user admin:admin -X PUT -d '{"environ
 
 
 
+
+
+
+
+
+curl -H "Content-Type: application/json" --user admin:admin -X PUT -d '{"environmentName":"env100", "hostName":"host100", "serviceName":"service100", "instanceName":"instance1", "script": {"pathStart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathStop":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathRestart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" --user admin:admin -X PUT -d '{"environmentName":"env100", "hostName":"host100", "serviceName":"service100", "instanceName":"instance2", "script": {"pathStart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathStop":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathRestart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh"}}' http://localhost:8080/ngs/api/v1/instances
+curl -H "Content-Type: application/json" --user admin:admin -X PUT -d '{"environmentName":"env100", "hostName":"host100", "serviceName":"service100", "instanceName":"instance3", "script": {"pathStart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathStop":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh", "pathRestart":"/home/daniel/arz-ngs/ng-service-ejb/lib/testScript.sh"}}' http://localhost:8080/ngs/api/v1/instances
+

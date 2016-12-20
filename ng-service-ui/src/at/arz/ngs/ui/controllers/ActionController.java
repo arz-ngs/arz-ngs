@@ -40,11 +40,11 @@ public class ActionController {
 	private JobScheduler jobScheduler;
 
 	private ErrorCollection errorCollection;
-	
+
 	private ConfirmStopAllCollection confirmCollection;
-	
+
 	@Inject
-	ConfirmController confirmController;
+	private ConfirmController confirmController;
 
 	@PostConstruct
 	public void init() {
@@ -96,7 +96,8 @@ public class ActionController {
 		for (OverviewCollection oc : overviewList) {
 			if (oc.isChecked()) {
 				ServiceInstanceOverview serviceInstance = oc.getServiceInstance();
-				//				System.out.println(action + " service instance: " + serviceInstance.toString());
+				// System.out.println(action + " service instance: " +
+				// serviceInstance.toString());
 				// Aggregation: Environment and Service
 				Environment_Service envS = new Environment_Service(
 						new EnvironmentName(serviceInstance.getEnvironmentName()),
@@ -107,50 +108,54 @@ public class ActionController {
 
 				if (agg.containsKey(envS)) {
 					agg.get(envS).add(siL);
-				}
-				else {
+				} else {
 					Set<ServiceInstanceLocation> lsiL = new HashSet<>();
 					lsiL.add(siL);
 					agg.put(envS, lsiL);
 				}
 
-				//	old one				admin.performAction(serviceInstance.getServiceName(), serviceInstance.getEnvironmentName(),
-				//							serviceInstance.getHostName(), serviceInstance.getInstanceName(), action);
+				// old one admin.performAction(serviceInstance.getServiceName(),
+				// serviceInstance.getEnvironmentName(),
+				// serviceInstance.getHostName(),
+				// serviceInstance.getInstanceName(), action);
 			}
 			oc.setChecked(false); // set default, no checkbox checked
 		}
-		scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
+		scheduleJobs(Action.valueOf(action.getPerformAction()), agg, false);
 	}
-	
-	private boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg) {
+
+	private boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg,
+			boolean single) {
 		errorCollection = new ErrorCollection();
 
 		for (Environment_Service es : agg.keySet()) {
-			if(!jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es)) && action.equals(Action.stop)) {
+			if (jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es))
+					&& action.equals(Action.stop) && !single) {
 				confirmCollection = new ConfirmStopAllCollection();
-				confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName() + " in environment "+ es.getEnvironmentName() + "?");
+				confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName()
+						+ " in environment " + es.getEnvironmentName() + "?");
 				confirmCollection.setShowPopup(true);
 				confirmController.setAgg(agg);
-				return false; //remove this and stopping instances works
+				return false; // remove this and stopping instances works
 			}
 		}
-		
-		
-		// for each element of the map get the job id and afterward schedule the action
+
+		// for each element of the map get the job id and afterward schedule the
+		// action
 		for (Environment_Service es : agg.keySet()) {
 			try {
-				
+
 				JobId scheduledID = jobScheduler.scheduleAction(action, es.getServiceName(), es.getEnvironmentName(),
 						agg.get(es));
 				/**
-				 * Check der gestoppten Instanzen hier nicht möglich. Was wäre wenn erst beim Xten Job ein Problem auftaucht
-				 * dann sind vorherige Instanzen schon in Queue.
+				 * Check der gestoppten Instanzen hier nicht möglich. Was wäre
+				 * wenn erst beim Xten Job ein Problem auftaucht dann sind
+				 * vorherige Instanzen schon in Queue.
 				 */
 
-				//start the JobID asynchronously
+				// start the JobID asynchronously
 				jobScheduler.startJob(scheduledID);
-			}
-			catch (RuntimeException e) {
+			} catch (RuntimeException e) {
 				errorCollection.addError(new Error(e));
 				errorCollection.setShowPopup(true);
 				return false;
@@ -159,10 +164,10 @@ public class ActionController {
 
 		return true;
 	}
-	
+
 	public void stopMulti(Environment_Service es, Set<ServiceInstanceLocation> sil) {
-		JobId scheduledID = jobScheduler.scheduleAction(Action.valueOf("stop"), es.getServiceName(), es.getEnvironmentName(),
-				sil);
+		JobId scheduledID = jobScheduler.scheduleAction(Action.valueOf("stop"), es.getServiceName(),
+				es.getEnvironmentName(), sil);
 		jobScheduler.startJob(scheduledID);
 
 	}
@@ -178,8 +183,7 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -195,8 +199,7 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -212,8 +215,7 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -229,8 +231,7 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		}
-		catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -264,20 +265,19 @@ public class ActionController {
 
 			agg.put(envS, siL);
 
-			return scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
-		}
-		catch (RuntimeException e) {
+			return scheduleJobs(Action.valueOf(action.getPerformAction()), agg, true);
+		} catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return false;
 		}
-		//		System.out.println(action.getPerformAction()+ ": "
-		//				+ instance
-		//				+ "/"
-		//				+ service
-		//				+ "/"
-		//				+ environment
-		//				+ "/"
-		//				+ host);
+		// System.out.println(action.getPerformAction()+ ": "
+		// + instance
+		// + "/"
+		// + service
+		// + "/"
+		// + environment
+		// + "/"
+		// + host);
 	}
 }

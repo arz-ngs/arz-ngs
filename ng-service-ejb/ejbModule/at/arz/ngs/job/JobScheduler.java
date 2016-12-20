@@ -66,13 +66,15 @@ public class JobScheduler {
 		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
 		List<ServiceInstance> filtered = new LinkedList<>();
 		for (ServiceInstance instance : instances) {
-			if (action.toString().equals("start") && instance.getScript().getPathStart().toString().equals("") ||
-					action.toString().equals("stop") && instance.getScript().getPathStop().toString().equals("") ||
-					action.toString().equals("restart") && instance.getScript().getPathRestart().toString().equals("") ||
-					action.toString().equals("status") && instance.getScript().getPathStatus().toString().equals("")) {
+			if (action.toString().equals("start") && instance.getScript().getPathStart().toString().equals("")
+					|| action.toString().equals("stop") && instance.getScript().getPathStop().toString().equals("")
+					|| action.toString().equals("restart")
+							&& instance.getScript().getPathRestart().toString().equals("")
+					|| action.toString().equals("status")
+							&& instance.getScript().getPathStatus().toString().equals("")) {
 				throw new EmptyField(action.name().toString() + ":" + instance.toString());
 			}
-			
+
 			if (locations.contains(
 					new ServiceInstanceLocation(instance.getHost().getHostName(), instance.getServiceInstanceName()))) {
 				if (instance.getJob() == null) {
@@ -93,9 +95,15 @@ public class JobScheduler {
 		}
 
 		String actor = context.getCallerPrincipal().getName();
-		User creator = userRepository.getUser(new UserName(actor)); //if passes -> user exists
+		User creator = userRepository.getUser(new UserName(actor)); // if passes
+																	// -> user
+																	// exists
 
-		securityAdmin.proofPerformAction(env, service, action); //if passes -> user has rights to perform the actions
+		securityAdmin.proofPerformAction(env, service, action); // if passes ->
+																// user has
+																// rights to
+																// perform the
+																// actions
 
 		JobId id = new JobId();
 		Job job = new Job(id, creator, action, filtered);
@@ -123,13 +131,14 @@ public class JobScheduler {
 			}
 		}
 		if (stoppedInstances.size() + locations.size() < instances.size()) {
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
-	//	public void notifyActionCompleted(JobId jobId, siUNI...){ //nicht hier einfügen
-	//		 //TODO
-	//	}
+	// public void notifyActionCompleted(JobId jobId, siUNI...){ //nicht hier
+	// einfügen
+	// //TODO
+	// }
 
 }
