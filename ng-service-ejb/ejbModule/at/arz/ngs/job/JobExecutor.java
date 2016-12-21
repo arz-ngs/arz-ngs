@@ -91,11 +91,11 @@ public class JobExecutor {
 				executor.executeNotAsynchronously(determineNextSI(jobId, wrapper));
 				//TODO
 				/*
-				 * Here is a big problem: If we get (over the wrapper) the data
-				 * for the next service instance to execute it after than, it
-				 * works properly by having one aggregation. But if we have more
-				 * than one, instances cannot be found in the job instance list.
-				 * I think this i caused when the execution thread changes (by
+				 * Here is a problem: If we get (over the wrapper) the data for
+				 * the next service instance to execute it after than, it works
+				 * properly by having one aggregation. But if we have more than
+				 * one, instances cannot be found in the job instance list. I
+				 * think this i caused when the execution thread changes (by
 				 * parallel working thread) and so the wrapper data is
 				 * overwritten. Also in restarts of more than one aggregation
 				 * the instances are restarted more often than one time.
@@ -170,9 +170,6 @@ public class JobExecutor {
 					}
 				}
 				catch (JobNotFound | IllegalStateException e) {
-					//					e.printStackTrace();
-					System.err.println(e.toString());
-
 					wrapper.setNextEnvName(null);
 					wrapper.setNextServiceName(null);
 					wrapper.setNextHostName(null);
@@ -316,7 +313,14 @@ public class JobExecutor {
 					toSet = Status.unknown;
 					executor.execute(addJournalEntry(serviceName, environmentName, hostName, serviceInstanceName,
 							action + " of " + serviceName.getName() + "/" + environmentName.getName() + "/"
-									+ hostName.getName() + "/" + serviceInstanceName.getName() + " failed"));
+									+ hostName.getName() + "/" + serviceInstanceName.getName()
+									+ " with server-side failure"));
+				}
+
+				if (toSet == Status.failed) {
+					executor.execute(addJournalEntry(serviceName, environmentName, hostName, serviceInstanceName,
+							action + " of " + serviceName.getName() + "/" + environmentName.getName() + "/"
+									+ hostName.getName() + "/" + serviceInstanceName.getName() + " action failed"));
 				}
 
 				executor.execute(writeStatusToServiceInstance(serviceName, environmentName, hostName,

@@ -41,11 +41,6 @@ public class ActionController {
 
 	private ErrorCollection errorCollection;
 
-	private ConfirmStopAllCollection confirmCollection;
-
-	@Inject
-	private ConfirmController confirmController;
-
 	@PostConstruct
 	public void init() {
 	}
@@ -108,7 +103,8 @@ public class ActionController {
 
 				if (agg.containsKey(envS)) {
 					agg.get(envS).add(siL);
-				} else {
+				}
+				else {
 					Set<ServiceInstanceLocation> lsiL = new HashSet<>();
 					lsiL.add(siL);
 					agg.put(envS, lsiL);
@@ -121,46 +117,75 @@ public class ActionController {
 			}
 			oc.setChecked(false); // set default, no checkbox checked
 		}
-		scheduleJobs(Action.valueOf(action.getPerformAction()), agg, false);
-	}
 
-	private boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg,
-			boolean single) {
-		errorCollection = new ErrorCollection();
-
+		//check stop if a service in an environment would after than not be available anymore
 		for (Environment_Service es : agg.keySet()) {
-			if (jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es))
-					&& action.equals(Action.stop) && !single) {
-				confirmCollection = new ConfirmStopAllCollection();
+			if (action.getPerformAction().equals("stop")
+					&& jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es))) {
+				ConfirmStopAllCollection confirmCollection = new ConfirmStopAllCollection();
 				confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName()
 						+ " in environment " + es.getEnvironmentName() + "?");
 				confirmCollection.setShowPopup(true);
-				confirmController.setAgg(agg);
-				return false; // remove this and stopping instances works
+				confirmCollection.setAction_agg(agg);
+				serviceInstanceController.setConfirmCollection(confirmCollection);
+				return; // remove this and stopping instances works
 			}
 		}
 
+		scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
+	}
+
+	public boolean scheduleJobs(Action action, Map<Environment_Service, Set<ServiceInstanceLocation>> agg) {
+		errorCollection = new ErrorCollection();
+
 		// for each element of the map get the job id and afterward schedule the
 		// action
+		ConfirmStopAllCollection confirmCollection = serviceInstanceController.getConfirmCollection();
+
 		for (Environment_Service es : agg.keySet()) {
 			try {
 
 				JobId scheduledID = jobScheduler.scheduleAction(action, es.getServiceName(), es.getEnvironmentName(),
 						agg.get(es));
-				/**
-				 * Check der gestoppten Instanzen hier nicht möglich. Was wäre
-				 * wenn erst beim Xten Job ein Problem auftaucht dann sind
-				 * vorherige Instanzen schon in Queue.
-				 */
 
 				// start the JobID asynchronously
 				jobScheduler.startJob(scheduledID);
-			} catch (RuntimeException e) {
+			}
+			catch (RuntimeException e) {
 				errorCollection.addError(new Error(e));
 				errorCollection.setShowPopup(true);
+
+				if (confirmCollection.getService() != null) { //indication redirect
+					try {
+						FacesContext.getCurrentInstance().getExternalContext()
+								.redirect("detailview.xhtml?instance=" + confirmCollection.getInstance() + "&service="
+										+ confirmCollection.getService() + "&env=" + confirmCollection.getEnvironment()
+										+ "&host=" + confirmCollection.getHost());
+					}
+					catch (IOException e1) {
+						e1.printStackTrace();
+					}
+				}
+
+				confirmCollection.dispose();
+
 				return false;
 			}
 		}
+
+		if (confirmCollection.getService() != null) { //indication redirect
+			try {
+				FacesContext.getCurrentInstance().getExternalContext()
+						.redirect("detailview.xhtml?instance=" + confirmCollection.getInstance() + "&service="
+								+ confirmCollection.getService() + "&env=" + confirmCollection.getEnvironment()
+								+ "&host=" + confirmCollection.getHost());
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		confirmCollection.dispose();
 
 		return true;
 	}
@@ -183,7 +208,8 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -199,7 +225,8 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -215,7 +242,8 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -231,7 +259,8 @@ public class ActionController {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("detailview.xhtml?instance=" + instance
 					+ "&service=" + service + "&env=" + environment + "&host=" + host);
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
@@ -242,14 +271,6 @@ public class ActionController {
 
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
-	}
-
-	public ConfirmStopAllCollection getConfirmCollection() {
-		return confirmCollection;
-	}
-
-	public void setConfirmCollection(ConfirmStopAllCollection confirmCollection) {
-		this.confirmCollection = confirmCollection;
 	}
 
 	private boolean performSingleAction(PerformAction action, String service, String environment, String host,
@@ -265,8 +286,27 @@ public class ActionController {
 
 			agg.put(envS, siL);
 
-			return scheduleJobs(Action.valueOf(action.getPerformAction()), agg, true);
-		} catch (RuntimeException e) {
+			//check stop if a service in an environment would after than not be available anymore
+			for (Environment_Service es : agg.keySet()) {
+				if (action.getPerformAction().equals("stop")
+						&& jobScheduler.checkMultiStop(es.getServiceName(), es.getEnvironmentName(), agg.get(es))) {
+					ConfirmStopAllCollection confirmCollection = new ConfirmStopAllCollection();
+					confirmCollection.addMessage("Are you sure to stop all instances of service " + es.getServiceName()
+							+ " in environment " + es.getEnvironmentName() + "?");
+					confirmCollection.setShowPopup(true);
+					confirmCollection.setAction_agg(agg);
+					confirmCollection.setEnvironment(environment);
+					confirmCollection.setHost(host);
+					confirmCollection.setInstance(instance);
+					confirmCollection.setService(service);
+					serviceInstanceController.setConfirmCollection(confirmCollection);
+					return false;
+				}
+			}
+
+			return scheduleJobs(Action.valueOf(action.getPerformAction()), agg);
+		}
+		catch (RuntimeException e) {
 			errorCollection.addError(new Error(e));
 			errorCollection.setShowPopup(true);
 			return false;

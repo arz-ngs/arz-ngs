@@ -171,6 +171,18 @@
 					</div>
 				</div>
 			</div>
+			<h:panelGroup layout="block" class="stopWarning"
+				rendered="#{serviceinstance.confirmCollection.showPopup}">
+				<div class="positionWarning">
+					<h:outputLabel class="warning"
+						value="#{serviceinstance.confirmCollection.message}" />
+					<h:commandLink class="btn btn-primary warning" value="Bestätigen"
+						action="#{actionController.scheduleJobs('stop', serviceinstance.confirmCollection.action_agg)}"></h:commandLink>
+					<h:commandLink type="button" id="cancel_job"
+						class="btn btn-primary warning" value="Abbrechen"
+						action="#{serviceinstance.cancelPendingSingleJob()}"></h:commandLink>
+				</div>
+			</h:panelGroup>
 		</ui:define>
 
 		<ui:define name="settingsCol">

@@ -1,11 +1,13 @@
 package at.arz.ngs.ui.controllers;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -14,6 +16,7 @@ import at.arz.ngs.search.PaginationCondition;
 import at.arz.ngs.serviceinstance.ServiceInstanceAdmin;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverview;
 import at.arz.ngs.serviceinstance.commands.find.ServiceInstanceOverviewList;
+import at.arz.ngs.ui.data_collections.ConfirmStopAllCollection;
 import at.arz.ngs.ui.data_collections.Error;
 import at.arz.ngs.ui.data_collections.ErrorCollection;
 import at.arz.ngs.ui.data_collections.OrderImgCollection;
@@ -46,6 +49,8 @@ public class ServiceInstanceController
 
 	private ErrorCollection errorCollection;
 
+	private ConfirmStopAllCollection confirmCollection;
+
 	@PostConstruct
 	public void init() {
 		pagination = new PaginationCondition(50, 1); // default is first page with 50 elements
@@ -65,6 +70,9 @@ public class ServiceInstanceController
 
 		doPaginationValidation();
 		doSortValidation("instance");
+
+		confirmCollection = new ConfirmStopAllCollection();
+		confirmCollection.setShowPopup(false);
 	}
 
 	private void mapToOverviewCollection(ServiceInstanceOverviewList list) {
@@ -330,6 +338,27 @@ public class ServiceInstanceController
 		}
 	}
 
+	public String cancelPendingJob() {
+		confirmCollection.dispose();
+
+		formSubmit();
+		return "overview";
+	}
+
+	public void cancelPendingSingleJob() {
+		try {
+			FacesContext.getCurrentInstance().getExternalContext()
+					.redirect("detailview.xhtml?instance=" + confirmCollection.getInstance() + "&service="
+							+ confirmCollection.getService() + "&env=" + confirmCollection.getEnvironment() + "&host="
+							+ confirmCollection.getHost());
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		confirmCollection.dispose();
+	}
+
 	private String cumputeServiceRegex() {
 		if (serviceRegex == null) {
 			return "*";
@@ -444,5 +473,13 @@ public class ServiceInstanceController
 
 	public void setErrorCollection(ErrorCollection errorCollection) {
 		this.errorCollection = errorCollection;
+	}
+
+	public ConfirmStopAllCollection getConfirmCollection() {
+		return confirmCollection;
+	}
+
+	public void setConfirmCollection(ConfirmStopAllCollection confirmCollection) {
+		this.confirmCollection = confirmCollection;
 	}
 }

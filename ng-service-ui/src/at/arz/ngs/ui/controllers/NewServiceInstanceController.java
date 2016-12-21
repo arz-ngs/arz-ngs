@@ -21,7 +21,7 @@ public class NewServiceInstanceController
 	private static final long serialVersionUID = 1L;
 
 	@Inject
-	ServiceInstanceAdmin admin;
+	private ServiceInstanceAdmin admin;
 
 	@Inject
 	private ServiceInstanceController serviceInstanceController;
