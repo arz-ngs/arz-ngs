@@ -124,13 +124,20 @@ public class JobScheduler {
 
 		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
 		List<ServiceInstance> stoppedInstances = new LinkedList<>();
+		int counter = 0;
 		for (ServiceInstance si : instances) {
 			if ((si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping))
 					&& !locations.contains(si)) {
 				stoppedInstances.add(si);
+				for (ServiceInstanceLocation location : locations) {
+					if (location.getHostName().equals(si.getHost().getHostName())
+							&& location.getInstanceName().equals(si.getServiceInstanceName())) {
+						counter++;
+					}
+				}
 			}
 		}
-		if (stoppedInstances.size() + locations.size() < instances.size()) {
+		if (stoppedInstances.size() + locations.size() - counter < instances.size()) {
 			return false;
 		}
 		return true;
