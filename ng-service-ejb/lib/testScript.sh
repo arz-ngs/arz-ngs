@@ -1,4 +1,4 @@
 #!/bin/bash
-sleep 15
+sleep 3
 firefox
 exit 0

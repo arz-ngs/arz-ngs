@@ -126,8 +126,7 @@ public class JobScheduler {
 		List<ServiceInstance> stoppedInstances = new LinkedList<>();
 		int counter = 0;
 		for (ServiceInstance si : instances) {
-			if ((si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping))
-					&& !locations.contains(si)) {
+			if (si.getStatus().equals(Status.not_active) || si.getStatus().equals(Status.is_stopping)) {
 				stoppedInstances.add(si);
 				for (ServiceInstanceLocation location : locations) {
 					if (location.getHostName().equals(si.getHost().getHostName())
