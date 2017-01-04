@@ -250,8 +250,7 @@ public class ServiceInstanceAdmin {
 				serviceInstance.incrementVersion();
 
 				journalAdmin.addJournalEntry(serviceInstance.getClass(), serviceInstance.getOid(),
-						serviceInstance.toString(),
-						oldSIId + " was updated to + " + serviceInstance.toString());
+						serviceInstance.toString(), oldSIId + " was updated to " + serviceInstance.toString());
 			}
 			else {
 				throw new AlreadyModified(serviceInstance.toString());
@@ -296,7 +295,8 @@ public class ServiceInstanceAdmin {
 			response.setInformation(si.getInformation());
 			if (si.getJob() != null) {
 				response.setJobId(si.getJob().getJobId().getValue());
-			} else {
+			}
+			else {
 				response.setJobId("");
 			}
 			Script script = si.getScript();

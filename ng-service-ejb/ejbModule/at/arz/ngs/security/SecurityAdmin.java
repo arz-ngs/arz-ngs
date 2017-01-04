@@ -258,7 +258,8 @@ public class SecurityAdmin {
 			User_Role user_Role = userRoleRepository.getUser_Role(userToAddTo, roleToAdd);
 
 			journalAdmin.addJournalEntry(user_Role.getClass(), user_Role.getOid(), user_Role.toString(),
-					userToAddTo.getUserName().getName() + " got the role " + roleToAdd.getRoleName().getName());
+					userToAddTo.getUserName().getName() + " got the role " + roleToAdd.getRoleName().getName()
+							+ " | handover=" + command.isHandover());
 		}
 	}
 
@@ -421,8 +422,8 @@ public class SecurityAdmin {
 			role.addPermission(permission);
 			permission.addRole(role);
 
-			journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
-					+ permission.toString() + " was added to role " + role.getRoleName().getName());
+			journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(),
+					"Permission " + permission.toString() + " was added to role " + role.getRoleName().getName());
 		}
 		else {
 			throw new RoleAlreadyHasPermission(role.getRoleName().getName(), permission.getEnvironmentName().getName()
@@ -505,8 +506,8 @@ public class SecurityAdmin {
 		permission.removeRole(role);
 		role.removePermission(permission);
 
-		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(), "Permission "
-				+ permission.toString() + " was removed from role " + role.getRoleName().getName());
+		journalAdmin.addJournalEntry(role.getClass(), role.getOid(), role.toString(),
+				"Permission " + permission.toString() + " was removed from role " + role.getRoleName().getName());
 
 		try {
 			// try to remove permission if not used anymore, if exception this permission is used
