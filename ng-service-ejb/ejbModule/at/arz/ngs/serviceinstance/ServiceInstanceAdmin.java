@@ -56,7 +56,7 @@ import at.arz.ngs.serviceinstance.commands.update.UpdateServiceInstance;
 import at.arz.ngs.serviceinstance.commands.update.UpdateStatus;
 
 /**
- * Manages the logic and the methods of the repositores methods
+ * Manages the logic and the methods of the repository methods
  * 
  * @author dani
  *
