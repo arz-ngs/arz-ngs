@@ -66,15 +66,6 @@ public class JobScheduler {
 		List<ServiceInstance> instances = serviceInstanceRepo.getServiceInstances(service, env);
 		List<ServiceInstance> filtered = new LinkedList<>();
 		for (ServiceInstance instance : instances) {
-			if (action.toString().equals("start") && instance.getScript().getPathStart().toString().equals("")
-					|| action.toString().equals("stop") && instance.getScript().getPathStop().toString().equals("")
-					|| action.toString().equals("restart")
-							&& instance.getScript().getPathRestart().toString().equals("")
-					|| action.toString().equals("status")
-							&& instance.getScript().getPathStatus().toString().equals("")) {
-				throw new EmptyField(action.name().toString() + ":" + instance.toString());
-			}
-
 			if (locations.contains(
 					new ServiceInstanceLocation(instance.getHost().getHostName(), instance.getServiceInstanceName()))) {
 				if (instance.getJob() == null) {
@@ -91,6 +82,17 @@ public class JobScheduler {
 								+ instance.getJob().getJobId());
 
 				throw new IllegalStateException("Job already scheduled!");
+			}
+		}
+
+		for (ServiceInstance instance : filtered) {
+			if (action.toString().equals("start") && instance.getScript().getPathStart().toString().equals("")
+					|| action.toString().equals("stop") && instance.getScript().getPathStop().toString().equals("")
+					|| action.toString().equals("restart")
+							&& instance.getScript().getPathRestart().toString().equals("")
+					|| action.toString().equals("status")
+							&& instance.getScript().getPathStatus().toString().equals("")) {
+				throw new EmptyField(action.name().toString() + ":" + instance.toString());
 			}
 		}
 

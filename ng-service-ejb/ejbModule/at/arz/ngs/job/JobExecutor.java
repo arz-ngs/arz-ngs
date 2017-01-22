@@ -327,10 +327,11 @@ public class JobExecutor {
 						serviceInstanceName, toSet)); //has to be asynch and with a new transaction
 
 				if (cancelJob) {
-					executor.execute(cancelJob(jobId));
+					executor.executeNotAsynchronously(cancelJob(jobId));
 				}
 				else {
-					executor.execute(removeServiceInstanceFromJob(hostName, serviceInstanceName, jobId));
+					executor.executeNotAsynchronously(
+							removeServiceInstanceFromJob(hostName, serviceInstanceName, jobId));
 				}
 			}
 		};
