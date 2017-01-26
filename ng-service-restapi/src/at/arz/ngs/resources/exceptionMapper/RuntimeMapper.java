@@ -20,10 +20,8 @@ public class RuntimeMapper
 	public Response toResponse(RuntimeException e) {
 		log.log(Level.WARNING, "unexpected exception during rest call:" + e.getMessage(), e);
 		NgsApiError error = new NgsApiError(e.getClass().getSimpleName(), e.toString());
-		return Response	.status(Response.Status.CONFLICT)
-						.type(MediaType.APPLICATION_JSON)
-						.type(MediaType.APPLICATION_XML)
-						.entity(error)
-						.build();
+		return Response.status(Response.Status.CONFLICT).type(MediaType.APPLICATION_JSON)
+				//						.type(MediaType.APPLICATION_XML)
+				.entity(error).build();
 	}
 }
